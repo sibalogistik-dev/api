@@ -45,6 +45,7 @@ cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan serve
+```
 
 ## 🔐 Authentication
 
@@ -55,4 +56,7 @@ Planned: authentication will use **JWT**. Basic scaffolding is currently in plac
 ## 📄 License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
+
+```
+
 ```
