@@ -117,6 +117,8 @@ INDONESIA_TABLE_PREFIX=indonesia_
 SANCTUM_STATEFUL_DOMAINS=your-domain.com
 ```
 
+---
+
 ## 📄 License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
