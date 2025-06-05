@@ -20,10 +20,42 @@ This is a RESTful API built with Laravel, intended for future development of an 
 
 ## 📦 Tech Stack
 
--   Laravel
+### Core
+
+-   PHP ^8.2
+-   Laravel Framework ^11.31
 -   MySQL / MariaDB
--   JWT Authentication
--   Spatie Laravel Permission (planned)
+
+### Main Packages
+
+-   Laravel Sanctum ^4.0
+    -   API token authentication
+    -   SPA authentication
+    -   Mobile application authentication
+-   Laravel Tinker ^2.9
+    -   Interactive REPL
+    -   Testing and debugging tool
+-   Laravolt Indonesia ^0.36.0
+    -   Indonesia territories data
+    -   Provinces, cities, districts management
+    -   Postal code information
+
+### Development Tools
+
+-   Laravel Pail ^1.1
+    -   Real-time log viewer
+    -   Debug logs monitoring
+-   Laravel Pint ^1.13
+    -   PHP code style fixer
+    -   PSR-12 standards enforcement
+-   Laravel Sail ^1.26
+    -   Docker development environment
+    -   Easy local setup
+-   PHPUnit ^11.0.1
+    -   Unit testing framework
+-   Faker ^1.23
+    -   Testing data generation
+    -   Seeding dummy data
 
 ---
 
@@ -38,25 +70,79 @@ Developed and maintained by:
 ## ⚙️ Installation
 
 ```bash
+# Clone the repository
 git clone https://github.com/sibalogistik-dev/api.git
 cd api
+
+# Install dependencies
 composer install
+
+# Setup environment
 cp .env.example .env
 php artisan key:generate
+
+# Database setup
 php artisan migrate
+
+# Install and setup Laravolt Indonesia
+php artisan vendor:publish --provider="Laravolt\Indonesia\ServiceProvider"
+php artisan migrate
+
+# Start the development server
 php artisan serve
+```
+
+### Additional Configuration
+
+1. Configure your database in `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+2. Configure Laravolt Indonesia:
+
+```env
+INDONESIA_TABLE_PREFIX=indonesia_
+```
+
+3. Configure Sanctum (if using domains):
+
+```env
+SANCTUM_STATEFUL_DOMAINS=your-domain.com
 ```
 
 ## 🔐 Authentication
 
-Planned: authentication will use **JWT**. Basic scaffolding is currently in place and will be expanded as development progresses.
+Authentication is handled by **Laravel Sanctum**, providing:
+
+-   API token authentication
+-   SPA (Single Page Application) authentication
+-   Mobile application authentication
+
+To use authentication:
+
+1. Include token in request headers:
+
+```
+Authorization: Bearer <your-token>
+```
+
+2. Protected routes should use the sanctum middleware:
+
+```php
+Route::middleware('auth:sanctum')->group(function () {
+    // Your protected routes here
+});
+```
 
 ---
 
 ## 📄 License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
-
-```
-
-```
