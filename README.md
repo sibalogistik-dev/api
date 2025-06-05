@@ -117,32 +117,6 @@ INDONESIA_TABLE_PREFIX=indonesia_
 SANCTUM_STATEFUL_DOMAINS=your-domain.com
 ```
 
-## 🔐 Authentication
-
-Authentication is handled by **Laravel Sanctum**, providing:
-
--   API token authentication
--   SPA (Single Page Application) authentication
--   Mobile application authentication
-
-To use authentication:
-
-1. Include token in request headers:
-
-```
-Authorization: Bearer <your-token>
-```
-
-2. Protected routes should use the sanctum middleware:
-
-```php
-Route::middleware('auth:sanctum')->group(function () {
-    // Your protected routes here
-});
-```
-
----
-
 ## 📄 License
 
 This project is open-sourced under the [MIT License](https://opensource.org/licenses/MIT).
