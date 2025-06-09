@@ -7,24 +7,26 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller {
     public function login(Request $request) {
-        $input = $request->only(['login', 'password']);
-        $fieldType = filter_var($input['login'], FILTER_VALIDATE_EMAIL) ? 'email' : (is_numeric($input['login']) ? 'phone' : 'username');
+        $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-        $credentials = [
-            $fieldType => $input['login'],
-            'password' => $input['password']
-        ];
+        $login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt($credentials)) {
-            return response()
-                ->json([
-                    'message' => 'Login successful'
-                ], 200);
+        if (Auth::attempt([$login_type => $request->login, 'password' => $request->password])) {
+            $user = Auth::user();
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Login successful',
+                'token' => $token,
+                'user' => $user
+            ], 200);
         }
 
-        return response()
-            ->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+        return response()->json([
+            'message' => 'Invalid credentials'
+        ], 401);
     }
 }

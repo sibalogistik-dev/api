@@ -8,9 +8,10 @@ use Illuminate\Database\Seeder;
 class UserSeeder extends Seeder {
     public function run(): void {
         User::create([
-            'name' => 'John Doe',
-            'email' => 'johndoe@gmail.com',
-            'password' => bcrypt('password123'),
+            'name' => 'Administrator',
+            'email' => 'administrator@gmail.com',
+            'username' => 'administrator',
+            'password' => bcrypt('password'),
             'email_verified_at' => now(),
         ]);
     }
