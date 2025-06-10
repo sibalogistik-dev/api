@@ -26,23 +26,23 @@ Route::middleware('api')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])
         ->name('login');
     //Province
-    Route::get('/provinsi/get', [IndonesiaController::class, 'getProvince'])
-        ->name('provinsi.get');
-    Route::get('/provinsi/get/{code}', [IndonesiaController::class, 'getProvince'])
-        ->name('provinsi.code');
-    Route::get('/provinsi/get/{code}/kotakab', [IndonesiaController::class, 'getProvinceCity'])
-        ->name('provinsi.kotakab');
+    Route::get('/province/get', [IndonesiaController::class, 'getProvince'])
+        ->name('province.get');
+    Route::get('/province/get/{code}', [IndonesiaController::class, 'getProvince'])
+        ->name('province.code');
+    Route::get('/province/get/{code}/city', [IndonesiaController::class, 'getProvinceCity'])
+        ->name('province.city');
     // City
-    Route::get('/kotakab/get/{code}', [IndonesiaController::class, 'getCity'])
-        ->name('kotakab.code');
-    Route::get('/kotakab/get/{code}/kecamatan', [IndonesiaController::class, 'getCityDistrict'])
-        ->name('kotakab.kecamatan');
+    Route::get('/city/get/{code}', [IndonesiaController::class, 'getCity'])
+        ->name('city.code');
+    Route::get('/city/get/{code}/district', [IndonesiaController::class, 'getCityDistrict'])
+        ->name('city.district');
     // District
-    Route::get('/kecamatan/get/{code}', [IndonesiaController::class, 'getDistrict'])
-        ->name('kecamatan.code');
-    Route::get('/kecamatan/get/{code}/kelurahan', [IndonesiaController::class, 'getDistrictVillage'])
-        ->name('kecamatan.kelurahan');
+    Route::get('/district/get/{code}', [IndonesiaController::class, 'getDistrict'])
+        ->name('district.code');
+    Route::get('/district/get/{code}/village', [IndonesiaController::class, 'getDistrictVillage'])
+        ->name('district.village');
     // Village
-    Route::get('/kelurahan/get/{code}', [IndonesiaController::class, 'getVillage'])
-        ->name('kelurahan.code');
+    Route::get('/village/get/{code}', [IndonesiaController::class, 'getVillage'])
+        ->name('village.code');
 });
