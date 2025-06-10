@@ -38,11 +38,13 @@ class IndonesiaController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function getProvinceCity($code) {
-        $city = City::where('province_code', $code)->get();
-        if (!$city) {
+        $cities = Province::with('cities')
+            ->where('code', $code)
+            ->first()->cities;
+        if (!$cities) {
             return ApiResponseHelper::error('City not found.', 404);
         }
-        return ApiResponseHelper::success($city, 'City retrieved successfully.');
+        return ApiResponseHelper::success($cities, 'City retrieved successfully.');
     }
     #endregion
     #region City
@@ -61,17 +63,31 @@ class IndonesiaController extends Controller {
         }
         return ApiResponseHelper::success($city, 'City retrieved successfully.');
     }
+
+    /**
+     * Get districts in a specific city.
+     *
+     * @param string $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getCityDistrict($code) {
-        $city = City::with('districts')
+        $districts = City::with('districts')
             ->where('code', $code)
-            ->first();
-        if (!$city) {
+            ->first()
+            ->districts;
+        if (!$districts) {
             return ApiResponseHelper::error('City not found.', 404);
         }
-        return ApiResponseHelper::success($city, 'City retrieved successfully.');
+        return ApiResponseHelper::success($districts, 'City retrieved successfully.');
     }
     #endregion
     #region District
+    /**
+     * Get a specific district by its code.
+     *
+     * @param string $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getDistrict($code) {
         $district = District::with('villages')
             ->where('code', $code)
@@ -80,6 +96,15 @@ class IndonesiaController extends Controller {
             return ApiResponseHelper::error('District not found.', 404);
         }
         return ApiResponseHelper::success($district, 'District retrieved successfully.');
+    }
+    public function getDistrictVillage($code) {
+        $villages = District::with('villages')
+            ->where('code', $code)
+            ->first()->villages;
+        if (!$villages) {
+            return ApiResponseHelper::error('Village not found.', 404);
+        }
+        return ApiResponseHelper::success($villages, 'Villages retrieved successfully.');
     }
     #endregion
     #region Village
