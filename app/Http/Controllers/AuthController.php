@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,6 +28,14 @@ class AuthController extends Controller {
 
         return response()->json([
             'message' => 'Invalid credentials'
+        ], 401);
+    }
+
+    public function loginError() {
+        return new JsonResponse([
+            "status"  => false,
+            "message" => "Authentication required to access this resource",
+            "errors"  => null
         ], 401);
     }
 }
