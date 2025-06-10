@@ -36,7 +36,8 @@
 <body>
     <div class="container">
         <h1>API Endpoint Aktif</h1>
-        <p>Anda berada di subdomain (<strong>{{ route('home') }}</strong>).</p>
+        <p>Anda berada di subdomain (<strong>{{ str_replace(['http://', 'https://'], '', route('home')) }}</strong>).
+        </p>
         <p>Halaman ini hanya sebagai penyedia data dari perusahaan.</p>
         <p>Silakan hubungi admin untuk penggunaan aplikasi terkait.</p>
     </div>
