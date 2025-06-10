@@ -18,6 +18,12 @@ This is a RESTful API built with Laravel, intended for future development of an 
 
 ---
 
+## 🌐 Test Environment
+
+The API can be tested at: [http://siba.api.frdhsym.space](http://siba.api.frdhsym.space)
+
+---
+
 ## 📦 Tech Stack
 
 ### Core
