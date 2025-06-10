@@ -121,8 +121,13 @@
 
 <body>
     <div class="container">
-        <h1>API Documentation</h1>
-        <p>Anda berada di subdomain (<strong>{{ str_replace(['http://', 'https://'], '', route('home')) }}</strong>)</p>
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="{{ asset('images/logo/siba cargo.png') }}" alt="Siba Cargo Logo"
+                style="max-width: 200px; height: auto;">
+            <h1>API Documentation</h1>
+            <p>Anda berada di subdomain (<strong>{{ str_replace(['http://', 'https://'], '', route('home')) }}</strong>)
+            </p>
+        </div>
 
         <div class="endpoint-group">
             <h3>🔒 Protected Endpoints</h3>
@@ -276,7 +281,6 @@
             </ul>
         </div>
 
-        <!-- Public Endpoints -->
         <div class="endpoint-group">
             <h3>🔓 Public Endpoints</h3>
             <ul class="endpoint-list">
