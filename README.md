@@ -20,7 +20,10 @@ This is a RESTful API built with Laravel, intended for future development of an 
 
 ## 🌐 Test Environment
 
-The API can be tested at: [http://siba.api.frdhsym.space](http://siba.api.frdhsym.space)
+The API can be tested at:
+<a href="http://siba.api.frdhsym.space" target="_blank">
+http://siba.api.frdhsym.space
+</a>
 
 ---
 
