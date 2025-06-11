@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IndonesiaController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\KotaKabController;
+use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\ProvinsiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +17,7 @@ Route::middleware('api')->group(function () {
             Route::get('user', function (Request $request) {
                 return $request->user();
             });
+
             Route::resource('provinsi', ProvinsiController::class)
                 ->except(['create', 'edit']);
             Route::resource('kotakab', KotaKabController::class)
@@ -22,6 +25,11 @@ Route::middleware('api')->group(function () {
             Route::resource('kecamatan', KecamatanController::class)
                 ->except(['create', 'edit']);
             Route::resource('kelurahan', KelurahanController::class)
+                ->except(['create', 'edit']);
+
+            Route::resource('perusahaan', PerusahaanController::class)
+                ->except(['create', 'edit']);
+            Route::resource('cabang', CabangController::class)
                 ->except(['create', 'edit']);
         });
     // Authentication

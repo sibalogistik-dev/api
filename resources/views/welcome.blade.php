@@ -30,41 +30,49 @@
                         'method' => 'GET',
                         'path' => '/province/get',
                         'description' => 'Mendapatkan daftar provinsi',
+                        'example' => '/province/get',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/province/get/{code}',
                         'description' => 'Mendapatkan detail provinsi berdasarkan kode provinsi',
+                        'example' => '/province/get/21',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/province/get/{code}/city',
                         'description' => 'Mendapatkan kota dalam provinsi berdasarkan kode provinsi',
+                        'example' => '/province/get/21/city',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/city/get/{code}',
                         'description' => 'Mendapatkan detail kota berdasarkan kode kota',
+                        'example' => '/city/get/2172',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/city/get/{code}/district',
                         'description' => 'Mendapatkan kecamatan dalam kota berdasarkan kode kota',
+                        'example' => '/city/get/2172/district',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/district/get/{code}',
                         'description' => 'Mendapatkan detail kecamatan berdasarkan kode kecamatan',
+                        'example' => '/district/get/217202',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/district/get/{code}/village',
                         'description' => 'Mendapatkan kelurahan dalam kecamatan berdasarkan kode kecamatan',
+                        'example' => '/district/get/217202/village',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/village/get/{code}',
                         'description' => 'Mendapatkan detail kelurahan berdasarkan kode kelurahan',
+                        'example' => '/village/get/2172022001',
                     ],
                 ],
             ];
@@ -93,8 +101,10 @@
                                         class="px-2 py-1 {{ $colors[strtolower($endpoint['method'])] }} text-white text-xs md:text-sm rounded">
                                         {{ $endpoint['method'] }}
                                     </span>
-                                    <code
-                                        class="text-xs md:text-sm break-all sm:break-normal">{{ $endpoint['path'] }}</code>
+                                    <a href="{{ route('home') . $endpoint['example'] }}" target="_blank">
+                                        <code
+                                            class="text-xs md:text-sm break-all sm:break-normal">{{ $endpoint['path'] }}</code>
+                                    </a>
                                 </div>
                             </div>
                             <div class="text-gray-600 text-xs md:text-sm mt-2">{{ $endpoint['description'] }}</div>

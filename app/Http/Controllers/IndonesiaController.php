@@ -44,7 +44,7 @@ class IndonesiaController extends Controller {
         if (!$cities) {
             return ApiResponseHelper::error('City not found.', 404);
         }
-        return ApiResponseHelper::success($cities, 'City retrieved successfully.');
+        return ApiResponseHelper::success($cities, 'Cities retrieved successfully.');
     }
     #endregion
     #region City
@@ -76,9 +76,9 @@ class IndonesiaController extends Controller {
             ->first()
             ->districts;
         if (!$districts) {
-            return ApiResponseHelper::error('City not found.', 404);
+            return ApiResponseHelper::error('District not found.', 404);
         }
-        return ApiResponseHelper::success($districts, 'City retrieved successfully.');
+        return ApiResponseHelper::success($districts, 'Districts retrieved successfully.');
     }
     #endregion
     #region District

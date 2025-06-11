@@ -2,23 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cabang;
+use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 
-class CabangController extends Controller {
+class PerusahaanController extends Controller {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index() {
-        $cabang = Cabang::with('kota', 'kota.province')
+        $perusahaan = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
             ->get();
         return response()->json([
             'status' => true,
             'message' => 'List of Cabang',
-            'data' => $cabang
+            'data' => $perusahaan
         ], 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create() {
+        //
     }
 
     /**
@@ -31,21 +36,28 @@ class CabangController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Cabang $cabang) {
+    public function show(Perusahaan $perusahaan) {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Perusahaan $perusahaan) {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cabang $cabang) {
+    public function update(Request $request, Perusahaan $perusahaan) {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cabang $cabang) {
+    public function destroy(Perusahaan $perusahaan) {
         //
     }
 }
