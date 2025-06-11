@@ -12,7 +12,7 @@ class PerusahaanSeeder extends Seeder {
      */
     public function run(): void {
         Perusahaan::create([
-            'nama' => 'Siba Cargo',
+            'nama' => 'SIBA Cargo',
         ]);
 
         Perusahaan::create([

@@ -12,7 +12,7 @@ class CabangSeeder extends Seeder {
      */
     public function run(): void {
         Cabang::create([
-            'nama' => 'Siba Cargo Pusat',
+            'nama' => 'SIBA Cargo Pusat',
             'alamat' => 'Jl. Raya No.1, Tanjungpinang',
             'telepon' => '0771-12345678',
             'kota_id' => 2172,
@@ -22,7 +22,7 @@ class CabangSeeder extends Seeder {
         ]);
 
         Cabang::create([
-            'nama' => 'Siba Cargo Tanjungpinang',
+            'nama' => 'SIBA Cargo Tanjungpinang',
             'alamat' => 'Jl. Raya No.1, Tanjungpinang',
             'telepon' => '0771-87654321',
             'kota_id' => 2172,

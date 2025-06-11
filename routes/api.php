@@ -14,26 +14,32 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('api')->group(function () {
     Route::middleware('auth:sanctum')
         ->group(function () {
+            // User Profile
             Route::get('user', function (Request $request) {
                 return $request->user();
             });
-
+            // Manages CRUD operations for provinces
             Route::resource('provinsi', ProvinsiController::class)
                 ->except(['create', 'edit']);
+            // Manages CRUD operations for cities/regencies
             Route::resource('kotakab', KotaKabController::class)
                 ->except(['create', 'edit']);
+            // Manages CRUD operations for districts
             Route::resource('kecamatan', KecamatanController::class)
                 ->except(['create', 'edit']);
+            // Manages CRUD operations for villages/urban communities
             Route::resource('kelurahan', KelurahanController::class)
                 ->except(['create', 'edit']);
-
+            // Manages CRUD operations for companies
             Route::resource('perusahaan', PerusahaanController::class)
                 ->except(['create', 'edit']);
+            // Manages CRUD operations for company branches
             Route::resource('cabang', CabangController::class)
                 ->except(['create', 'edit']);
         });
-    // Authentication
+    // Login
     Route::post('/login', [AuthController::class, 'login']);
+    // Direct to unauthenticated user
     Route::get('/login', [AuthController::class, 'loginError'])->name('login');
     //Province
     Route::get('/province/get', [IndonesiaController::class, 'getProvince']);
@@ -47,4 +53,10 @@ Route::middleware('api')->group(function () {
     Route::get('/district/get/{code}/village', [IndonesiaController::class, 'getDistrictVillage']);
     // Village
     Route::get('/village/get/{code}', [IndonesiaController::class, 'getVillage']);
+    // Company Branches
+    Route::get('/perusahaan/siba/cabang', [PerusahaanController::class, 'cabangSiba']);
+    Route::get('/perusahaan/best/cabang', [PerusahaanController::class, 'cabangBest']);
+    Route::get('/perusahaan/mencargo/cabang', [PerusahaanController::class, 'cabangMenCargo']);
+    Route::get('/perusahaan/mabes/cabang', [PerusahaanController::class, 'cabangMabes']);
+    Route::get('/perusahaan/sauto8/cabang', [PerusahaanController::class, 'cabangSauto8']);
 });

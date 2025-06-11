@@ -10,6 +10,6 @@ class Perusahaan extends Model {
     ];
 
     public function cabangs() {
-        return $this->hasMany(Cabang::class, 'perusahaan_id', 'id');
+        return $this->hasMany(Cabang::class);
     }
 }

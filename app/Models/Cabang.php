@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\Kecamatan;
+use Laravolt\Indonesia\Models\Province;
 
 class Cabang extends Model {
     protected $fillable = [
@@ -22,6 +23,6 @@ class Cabang extends Model {
     }
 
     public function perusahaan() {
-        return $this->belongsTo(Perusahaan::class, 'perusahaan_id', 'id');
+        return $this->belongsTo(Perusahaan::class);
     }
 }
