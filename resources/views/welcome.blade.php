@@ -29,42 +29,42 @@
                     [
                         'method' => 'GET',
                         'path' => '/province/get',
-                        'description' => 'Mendapatkan data provinsi dari Indonesia',
+                        'description' => 'Mendapatkan daftar provinsi',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/province/get/{code}',
-                        'description' => 'Mendapatkan detail provinsi berdasarkan kode',
+                        'description' => 'Mendapatkan detail provinsi berdasarkan kode provinsi',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/province/get/{code}/city',
-                        'description' => 'Mendapatkan kota dalam provinsi',
+                        'description' => 'Mendapatkan kota dalam provinsi berdasarkan kode provinsi',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/city/get/{code}',
-                        'description' => 'Mendapatkan detail kota berdasarkan kode',
+                        'description' => 'Mendapatkan detail kota berdasarkan kode kota',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/city/get/{code}/district',
-                        'description' => 'Mendapatkan kecamatan dalam kota',
+                        'description' => 'Mendapatkan kecamatan dalam kota berdasarkan kode kota',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/district/get/{code}',
-                        'description' => 'Mendapatkan detail kecamatan berdasarkan kode',
+                        'description' => 'Mendapatkan detail kecamatan berdasarkan kode kecamatan',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/district/get/{code}/village',
-                        'description' => 'Mendapatkan kelurahan dalam kecamatan',
+                        'description' => 'Mendapatkan kelurahan dalam kecamatan berdasarkan kode kecamatan',
                     ],
                     [
                         'method' => 'GET',
                         'path' => '/village/get/{code}',
-                        'description' => 'Mendapatkan detail kelurahan berdasarkan kode',
+                        'description' => 'Mendapatkan detail kelurahan berdasarkan kode kelurahan',
                     ],
                 ],
             ];
@@ -96,10 +96,6 @@
                                     <code
                                         class="text-xs md:text-sm break-all sm:break-normal">{{ $endpoint['path'] }}</code>
                                 </div>
-                                <span
-                                    class="px-2 py-1 bg-gray-500 text-white text-xs rounded-full self-start sm:self-auto">
-                                    Publik
-                                </span>
                             </div>
                             <div class="text-gray-600 text-xs md:text-sm mt-2">{{ $endpoint['description'] }}</div>
                         </li>
