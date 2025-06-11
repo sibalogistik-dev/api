@@ -25,8 +25,8 @@ Route::middleware('api')->group(function () {
                 ->except(['create', 'edit']);
         });
     // Authentication
-    Route::get('/login', [AuthController::class, 'loginError'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/login', [AuthController::class, 'loginError'])->name('login');
     //Province
     Route::get('/province/get', [IndonesiaController::class, 'getProvince']);
     Route::get('/province/get/{code}', [IndonesiaController::class, 'getProvince']);
