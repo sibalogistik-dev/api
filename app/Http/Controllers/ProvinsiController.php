@@ -24,9 +24,9 @@ class ProvinsiController extends Controller {
             $provinsis = Provinsi::all();
         }
         if ($provinsis->isEmpty()) {
-            return ApiResponseHelper::error('No provinces found.', 404);
+            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($provinsis, 'Provinces retrieved successfully.');
+        return ApiResponseHelper::success('Provinsi berhasil diambil.', $provinsis);
     }
 
     /**
@@ -43,7 +43,7 @@ class ProvinsiController extends Controller {
             'long' => 'nullable|numeric',
         ]);
         if ($validate->fails()) {
-            return ApiResponseHelper::error($validate->errors(), 422);
+            return ApiResponseHelper::error('Validasi gagal.', $validate->errors(), 422);
         } else {
             $provinsi = Provinsi::create([
                 'name' => $request->name,
@@ -56,10 +56,10 @@ class ProvinsiController extends Controller {
                 'updated_at' => now(),
             ]);
             if (!$provinsi) {
-                return ApiResponseHelper::error('Failed to create province.', 500);
+                return ApiResponseHelper::error('Gagal membuat provinsi.', null, 500);
             }
         }
-        return ApiResponseHelper::success($provinsi, 'Province created successfully.', 201);
+        return ApiResponseHelper::success('Provinsi berhasil dibuat.', $provinsi, 201);
     }
 
     /**
@@ -73,9 +73,9 @@ class ProvinsiController extends Controller {
             ->where('code', $provinsi->code)
             ->first();
         if (!$provinsi) {
-            return ApiResponseHelper::error('Province not found.', 404);
+            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($provinsi, 'Province retrieved successfully.');
+        return ApiResponseHelper::success('Provinsi berhasil diambil.', $provinsi);
     }
 
     /**
@@ -93,7 +93,7 @@ class ProvinsiController extends Controller {
             'long' => 'nullable|numeric',
         ]);
         if ($validate->fails()) {
-            return ApiResponseHelper::error($validate->errors(), 422);
+            return ApiResponseHelper::error('Validasi gagal.', $validate->errors(), 422);
         } else {
             $provinsi->update([
                 'name' => $request->name,
@@ -105,7 +105,7 @@ class ProvinsiController extends Controller {
                 'updated_at' => now(),
             ]);
         }
-        return ApiResponseHelper::success($provinsi, 'Province updated successfully.');
+        return ApiResponseHelper::success('Provinsi berhasil diperbarui.', $provinsi);
     }
 
     /**
@@ -116,9 +116,9 @@ class ProvinsiController extends Controller {
      */
     public function destroy(Provinsi $provinsi) {
         if (!$provinsi) {
-            return ApiResponseHelper::error('Province not found.', 404);
+            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
         }
         $provinsi->delete();
-        return ApiResponseHelper::success(null, 'Province deleted successfully.');
+        return ApiResponseHelper::success('Provinsi berhasil dihapus.', null, 204);
     }
 }

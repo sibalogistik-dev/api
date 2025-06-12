@@ -15,9 +15,7 @@ Route::middleware('api')->group(function () {
     Route::middleware('auth:sanctum')
         ->group(function () {
             // User Profile
-            Route::get('user', function (Request $request) {
-                return $request->user();
-            });
+            Route::get('user', [AuthController::class, 'user']);
             // Manages CRUD operations for provinces
             Route::resource('provinsi', ProvinsiController::class)
                 ->except(['create', 'edit']);

@@ -2,64 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelurahan;
 use Illuminate\Http\Request;
+use Laravolt\Indonesia\Models\Village;
 
-class KelurahanController extends Controller
-{
+class KelurahanController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
+    public function index() {
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Kelurahan $kelurahan)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Kelurahan $kelurahan)
-    {
+    public function show(Village $kelurahan) {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kelurahan $kelurahan)
-    {
+    public function update(Request $request, Village $kelurahan) {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kelurahan $kelurahan)
-    {
+    public function destroy(Village $kelurahan) {
         //
     }
 }

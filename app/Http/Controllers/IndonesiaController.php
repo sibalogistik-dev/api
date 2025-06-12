@@ -25,10 +25,10 @@ class IndonesiaController extends Controller {
                 ->where('code', $code)
                 ->first();
             if (!$province) {
-                return ApiResponseHelper::error('Province not found.', 404);
+                return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', null, 404);
             }
         }
-        return ApiResponseHelper::success($province, 'Province retrieved successfully.');
+        return ApiResponseHelper::success('Data Provinsi berhasil diambil.', $province);
     }
 
     /**
@@ -42,9 +42,9 @@ class IndonesiaController extends Controller {
             ->where('code', $code)
             ->first()->cities;
         if (!$cities) {
-            return ApiResponseHelper::error('City not found.', 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($cities, 'Cities retrieved successfully.');
+        return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
     #endregion
     #region City
@@ -59,9 +59,9 @@ class IndonesiaController extends Controller {
             ->where('code', $code)
             ->first();
         if (!$city) {
-            return ApiResponseHelper::error('City not found.', 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($city, 'City retrieved successfully.');
+        return ApiResponseHelper::success('Data Kota berhasil diambil.', $city);
     }
 
     /**
@@ -76,9 +76,9 @@ class IndonesiaController extends Controller {
             ->first()
             ->districts;
         if (!$districts) {
-            return ApiResponseHelper::error('District not found.', 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($districts, 'Districts retrieved successfully.');
+        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
     #endregion
     #region District
@@ -93,28 +93,41 @@ class IndonesiaController extends Controller {
             ->where('code', $code)
             ->first();
         if (!$district) {
-            return ApiResponseHelper::error('District not found.', 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($district, 'District retrieved successfully.');
+        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $district);
     }
+
+    /**
+     * Get villages in a specific district.
+     *
+     * @param string $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getDistrictVillage($code) {
         $villages = District::with('villages')
             ->where('code', $code)
             ->first()->villages;
         if (!$villages) {
-            return ApiResponseHelper::error('Village not found.', 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($villages, 'Villages retrieved successfully.');
+        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
     #endregion
     #region Village
+    /**
+     * Get a specific village by its code.
+     *
+     * @param string $code
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getVillage($code) {
         $village = Village::where('code', $code)
             ->first();
         if (!$village) {
-            return ApiResponseHelper::error('Village not found.', 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', null, 404);
         }
-        return ApiResponseHelper::success($village, 'Village retrieved successfully.');
+        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $village);
     }
     #endregion
 }

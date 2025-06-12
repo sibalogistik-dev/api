@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Divisi;
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 
-class DivisiController extends Controller
+class JabatanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class DivisiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Divisi $divisi)
+    public function show(Jabatan $jabatan)
     {
         //
     }
@@ -42,7 +42,7 @@ class DivisiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Divisi $divisi)
+    public function edit(Jabatan $jabatan)
     {
         //
     }
@@ -50,7 +50,7 @@ class DivisiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Divisi $divisi)
+    public function update(Request $request, Jabatan $jabatan)
     {
         //
     }
@@ -58,7 +58,7 @@ class DivisiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Divisi $divisi)
+    public function destroy(Jabatan $jabatan)
     {
         //
     }

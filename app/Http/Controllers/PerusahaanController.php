@@ -23,10 +23,7 @@ class PerusahaanController extends Controller {
             $perusahaan = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
                 ->get();
         }
-        return ApiResponseHelper::success(
-            $perusahaan,
-            'Daftar Perusahaan',
-        );
+        return ApiResponseHelper::success('Daftar Perusahaan', $perusahaan);
     }
 
     /**
@@ -46,16 +43,9 @@ class PerusahaanController extends Controller {
         $perusahaan = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
             ->find($perusahaan->id);
         if (!$perusahaan) {
-            return ApiResponseHelper::error(
-                'Perusahaan tidak ditemukan',
-                404,
-                null,
-            );
+            return ApiResponseHelper::error('Perusahaan tidak ditemukan', null, 404);
         }
-        return ApiResponseHelper::success(
-            $perusahaan,
-            'Detail Perusahaan',
-        );
+        return ApiResponseHelper::success('Detail Perusahaan', $perusahaan);
     }
 
     /**
@@ -85,18 +75,10 @@ class PerusahaanController extends Controller {
             ->first();
 
         if (!$perusahaan) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Perusahaan Siba Cargo not found',
-                'data' => null
-            ], 404);
+            return ApiResponseHelper::error('Perusahaan Siba Cargo tidak ditemukan', null, 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang Siba Cargo',
-            'data' => $perusahaan->cabangs
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang Siba Cargo', $perusahaan->cabangs);
     }
 
     /**
@@ -112,18 +94,10 @@ class PerusahaanController extends Controller {
             ->first();
 
         if (!$perusahaan) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Perusahaan Best Furniture not found',
-                'data' => null
-            ], 404);
+            return ApiResponseHelper::error('Perusahaan Best Furniture tidak ditemukan', null, 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang Best Furniture',
-            'data' => $perusahaan->cabangs
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang Best Furniture', $perusahaan->cabangs);
     }
 
     /**
@@ -139,18 +113,10 @@ class PerusahaanController extends Controller {
             ->first();
 
         if (!$perusahaan) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Perusahaan Men Cargo not found',
-                'data' => null
-            ], 404);
+            return ApiResponseHelper::error('Perusahaan Men Cargo tidak ditemukan', null, 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang Men Cargo',
-            'data' => $perusahaan->cabangs
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang Men Cargo', $perusahaan->cabangs);
     }
 
     /**
@@ -166,18 +132,10 @@ class PerusahaanController extends Controller {
             ->first();
 
         if (!$perusahaan) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Perusahaan Mabes not found',
-                'data' => null
-            ], 404);
+            return ApiResponseHelper::error('Perusahaan Mabes tidak ditemukan', null, 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang Mabes',
-            'data' => $perusahaan->cabangs
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang Mabes', $perusahaan->cabangs);
     }
 
     /**
@@ -193,17 +151,9 @@ class PerusahaanController extends Controller {
             ->first();
 
         if (!$perusahaan) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Perusahaan SAuto8 not found',
-                'data' => null
-            ], 404);
+            return ApiResponseHelper::error('Perusahaan SAuto8 tidak ditemukan', null, 404);
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang SAuto8',
-            'data' => $perusahaan->cabangs
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang SAuto8', $perusahaan->cabangs);
     }
 }

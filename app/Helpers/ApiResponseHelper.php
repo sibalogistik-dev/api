@@ -11,7 +11,7 @@ class ApiResponseHelper {
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success($data = null, $message = 'Success', $code = 200) {
+    public static function success($message = 'Success', $data = null, $code = 200) {
         return response()->json([
             'status'  => true,
             'message' => $message,
@@ -27,7 +27,7 @@ class ApiResponseHelper {
      * @param mixed $errors
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error($message = 'Error', $code = 400, $errors = null) {
+    public static function error($message = 'Error', $errors = null, $code = 400) {
         return response()->json([
             'status'  => false,
             'message' => $message,

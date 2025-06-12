@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Models\Cabang;
 use Illuminate\Http\Request;
 
@@ -14,11 +15,7 @@ class CabangController extends Controller {
     public function index() {
         $cabang = Cabang::with('kota', 'kota.province')
             ->get();
-        return response()->json([
-            'status' => true,
-            'message' => 'List of Cabang',
-            'data' => $cabang
-        ], 200);
+        return ApiResponseHelper::success('Daftar Cabang', $cabang);
     }
 
     /**
