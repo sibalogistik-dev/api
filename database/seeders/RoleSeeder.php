@@ -7,11 +7,13 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RoleSeeder extends Seeder {
+class RoleSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      */
-    public function run(): void {
+    public function run(): void
+    {
         $permissions = Permission::all()->pluck('name')->toArray();
         $roles = [
             'administrator',
@@ -33,6 +35,9 @@ class RoleSeeder extends Seeder {
             'it-manager',
             'it-admin',
             'it-staff',
+            'hr-manager',
+            'hr-admin',
+            'hr-staff',
             'customer-service-manager',
             'customer-service-admin',
             'customer-service-staff',

@@ -94,20 +94,30 @@
                 @foreach ($publicEndpoints as $section => $endpoints)
                     <li class="font-bold text-base md:text-lg text-gray-700 pt-3 md:pt-4">{{ $section }}</li>
                     @foreach ($endpoints as $endpoint)
-                        <li class="border-b border-gray-100 pb-3 transition-all hover:bg-gray-50 rounded-md p-2">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <div class="flex items-center gap-2 flex-wrap">
+                        <li class="border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-all">
+                            <div class="flex flex-col space-y-3">
+                                <div class="flex items-center gap-3">
                                     <span
-                                        class="px-2 py-1 {{ $colors[strtolower($endpoint['method'])] }} text-white text-xs md:text-sm rounded">
+                                        class="px-3 py-1 {{ $colors[strtolower($endpoint['method'])] }} text-white text-sm font-medium rounded">
                                         {{ $endpoint['method'] }}
                                     </span>
-                                    <a href="{{ route('home') . $endpoint['example'] }}" target="_blank">
-                                        <code
-                                            class="text-xs md:text-sm break-all sm:break-normal">{{ $endpoint['path'] }}</code>
+                                    <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                                        {{ $endpoint['path'] }}
+                                    </code>
+                                </div>
+                                <div class="text-gray-600 font-medium">
+                                    {{ $endpoint['description'] }}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm text-gray-500">Example:</span>
+                                    <a href="{{ route('home') . $endpoint['example'] }}" target="_blank"
+                                        class="text-blue-600 hover:text-blue-800">
+                                        <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                                            {{ $endpoint['example'] }}
+                                        </code>
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-gray-600 text-xs md:text-sm mt-2">{{ $endpoint['description'] }}</div>
                         </li>
                     @endforeach
                 @endforeach
