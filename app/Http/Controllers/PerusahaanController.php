@@ -75,32 +75,37 @@ class PerusahaanController extends Controller
      * @param  String  $codename
      * @return \Illuminate\Http\JsonResponse
      */
-    public function cabangByCodename($codename)
+    public function cabangByCodename($codename, Request $request)
     {
-        if ($codename === 'semua') {
-            $cabangs = Cabang::with(['kota.province', 'perusahaan'])
-                ->orderBy('perusahaan_id', 'asc')
-                ->paginate(5);
+        $query = Cabang::with(['kota.province', 'perusahaan']);
+        $keyword = $request->input('q');
 
-            return ApiResponseHelper::success(
-                'Daftar Semua Cabang Perusahaan',
-                $cabangs
-            );
+        if ($codename !== 'semua') {
+            $perusahaan = Perusahaan::where('codename', $codename)->first();
+
+            if (!$perusahaan) {
+                return ApiResponseHelper::error("Perusahaan {$codename} tidak ditemukan", null, 404);
+            }
+
+            $query->where('perusahaan_id', $perusahaan->id);
         }
 
-        $perusahaan = Perusahaan::where('codename', $codename)->first();
-
-        if (!$perusahaan) {
-            return ApiResponseHelper::error("Perusahaan {$codename} tidak ditemukan", null, 404);
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('nama', 'like', '%' . $keyword . '%')
+                    ->orWhere('alamat', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('kota', function ($kotaQuery) use ($keyword) {
+                        $kotaQuery->where('name', 'like', '%' . $keyword . '%');
+                    });
+            });
         }
 
-        $cabangs = Cabang::with(['kota.province', 'perusahaan'])
-            ->where('perusahaan_id', $perusahaan->id)
-            ->paginate(5);
+        $perPage = 5;
+        $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
+        $title = $codename === 'semua'
+            ? 'Daftar Semua Cabang Perusahaan'
+            : "Daftar Cabang {$perusahaan->nama}";
 
-        return ApiResponseHelper::success(
-            "Daftar Cabang {$perusahaan->nama}",
-            $cabangs
-        );
+        return ApiResponseHelper::success($title, $cabangs);
     }
 }
