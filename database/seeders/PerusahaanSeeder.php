@@ -6,29 +6,23 @@ use App\Models\Perusahaan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PerusahaanSeeder extends Seeder {
+class PerusahaanSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      */
-    public function run(): void {
-        Perusahaan::create([
-            'nama' => 'SIBA Cargo',
-        ]);
+    public function run(): void
+    {
+        $data = [
+            ['nama' => 'SIBA Cargo', 'codename' => 'siba'],
+            ['nama' => 'Best Furniture', 'codename' => 'best'],
+            ['nama' => 'Men Cargo', 'codename' => 'mencargo'],
+            ['nama' => 'Mabes', 'codename' => 'mabes'],
+            ['nama' => 'SAuto8', 'codename' => 'sauto8'],
+        ];
 
-        Perusahaan::create([
-            'nama' => 'Best Furniture',
-        ]);
-
-        Perusahaan::create([
-            'nama' => 'Men Cargo',
-        ]);
-
-        Perusahaan::create([
-            'nama' => 'Mabes',
-        ]);
-
-        Perusahaan::create([
-            'nama' => 'SAuto8',
-        ]);
+        foreach ($data as $item) {
+            Perusahaan::create($item);
+        }
     }
 }
