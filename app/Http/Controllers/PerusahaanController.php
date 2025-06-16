@@ -100,7 +100,7 @@ class PerusahaanController extends Controller
             });
         }
 
-        $perPage = 5;
+        $perPage = $request->perPage ?? 5;
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
         $title = $codename === 'semua'
             ? 'Daftar Semua Cabang Perusahaan'
