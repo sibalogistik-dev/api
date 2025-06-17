@@ -17,15 +17,16 @@ class PerusahaanController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('search')) {
-            $search = $request->search;
-            $perusahaan = Perusahaan::where('nama', 'like', '%' . $search . '%')
-                ->with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
-                ->get();
-        } else {
-            $perusahaan = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
-                ->get();
+        $keyword = $request->input('q');
+        $perPage = $request->input('perPage', 5);
+
+        $query = Perusahaan::query();
+
+        if ($keyword) {
+            $query->where('nama', 'LIKE', '%' . $keyword . '%');
         }
+
+        $perusahaan = $query->orderBy('id', 'ASC')->paginate($perPage);
         return ApiResponseHelper::success('Daftar Perusahaan', $perusahaan);
     }
 

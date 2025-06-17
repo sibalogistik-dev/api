@@ -51,7 +51,4 @@ Route::middleware('api')->group(function () {
     Route::get('/district/get/{code}/village', [IndonesiaController::class, 'getDistrictVillage']);
     // Village
     Route::get('/village/get/{code}', [IndonesiaController::class, 'getVillage']);
-    // Companies & Branches
-    Route::get('/business/all', [PerusahaanController::class, 'index']);
-    Route::get('/business/{codename}/cabang', [PerusahaanController::class, 'cabangByCodename']);
 });

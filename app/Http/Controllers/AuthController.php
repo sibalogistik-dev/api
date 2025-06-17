@@ -60,10 +60,6 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = $request->user()->load(['roles.permissions', 'permissions']);
-
-        if ($user) {
-            return ApiResponseHelper::success('Data profil pengguna berhasil diambil', $user);
-        }
-        return ApiResponseHelper::error('Pengguna tidak diautentikasi', null, 401);
+        return ApiResponseHelper::success('Data profil pengguna berhasil diambil', $user);
     }
 }

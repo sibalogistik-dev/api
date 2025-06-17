@@ -45,7 +45,7 @@ class CabangController extends Controller
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
 
         $title = $codename === 'semua'
-            ? 'Daftar Semua Cabang Perusahaan'
+            ? 'Daftar Semua Cabang Dari Semua Perusahaan'
             : "Daftar Cabang {$perusahaan->nama}";
 
         return ApiResponseHelper::success($title, $cabangs);
