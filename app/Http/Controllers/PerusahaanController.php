@@ -19,14 +19,14 @@ class PerusahaanController extends Controller
     {
         $keyword = $request->input('q');
         $perPage = $request->input('perPage', 5);
-
         $query = Perusahaan::query();
-
         if ($keyword) {
             $query->where('nama', 'LIKE', '%' . $keyword . '%');
         }
-
-        $perusahaan = $query->orderBy('id', 'ASC')->paginate($perPage);
+        $perusahaan = $query
+            ->withCount('cabangs')
+            ->orderBy('id', 'ASC')
+            ->paginate($perPage);
         return ApiResponseHelper::success('Daftar Perusahaan', $perusahaan);
     }
 

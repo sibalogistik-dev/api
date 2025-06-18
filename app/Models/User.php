@@ -9,7 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     protected $fillable = [
@@ -17,6 +18,7 @@ class User extends Authenticatable {
         'email',
         'username',
         'password',
+        'user_type',
     ];
 
     protected $hidden = [
@@ -24,10 +26,25 @@ class User extends Authenticatable {
         'remember_token',
     ];
 
-    protected function casts(): array {
+    protected function casts(): array
+    {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function karyawan()
+    {
+        return $this->hasOne(Karyawan::class);
+    }
+
+    public function getKaryawanIfEmployeeAttribute()
+    {
+        if ($this->user_type !== 'employee') {
+            return null;
+        }
+
+        return $this->relationLoaded('karyawan') ? $this->karyawan : $this->karyawan()->first();
     }
 }

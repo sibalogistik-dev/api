@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 abstract class Controller
 {
     public $allowedDevices = [
-        'hrd',
-        'finance',
-        'absensi',
-        'logistik',
-        'mobile',
+        'hrd app',
+        'finance app',
+        'absensi app',
+        'logistik app',
+        'mobile app',
     ];
 }

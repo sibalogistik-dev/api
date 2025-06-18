@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IndonesiaController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\KotaKabController;
@@ -28,6 +29,9 @@ Route::middleware('api')->group(function () {
             // Manages CRUD operations for villages/urban communities
             Route::resource('kelurahan', KelurahanController::class)
                 ->except(['create', 'edit']);
+            // Manages CRUD operations for employees
+            Route::resource('karyawan', KaryawanController::class)
+                ->except(['create', 'edit']);
             // Manages CRUD operations for companies
             Route::resource('perusahaan', PerusahaanController::class)
                 ->except(['create', 'edit']);
@@ -35,8 +39,10 @@ Route::middleware('api')->group(function () {
             Route::resource('cabang', CabangController::class)
                 ->except(['create', 'edit']);
         });
-    // Login
+    // Login General
     Route::post('/login', [AuthController::class, 'login']);
+    // Login HRD App
+    Route::post('/login/hrd/app', [AuthController::class, 'loginHRDApp']);
     // Direct to unauthenticated user
     Route::get('/login', [AuthController::class, 'loginError'])->name('login');
     //Province

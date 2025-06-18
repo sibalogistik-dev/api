@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,26 @@ class KaryawanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $keyword = $request->input('q');
+        $perPage = $request->input('perPage', 5);
+
+        $query = Karyawan::query();
+
+        if ($keyword) {
+            $query->where('nama', 'LIKE', '%' . $keyword . '%')
+                ->orWhereHas('jabatan', function ($q) use ($keyword) {
+                    $q->where('nama', 'LIKE', '%' . $keyword . '%');
+                })
+                ->orWhereHas('cabang', function ($q) use ($keyword) {
+                    $q->where('nama', 'LIKE', '%' . $keyword . '%');
+                })
+            ;
+        }
+
+        $karyawan = $query->with('cabang', 'jabatan')->orderBy('id', 'ASC')->paginate($perPage);
+        return ApiResponseHelper::success('Daftar Karyawan', $karyawan);
     }
 
     /**

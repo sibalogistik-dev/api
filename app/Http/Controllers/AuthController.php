@@ -19,7 +19,7 @@ class AuthController extends Controller
             'device_name' => ['required', 'string', Rule::in($this->allowedDevices)],
         ]);
 
-        if (! in_array($request->device_name, $this->allowedDevices)) {
+        if (!in_array($request->device_name, $this->allowedDevices)) {
             return ApiResponseHelper::error(
                 'Nama perangkat tidak valid.',
                 null,
@@ -29,24 +29,62 @@ class AuthController extends Controller
 
         $login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         if (Auth::attempt([$login_type => $request->login, 'password' => $request->password])) {
-            $user = Auth::user();
+            $user = Auth::user()->load([
+                'roles.permissions',
+                'permissions',
+            ]);
             $token = $user->createToken($request->device_name)->plainTextToken;
+            $data = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ];
+            $role = $user->roles->first()?->name ?? 'unknown';
+            $permissions = $user->getAllPermissions()->pluck('name');
             return ApiResponseHelper::success('Login Berhasil!', [
                 'token' => $token,
-                'user' => $user,
+                'user' => $data,
+                'role' => $role,
+                'permissions' => $permissions,
             ]);
-            // return response()->json([
-            //     'message' => 'Login berhasil',
-            //     'token' => $token,
-            //     'user' => $user
-            // ], 200);
         }
 
         return ApiResponseHelper::error('Username atau password salah', null, 401);
-        // return response()->json([
-        //     'message' => 'Username atau password salah'
-        // ], 401);
     }
+
+    public function loginHRDApp(Request $request)
+    {
+        $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+            'device_name' => 'required|string|in:hrd app',
+        ]);
+        $login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        if (Auth::attempt([$login_type => $request->login, 'password' => $request->password])) {
+            $user = Auth::user()->load(['roles.permissions', 'permissions']);
+            if (!$user->hasPermissionTo('hrd app')) {
+                Auth::logout();
+                return ApiResponseHelper::error('Anda tidak memiliki akses ke aplikasi HRD.', null, 403);
+            }
+            $token = $user->createToken($request->device_name)->plainTextToken;
+            $data = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ];
+            $role = $user->roles->first()?->name ?? 'unknown';
+            $permissions = $user->getAllPermissions()->pluck('name');
+            return ApiResponseHelper::success('Login Berhasil!', [
+                'token' => $token,
+                'user' => $data,
+                'role' => $role,
+                'permissions' => $permissions,
+            ]);
+        }
+
+        return ApiResponseHelper::error('Username atau password salah', null, 401);
+    }
+
 
     public function loginError()
     {
@@ -59,7 +97,10 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = $request->user()->load(['roles.permissions', 'permissions']);
+        $user = $request->user()->load([
+            'roles.permissions',
+            'permissions',
+        ]);
         return ApiResponseHelper::success('Data profil pengguna berhasil diambil', $user);
     }
 }
