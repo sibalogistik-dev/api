@@ -14,9 +14,14 @@ class KaryawanController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->input('q');
+        $cabang = $request->input('cabang');
         $perPage = $request->input('perPage', 5);
 
         $query = Karyawan::query();
+
+        if ($cabang != 'semua') {
+            $query->where('cabang_id', $cabang);
+        }
 
         if ($keyword) {
             $query->where('nama', 'LIKE', '%' . $keyword . '%')
@@ -28,6 +33,7 @@ class KaryawanController extends Controller
                 })
             ;
         }
+
 
         $karyawan = $query->with('cabang', 'jabatan')->orderBy('id', 'ASC')->paginate($perPage);
         return ApiResponseHelper::success('Daftar Karyawan', $karyawan);

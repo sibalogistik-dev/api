@@ -13,12 +13,12 @@ return new class extends Migration {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
             $table->string('nama')->comment('Nama karyawan');
-            $table->integer('user_id')->unsigned()->comment('ID user login');
-            $table->integer('cabang_id')->unsigned()->comment('ID cabang tempat karyawan bekerja');
-            $table->integer('jabatan_id')->comment('ID Jabatan karyawan');
-            $table->string('nik')->unique()->comment('Nomor Induk Karyawan');
-            $table->string('no_telepon')->nullable()->comment('Nomor telepon karyawan');
-            $table->string('alamat')->nullable()->comment('Alamat karyawan');
+            $table->enum('jenis_kelamin', ['laki-laki', 'perempuan'])->comment('Jenis Kelamin karyawan');
+            $table->integer('agama_id')->comment('Agama karyawan');
+            $table->integer('tempat_lahir_id')->comment('Tempat Lahir karyawan');
+            $table->enum('golongan_darah', ['a', 'b', 'ab', 'o', 'none'])->comment('Golongan Darah karyawan');
+            $table->integer('pendidikan_id')->comment('Pendidikan karyawan');
+            $table->string('alamat')->comment('Alamat karyawan');
             $table->timestamps();
         });
     }
