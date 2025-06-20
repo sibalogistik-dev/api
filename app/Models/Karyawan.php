@@ -3,26 +3,56 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravolt\Indonesia\Models\City;
 
 class Karyawan extends Model
 {
     protected $fillable = [
-        'nama',
         'user_id',
-        'cabang_id',
-        'jabatan_id',
-        'nik',
-        'no_telepon',
+        'nama',
+        'jenis_kelamin',
+        'agama_id',
+        'no_telp',
+        'tempat_lahir_id',
+        'tanggal_lahir',
         'alamat',
+        'golongan_darah',
+        'pendidikan_id',
+        'status_kawin',
     ];
 
-    public function jabatan()
+    public function user()
     {
-        return $this->belongsTo(Jabatan::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function cabang()
+    public function pendidikan()
     {
-        return $this->belongsTo(Cabang::class);
+        return $this->belongsTo(Pendidikan::class);
+    }
+
+    public function agama()
+    {
+        return $this->belongsTo(Agama::class);
+    }
+
+    public function tempat_lahir()
+    {
+        return $this->belongsTo(City::class, 'tempat_lahir_id', 'code');
+    }
+
+    public function detail_diri()
+    {
+        return $this->hasOne(DetailDiri::class);
+    }
+
+    public function detail_karyawan()
+    {
+        return $this->hasOne(DetailKaryawan::class);
+    }
+
+    public function detail_gaji()
+    {
+        return $this->hasOne(DetailGaji::class);
     }
 }

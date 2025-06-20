@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('detail_diris', function (Blueprint $table) {
             $table->id();
+            $table->integer('karyawan_id');
+            $table->string('pas_foto');
+            $table->string('ktp_foto');
+            $table->string('sim_foto')->nullable();
             $table->timestamps();
         });
     }

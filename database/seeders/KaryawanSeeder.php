@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Karyawan;
-use App\Models\User;
+use App\Models\{DetailDiri, DetailKaryawan, Karyawan, User};
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,22 +15,72 @@ class KaryawanSeeder extends Seeder
     {
         $data = [
             [
-                'nama' => 'Mohammad Farid Hasymi',
-                'cabang_id' => 1,
                 'user_id' => null,
-                'jabatan_id' => 3,
-                'nik' => '1997081700073',
-                'no_telepon' => '082283784873',
+                'nama' => 'Mohammad Farid Hasymi',
+                'jenis_kelamin' => 'laki-laki',
+                'agama_id' => 1,
+                'no_telp' => '082283784873',
+                'tempat_lahir_id' => 2172,
+                'tanggal_lahir' => '1997-08-17',
                 'alamat' => 'Jl. Kota Piring',
+                'golongan_darah' => 'ab',
+                'pendidikan_id' => 5,
+                'status_kawin' => 'belum kawin',
+                'detail_diri' => [
+                    'karyawan_id' => null,
+                    'pas_foto' => '-',
+                    'ktp_foto' => '-',
+                    'sim_foto' => '-',
+                ],
+                'detail_karyawan' => [
+                    'karyawan_id' => null,
+                    'nik' => '1997081700073',
+                    'cabang_id' => 1,
+                    'jabatan_id' => 3,
+                    'daerah_tinggal_id' => 2172,
+                    'tanggal_masuk' => date('Y-m-d'),
+                ],
+                'detail_gaji' => [
+                    'karyawan_id' => null,
+                    'no_rekening' => '017401106946503'
+                ],
+                'role' => [
+                    'name' => 'it-staff'
+                ]
             ],
             [
-                'nama' => 'Toby Fiski',
-                'cabang_id' => 2,
                 'user_id' => null,
-                'jabatan_id' => 39,
-                'nik' => '199905120010',
-                'no_telepon' => '082387301492',
+                'nama' => 'Toby Fiski',
+                'jenis_kelamin' => 'laki-laki',
+                'agama_id' => 1,
+                'no_telp' => '082387301492',
+                'tempat_lahir_id' => 2172,
+                'tanggal_lahir' => '1999-05-12',
                 'alamat' => 'JL. Karya Perum. Griya Pinang Asri (Tanjungpinang)',
+                'golongan_darah' => 'a',
+                'pendidikan_id' => 4,
+                'status_kawin' => 'kawin',
+                'detail_diri' => [
+                    'karyawan_id' => null,
+                    'pas_foto' => '-',
+                    'ktp_foto' => '-',
+                    'sim_foto' => '-',
+                ],
+                'detail_karyawan' => [
+                    'karyawan_id' => null,
+                    'nik' => '199905120010',
+                    'cabang_id' => 2,
+                    'jabatan_id' => 39,
+                    'daerah_tinggal_id' => 2172,
+                    'tanggal_masuk' => date('Y-m-d'),
+                ],
+                'detail_gaji' => [
+                    'karyawan_id' => null,
+                    'no_rekening' => '017401089349503'
+                ],
+                'role' => [
+                    'name' => 'operasional-staff'
+                ]
             ],
         ];
 
@@ -44,9 +93,32 @@ class KaryawanSeeder extends Seeder
                 'email_verified_at' => now(),
                 'user_type' => 'employee',
             ]);
-            $user->assignRole('it-staff');
+            $user->givePermissionTo('absensi app');
+            $user->assignRole($data[$i]['role']['name']);
             $data[$i]['user_id'] = $user->id;
-            Karyawan::create($data[$i]);
+            $karyawan = Karyawan::create([
+                'user_id' => $user->id,
+                'nama' => $data[$i]['nama'],
+                'jenis_kelamin' => $data[$i]['jenis_kelamin'],
+                'agama_id' => $data[$i]['agama_id'],
+                'no_telp' => $data[$i]['no_telp'],
+                'tempat_lahir_id' => $data[$i]['tempat_lahir_id'],
+                'tanggal_lahir' => $data[$i]['tanggal_lahir'],
+                'alamat' => $data[$i]['alamat'],
+                'golongan_darah' => $data[$i]['golongan_darah'],
+                'pendidikan_id' => $data[$i]['pendidikan_id'],
+                'status_kawin' => $data[$i]['status_kawin'],
+            ]);
+            if ($karyawan) {
+                $idkry = $karyawan->id;
+                // detail diri
+                $data[$i]['detail_diri']['karyawan_id'] = $idkry;
+                DetailDiri::create($data[$i]['detail_diri']);
+                // detail karyawan
+                $data[$i]['detail_karyawan']['karyawan_id'] = $idkry;
+                DetailKaryawan::create($data[$i]['detail_karyawan']);
+                // detail gaji
+            }
         }
     }
 }

@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('detail_karyawans', function (Blueprint $table) {
             $table->id();
+            $table->integer('karyawan_id');
+            $table->string('nik');
+            $table->integer('jabatan_id');
+            $table->integer('cabang_id');
+            $table->integer('daerah_tinggal_id');
+            $table->date('tanggal_masuk');
+            $table->date('tanggal_keluar')->nullable();
             $table->timestamps();
         });
     }

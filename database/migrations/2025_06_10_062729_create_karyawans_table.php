@@ -12,13 +12,17 @@ return new class extends Migration {
     {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama')->comment('Nama karyawan');
-            $table->enum('jenis_kelamin', ['laki-laki', 'perempuan'])->comment('Jenis Kelamin karyawan');
-            $table->integer('agama_id')->comment('Agama karyawan');
-            $table->integer('tempat_lahir_id')->comment('Tempat Lahir karyawan');
-            $table->enum('golongan_darah', ['a', 'b', 'ab', 'o', 'none'])->comment('Golongan Darah karyawan');
-            $table->integer('pendidikan_id')->comment('Pendidikan karyawan');
-            $table->string('alamat')->comment('Alamat karyawan');
+            $table->integer('user_id');
+            $table->string('nama');
+            $table->enum('jenis_kelamin', ['laki-laki', 'perempuan']);
+            $table->integer('agama_id');
+            $table->string('no_telp');
+            $table->integer('tempat_lahir_id');
+            $table->date('tanggal_lahir');
+            $table->string('alamat');
+            $table->enum('golongan_darah', ['a', 'b', 'ab', 'o', 'none'])->default('none');
+            $table->integer('pendidikan_id');
+            $table->enum('status_kawin', ['belum kawin', 'kawin', 'janda', 'duda']);
             $table->timestamps();
         });
     }

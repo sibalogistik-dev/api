@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Models\Agama;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,22 @@ class AgamaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $keyword = $request->input('q');
+        $perPage = $request->input('perPage', 20);
+
+        $query = Agama::query();
+
+        if ($keyword) {
+            $query->where('nama', 'LIKE', '%' . $keyword . '%');
+        }
+
+        $cabangs = $query->orderBy('id', 'asc')->paginate($perPage);
+
+        $title = 'Daftar Agama';
+
+        return ApiResponseHelper::success($title, $cabangs);
     }
 
     /**

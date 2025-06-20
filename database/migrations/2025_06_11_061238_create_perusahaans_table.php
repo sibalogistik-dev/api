@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('perusahaans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama')->unique()->comment('Nama perusahaan');
-            $table->string('codename')->unique()->comment('Codename perusahaan');
+            $table->string('nama')->unique();
+            $table->string('codename')->unique();
             $table->timestamps();
         });
     }

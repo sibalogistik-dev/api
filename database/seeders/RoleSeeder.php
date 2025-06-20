@@ -44,13 +44,10 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $roleName) {
-            $role = Role::create([
+            Role::create([
                 'name' => $roleName,
                 'guard_name' => 'web',
             ]);
-            if ($roleName === 'administrator') {
-                $role->syncPermissions($permissions);
-            }
         }
     }
 }

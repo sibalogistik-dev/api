@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IndonesiaController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\KotaKabController;
+use App\Http\Controllers\PendidikanController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\ProvinsiController;
 use Illuminate\Http\Request;
@@ -15,27 +17,25 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('api')->group(function () {
     Route::middleware('auth:sanctum')
         ->group(function () {
-            // User Profile
-            Route::get('user', [AuthController::class, 'user']);
-            // Manages CRUD operations for provinces
+            // data dasar
+            Route::resource('pendidikan', PendidikanController::class)
+                ->except(['create', 'edit']);
+            Route::resource('agama', AgamaController::class)
+                ->except(['create', 'edit']);
             Route::resource('provinsi', ProvinsiController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for cities/regencies
             Route::resource('kotakab', KotaKabController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for districts
             Route::resource('kecamatan', KecamatanController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for villages/urban communities
             Route::resource('kelurahan', KelurahanController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for employees
+
+            Route::get('user', [AuthController::class, 'user']);
             Route::resource('karyawan', KaryawanController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for companies
             Route::resource('perusahaan', PerusahaanController::class)
                 ->except(['create', 'edit']);
-            // Manages CRUD operations for company branches
             Route::resource('cabang', CabangController::class)
                 ->except(['create', 'edit']);
         });

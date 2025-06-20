@@ -20,22 +20,35 @@ class KaryawanController extends Controller
         $query = Karyawan::query();
 
         if ($cabang != 'semua') {
-            $query->where('cabang_id', $cabang);
+            $query
+                ->whereHas('detail_karyawan', function ($q) use ($cabang) {
+                    $q->where('cabang_id',  $cabang);
+                });
         }
 
         if ($keyword) {
-            $query->where('nama', 'LIKE', '%' . $keyword . '%')
-                ->orWhereHas('jabatan', function ($q) use ($keyword) {
+            $query
+                ->where('nama', 'LIKE', '%' . $keyword . '%')
+                ->orWhereHas('detail_karyawan.jabatan', function ($q) use ($keyword) {
                     $q->where('nama', 'LIKE', '%' . $keyword . '%');
                 })
-                ->orWhereHas('cabang', function ($q) use ($keyword) {
+                ->orWhereHas('detail_karyawan.cabang', function ($q) use ($keyword) {
                     $q->where('nama', 'LIKE', '%' . $keyword . '%');
-                })
-            ;
+                });
         }
-
-
-        $karyawan = $query->with('cabang', 'jabatan')->orderBy('id', 'ASC')->paginate($perPage);
+        $karyawan = $query
+            ->with(
+                'agama',
+                'pendidikan',
+                'tempat_lahir',
+                'detail_diri',
+                'detail_karyawan',
+                'detail_karyawan.jabatan',
+                'detail_karyawan.cabang',
+                // 'detail_gaji',
+            )
+            ->orderBy('id', 'ASC')
+            ->paginate($perPage);
         return ApiResponseHelper::success('Daftar Karyawan', $karyawan);
     }
 

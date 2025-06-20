@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class PendidikanController extends Controller
      */
     public function index()
     {
-        //
+        $pendidikan = Pendidikan::orderBy('id', 'ASC')->get();
+        return ApiResponseHelper::success('Daftar Pendidikan', $pendidikan);
     }
 
     /**
