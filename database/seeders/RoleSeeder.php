@@ -14,40 +14,6 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = Permission::all()->pluck('name')->toArray();
-        $roles = [
-            'administrator',
-            'direktur-bussiness-development',
-            'direktur-operasional-legal',
-            'direktur-koordinator-cabang',
-            'finance-manager',
-            'finance-admin',
-            'finance-staff',
-            'operasional-manager',
-            'operasional-admin',
-            'operasional-staff',
-            'marketing-manager',
-            'marketing-admin',
-            'marketing-staff',
-            'digital-marketing-manager',
-            'digital-marketing-admin',
-            'digital-marketing-staff',
-            'it-manager',
-            'it-admin',
-            'it-staff',
-            'hr-manager',
-            'hr-admin',
-            'hr-staff',
-            'customer-service-manager',
-            'customer-service-admin',
-            'customer-service-staff',
-        ];
-
-        foreach ($roles as $roleName) {
-            Role::create([
-                'name' => $roleName,
-                'guard_name' => 'web',
-            ]);
-        }
+        // 
     }
 }

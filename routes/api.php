@@ -4,6 +4,7 @@ use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IndonesiaController;
+use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
@@ -21,6 +22,8 @@ Route::middleware('api')->group(function () {
             Route::resource('pendidikan', PendidikanController::class)
                 ->except(['create', 'edit']);
             Route::resource('agama', AgamaController::class)
+                ->except(['create', 'edit']);
+            Route::resource('jabatan', JabatanController::class)
                 ->except(['create', 'edit']);
             Route::resource('provinsi', ProvinsiController::class)
                 ->except(['create', 'edit']);

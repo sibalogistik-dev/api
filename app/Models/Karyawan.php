@@ -10,15 +10,12 @@ class Karyawan extends Model
     protected $fillable = [
         'user_id',
         'nama',
-        'jenis_kelamin',
-        'agama_id',
-        'no_telp',
-        'tempat_lahir_id',
-        'tanggal_lahir',
-        'alamat',
-        'golongan_darah',
-        'pendidikan_id',
-        'status_kawin',
+        'npk',
+        'jabatan_id',
+        'cabang_id',
+        'tanggal_masuk',
+        'tanggal_keluar',
+        'kontrak',
     ];
 
     public function user()
@@ -26,29 +23,19 @@ class Karyawan extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function pendidikan()
+    public function jabatan()
     {
-        return $this->belongsTo(Pendidikan::class);
+        return $this->belongsTo(Jabatan::class);
     }
 
-    public function agama()
+    public function cabang()
     {
-        return $this->belongsTo(Agama::class);
-    }
-
-    public function tempat_lahir()
-    {
-        return $this->belongsTo(City::class, 'tempat_lahir_id', 'code');
+        return $this->belongsTo(Cabang::class);
     }
 
     public function detail_diri()
     {
         return $this->hasOne(DetailDiri::class);
-    }
-
-    public function detail_karyawan()
-    {
-        return $this->hasOne(DetailKaryawan::class);
     }
 
     public function detail_gaji()

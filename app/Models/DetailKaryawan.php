@@ -12,7 +12,6 @@ class DetailKaryawan extends Model
         'nik',
         'jabatan_id',
         'cabang_id',
-        'daerah_tinggal_id',
         'tanggal_masuk',
         'tanggal_keluar',
     ];

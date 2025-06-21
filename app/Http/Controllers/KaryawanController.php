@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Models\Karyawan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
 {
@@ -19,33 +21,27 @@ class KaryawanController extends Controller
 
         $query = Karyawan::query();
 
-        if ($cabang != 'semua') {
-            $query
-                ->whereHas('detail_karyawan', function ($q) use ($cabang) {
-                    $q->where('cabang_id',  $cabang);
-                });
+        if ($cabang !== 'semua') {
+            $query->where('cabang_id',  $cabang);
         }
 
         if ($keyword) {
             $query
                 ->where('nama', 'LIKE', '%' . $keyword . '%')
-                ->orWhereHas('detail_karyawan.jabatan', function ($q) use ($keyword) {
-                    $q->where('nama', 'LIKE', '%' . $keyword . '%');
-                })
-                ->orWhereHas('detail_karyawan.cabang', function ($q) use ($keyword) {
+                ->orWhereHas('jabatan', function ($q) use ($keyword) {
                     $q->where('nama', 'LIKE', '%' . $keyword . '%');
                 });
         }
         $karyawan = $query
             ->with(
-                'agama',
-                'pendidikan',
-                'tempat_lahir',
+                'jabatan',
+                'cabang',
                 'detail_diri',
-                'detail_karyawan',
-                'detail_karyawan.jabatan',
-                'detail_karyawan.cabang',
-                // 'detail_gaji',
+                'detail_diri.agama',
+                'detail_diri.tempat_lahir',
+                'detail_diri.pendidikan',
+                'detail_diri.daerah_tinggal',
+                'detail_gaji',
             )
             ->orderBy('id', 'ASC')
             ->paginate($perPage);
@@ -65,7 +61,47 @@ class KaryawanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = Validator::make($request->all(), [
+            // Akun
+            'username'          => ['required', 'string', 'max:255', 'unique:users,username'],
+            'email'             => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password'          => ['required', 'string', 'min:8'],
+
+            // Data Pegawai
+            'nama'              => ['required', 'string', 'max:255'],
+            'npk'               => ['required', 'string', 'max:50', 'unique:karyawan,npk'],
+            'jabatan_id'        => ['required', 'integer', 'exists:jabatans,id'],
+            'cabang_id'         => ['required', 'integer', 'exists:cabangs,id'],
+            'tanggal_masuk'     => ['required', 'date'],
+            // Data Diri
+            'jenis_kelamin'     => ['required', 'in:laki-laki,perempuan'],
+            'agama_id'          => ['required', 'integer', 'exists:agamas,id'],
+            'no_telp'           => ['required', 'string', 'max:20'],
+            'tempat_lahir_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'tanggal_lahir'     => ['required', 'date'],
+            'alamat'            => ['required', 'string'],
+            'golongan_darah'    => ['nullable', 'in:a,b,ab,o,none'],
+            'pendidikan_id'     => ['required', 'integer', 'exists:pendidikans,id'],
+            'status_kawin'      => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'daerah_tinggal_id' => ['required', 'integer', 'exists:indonesia_cities,code'],
+            // gambar
+            'pas_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'ktp_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'sim_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            // Gaji
+            'status_gaji'       => ['required', 'in:harian,bulanan'],
+            'gaji_harian'       => ['nullable', 'numeric', 'min:0'],
+            'gaji_bulanan'      => ['nullable', 'numeric', 'min:0'],
+            'uang_makan'        => ['nullable', 'numeric', 'min:0'],
+            'bonus'             => ['nullable', 'numeric', 'min:0'],
+            'tunjangan'         => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        if (!$validate) {
+            return ApiResponseHelper::error('Validasi data gagal', $validate->errors(), 422);
+        } else {
+            return ApiResponseHelper::success('sukses', $request->all());
+        }
     }
 
     /**

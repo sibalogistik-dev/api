@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('detail_gajis', function (Blueprint $table) {
             $table->id();
+            $table->integer('karyawan_id');
+            $table->string('no_rekening')->nullable()->default('');
             $table->enum('status_gaji', ['harian', 'bulanan']);
             $table->integer('gaji_bulanan')->nullable()->default(0);
             $table->integer('gaji_harian')->nullable()->default(0);

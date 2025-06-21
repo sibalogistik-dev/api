@@ -19,12 +19,12 @@ class CabangController extends Controller
         $codename = $request->input('codename', 'semua');
         $keyword = $request->input('q');
         $perPage = $request->input('perPage', 5);
+        $combobox = $request->input('combobox', 0);
 
         $query = Cabang::with(['kota.province', 'perusahaan']);
 
         if ($codename !== 'semua') {
             $perusahaan = Perusahaan::where('codename', $codename)->first();
-
             if (!$perusahaan) {
                 return ApiResponseHelper::error("Perusahaan dengan codename '{$codename}' tidak ditemukan", null, 404);
             }
@@ -33,13 +33,20 @@ class CabangController extends Controller
         }
 
         if ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('nama', 'like', "%{$keyword}%")
-                    ->orWhere('alamat', 'like', "%{$keyword}%")
-                    ->orWhereHas('kota', function ($qKota) use ($keyword) {
-                        $qKota->where('name', 'like', "%{$keyword}%");
-                    });
-            });
+            if ($combobox == 1) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%{$keyword}%");
+                });
+            } else {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('alamat', 'like', "%{$keyword}%")
+                        ->orWhereHas('kota', function ($qKota) use ($keyword) {
+                            $qKota->where('name', 'like', "%{$keyword}%");
+                        });
+                });
+                # code...
+            }
         }
 
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);

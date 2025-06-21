@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'user_type' => 'direction',
         ]);
-        $user->assignRole('administrator');
+        // $user->assignRole('administrator');
         $user->givePermissionTo('hrd app');
     }
 }

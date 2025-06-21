@@ -14,15 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->integer('user_id');
             $table->string('nama');
-            $table->enum('jenis_kelamin', ['laki-laki', 'perempuan']);
-            $table->integer('agama_id');
-            $table->string('no_telp');
-            $table->integer('tempat_lahir_id');
-            $table->date('tanggal_lahir');
-            $table->string('alamat');
-            $table->enum('golongan_darah', ['a', 'b', 'ab', 'o', 'none'])->default('none');
-            $table->integer('pendidikan_id');
-            $table->enum('status_kawin', ['belum kawin', 'kawin', 'janda', 'duda']);
+            $table->string('npk');
+            $table->integer('jabatan_id');
+            $table->integer('cabang_id');
+            $table->date('tanggal_masuk');
+            $table->date('tanggal_keluar')->nullable()->default(null);
+            $table->string('kontrak')->nullable()->default(null);
             $table->timestamps();
         });
     }
