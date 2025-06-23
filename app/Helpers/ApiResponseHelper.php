@@ -2,7 +2,8 @@
 
 namespace App\Helpers;
 
-class ApiResponseHelper {
+class ApiResponseHelper
+{
     /**
      * Generate a standardized success response.
      *
@@ -11,11 +12,13 @@ class ApiResponseHelper {
      * @param int $code
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success($message = 'Success', $data = null, $code = 200) {
+    public static function success($message = 'Success', $data = null, $code = 200)
+    {
         return response()->json([
-            'status'  => true,
-            'message' => $message,
-            'data'    => $data
+            'statusResp'    => true,
+            'status'        => $code,
+            'message'       => $message,
+            'data'          => $data
         ], $code);
     }
 
@@ -27,11 +30,13 @@ class ApiResponseHelper {
      * @param mixed $errors
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error($message = 'Error', $errors = null, $code = 400) {
+    public static function error($message = 'Error', $errors = null, $code = 400)
+    {
         return response()->json([
-            'status'  => false,
-            'message' => $message,
-            'errors'  => $errors
+            'statusResp'    => false,
+            'status'        => $code,
+            'message'       => $message,
+            'errors'        => $errors
         ], $code);
     }
 }

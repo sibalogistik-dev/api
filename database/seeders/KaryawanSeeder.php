@@ -17,7 +17,7 @@ class KaryawanSeeder extends Seeder
             [
                 'user_id' => null,
                 'nama' => 'Mohammad Farid Hasymi',
-                'npk' => '1997081700073',
+                'npk' => '199708170073',
                 'cabang_id' => 1,
                 'jabatan_id' => 3,
                 'daerah_tinggal_id' => 2172,

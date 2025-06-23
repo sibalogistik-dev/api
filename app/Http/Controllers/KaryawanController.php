@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Models\DetailDiri;
+use App\Models\DetailGaji;
 use App\Models\Karyawan;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
@@ -61,15 +67,14 @@ class KaryawanController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             // Akun
             'username'          => ['required', 'string', 'max:255', 'unique:users,username'],
             'email'             => ['required', 'email', 'max:255', 'unique:users,email'],
             'password'          => ['required', 'string', 'min:8'],
-
             // Data Pegawai
             'nama'              => ['required', 'string', 'max:255'],
-            'npk'               => ['required', 'string', 'max:50', 'unique:karyawan,npk'],
+            'npk'               => ['required', 'string', 'max:50', 'unique:karyawans,npk'],
             'jabatan_id'        => ['required', 'integer', 'exists:jabatans,id'],
             'cabang_id'         => ['required', 'integer', 'exists:cabangs,id'],
             'tanggal_masuk'     => ['required', 'date'],
@@ -85,22 +90,82 @@ class KaryawanController extends Controller
             'status_kawin'      => ['required', 'in:belum kawin,kawin,duda,janda'],
             'daerah_tinggal_id' => ['required', 'integer', 'exists:indonesia_cities,code'],
             // gambar
-            'pas_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'ktp_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'pas_foto'          => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'ktp_foto'          => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'sim_foto'          => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             // Gaji
             'status_gaji'       => ['required', 'in:harian,bulanan'],
-            'gaji_harian'       => ['nullable', 'numeric', 'min:0'],
-            'gaji_bulanan'      => ['nullable', 'numeric', 'min:0'],
-            'uang_makan'        => ['nullable', 'numeric', 'min:0'],
-            'bonus'             => ['nullable', 'numeric', 'min:0'],
-            'tunjangan'         => ['nullable', 'numeric', 'min:0'],
+            'gaji_harian'       => ['required', 'numeric', 'min:0'],
+            'gaji_bulanan'      => ['required', 'numeric', 'min:0'],
+            'uang_makan'        => ['required', 'numeric', 'min:0'],
+            'bonus'             => ['required', 'numeric', 'min:0'],
+            'tunjangan'         => ['required', 'numeric', 'min:0'],
         ]);
 
-        if (!$validate) {
-            return ApiResponseHelper::error('Validasi data gagal', $validate->errors(), 422);
-        } else {
-            return ApiResponseHelper::success('sukses', $request->all());
+        if ($validator->fails()) {
+            Log::error('Validasi gagal:', $validator->errors()->toArray());
+            return ApiResponseHelper::error('Validasi data gagal', $validator->errors(), 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'username' => $request->username,
+                'name' => $request->nama,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'email_verify_at' => now(),
+                'user_type' => 'employee',
+            ]);
+
+            $user->givePermissionTo('absensi app');
+
+            $karyawan = Karyawan::create([
+                'user_id' => $user->id,
+                'nama' => $request->nama,
+                'npk' => $request->npk,
+                'jabatan_id' => $request->jabatan_id,
+                'cabang_id' => $request->cabang_id,
+                'tanggal_masuk' => $request->tanggal_masuk,
+            ]);
+
+            $pasFotoPath = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
+            $ktpFotoPath = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
+            $simFotoPath = $request->file('sim_foto') ? $request->file('sim_foto')->store('uploads/sim_foto', 'public') : null;
+
+            DetailDiri::create([
+                'karyawan_id' => $karyawan->id,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'agama_id' => $request->agama_id,
+                'no_telp' => $request->no_telp,
+                'tempat_lahir_id' => $request->tempat_lahir_id,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat' => $request->alamat,
+                'golongan_darah' => $request->golongan_darah,
+                'pendidikan_id' => $request->pendidikan_id,
+                'status_kawin' => $request->status_kawin,
+                'daerah_tinggal_id' => $request->daerah_tinggal_id,
+                'pas_foto' => $pasFotoPath,
+                'ktp_foto' => $ktpFotoPath,
+                'sim_foto' => $simFotoPath,
+            ]);
+
+            DetailGaji::create([
+                'karyawan_id' => $karyawan->id,
+                'status_gaji' => $request->status_gaji,
+                'gaji_harian' => $request->gaji_harian,
+                'gaji_bulanan' => $request->gaji_bulanan,
+                'uang_makan' => $request->uang_makan,
+                'bonus' => $request->bonus,
+                'tunjangan' => $request->tunjangan,
+            ]);
+
+            DB::commit();
+            return ApiResponseHelper::success('Data karyawan berhasil ditambahkan');
+        } catch (Exception $e) {
+            DB::rollback();
+            return ApiResponseHelper::error('Terjadi kesalahan saat menyimpan data', $e->getMessage(), 500);
         }
     }
 
