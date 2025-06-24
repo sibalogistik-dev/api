@@ -11,7 +11,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
@@ -34,6 +33,7 @@ class KaryawanController extends Controller
         if ($keyword) {
             $query
                 ->where('nama', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('npk', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('jabatan', function ($q) use ($keyword) {
                     $q->where('nama', 'LIKE', '%' . $keyword . '%');
                 });
@@ -103,8 +103,7 @@ class KaryawanController extends Controller
         ]);
 
         if ($validator->fails()) {
-            Log::error('Validasi gagal:', $validator->errors()->toArray());
-            return ApiResponseHelper::error('Validasi data gagal', $validator->errors(), 422);
+            return ApiResponseHelper::error('Validasi data gagal!', $validator->errors(), 422);
         }
 
         DB::beginTransaction();
