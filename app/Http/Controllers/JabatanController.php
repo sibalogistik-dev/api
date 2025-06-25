@@ -48,7 +48,7 @@ class JabatanController extends Controller
      */
     public function show(Jabatan $jabatan)
     {
-        //
+        return ApiResponseHelper::success('Detail Data Jabatan', $jabatan);
     }
 
     /**

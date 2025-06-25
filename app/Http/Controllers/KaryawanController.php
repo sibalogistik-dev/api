@@ -173,7 +173,8 @@ class KaryawanController extends Controller
      */
     public function show(Karyawan $karyawan)
     {
-        //
+        $karyawan->load(['detail_diri', 'detail_gaji', 'user']);
+        return ApiResponseHelper::success('Detail Data karyawan', $karyawan);
     }
 
     /**

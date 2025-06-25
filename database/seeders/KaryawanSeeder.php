@@ -66,6 +66,9 @@ class KaryawanSeeder extends Seeder
                     'pendidikan_id' => 4,
                     'status_kawin' => 'kawin',
                     'daerah_tinggal_id' => 2172,
+                    'pas_foto' => 'uploads/pas_foto/6kSUARDLWXsGr6MNeYkP8Qc4WOQFbTCUKu7ivT6p.jpg',
+                    'ktp_foto' => 'uploads/ktp_foto/Tk6hm8EGQVmRK04Gp6ERgbDrUfxIMD63CapTCZ5E.jpg',
+                    'sim_foto' => 'uploads/sim_foto/Tk6hm8EGQVmRK04Gp6ERgbDrUfxIMD63CapTCZ5E.jpg',
                 ],
                 'detail_gaji' => [
                     'karyawan_id' => null,
