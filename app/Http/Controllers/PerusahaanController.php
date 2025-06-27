@@ -20,11 +20,9 @@ class PerusahaanController extends Controller
         $keyword = $request->input('q');
         $perPage = $request->input('perPage', 5);
         $query = Perusahaan::query();
-
         if ($keyword) {
             $query->where('nama', 'LIKE', '%' . $keyword . '%');
         }
-
         $perusahaan = $query
             ->withCount('cabangs')
             ->orderBy('id', 'ASC')
@@ -48,12 +46,12 @@ class PerusahaanController extends Controller
      */
     public function show(Perusahaan $perusahaan)
     {
-        $perusahaan = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
+        $data = Perusahaan::with('cabangs', 'cabangs.kota', 'cabangs.kota.province')
             ->find($perusahaan->id);
-        if (!$perusahaan) {
+        if (!$data) {
             return ApiResponseHelper::error('Perusahaan tidak ditemukan', null, 404);
         }
-        return ApiResponseHelper::success('Detail Perusahaan', $perusahaan);
+        return ApiResponseHelper::success('Detail Perusahaan', $data);
     }
 
     /**
@@ -82,7 +80,6 @@ class PerusahaanController extends Controller
     {
         $query = Cabang::with(['kota.province', 'perusahaan']);
         $keyword = $request->input('q');
-
         if ($codename !== 'semua') {
             $perusahaan = Perusahaan::where('codename', $codename)->first();
 
@@ -92,7 +89,6 @@ class PerusahaanController extends Controller
 
             $query->where('perusahaan_id', $perusahaan->id);
         }
-
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('nama', 'like', '%' . $keyword . '%')
@@ -102,13 +98,9 @@ class PerusahaanController extends Controller
                     });
             });
         }
-
         $perPage = $request->perPage ?? 5;
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
-        $title = $codename === 'semua'
-            ? 'Daftar Semua Cabang Perusahaan'
-            : "Daftar Cabang {$perusahaan->nama}";
-
+        $title = $codename === 'semua' ? 'Daftar Semua Cabang Perusahaan' : "Daftar Cabang {$perusahaan->nama}";
         return ApiResponseHelper::success($title, $cabangs);
     }
 }

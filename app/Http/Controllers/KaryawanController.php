@@ -156,54 +156,45 @@ class KaryawanController extends Controller
 
     public function show(Karyawan $karyawan)
     {
-        $karyawan->load(['detail_diri', 'detail_gaji', 'user']);
-        return ApiResponseHelper::success('Detail Data karyawan', $karyawan);
+        $data = Karyawan::with('detail_diri', 'detail_gaji')
+            ->withTrashed()
+            ->find($karyawan->id);
+        return ApiResponseHelper::success('Detail Data karyawan', $data);
     }
 
     public function update(Request $request, Karyawan $karyawan)
     {
-
         $validator = Validator::make($request->all(), [
-            // Data Pegawai
-            'nama'              => ['required', 'string', 'max:255'],
-            'npk'               => ['required', 'string', 'max:50', 'unique:karyawans,npk,' . $karyawan->id],
-            'jabatan_id'        => ['required', 'integer', 'exists:jabatans,id'],
-            'cabang_id'         => ['required', 'integer', 'exists:cabangs,id'],
-            'tanggal_masuk'     => ['required', 'date'],
-
-            // Data Diri
-            'jenis_kelamin'     => ['required', 'in:laki-laki,perempuan'],
-            'agama_id'          => ['required', 'integer', 'exists:agamas,id'],
-            'no_telp'           => ['required', 'string', 'max:20'],
-            'tempat_lahir_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
-            'tanggal_lahir'     => ['required', 'date'],
-            'alamat'            => ['required', 'string'],
-            'golongan_darah'    => ['nullable', 'in:a,b,ab,o,none'],
-            'pendidikan_id'     => ['required', 'integer', 'exists:pendidikans,id'],
-            'status_kawin'      => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'nama' => ['required', 'string', 'max:255'],
+            'npk' => ['required', 'string', 'max:50', 'unique:karyawans,npk,' . $karyawan->id],
+            'jabatan_id' => ['required', 'integer', 'exists:jabatans,id'],
+            'cabang_id' => ['required', 'integer', 'exists:cabangs,id'],
+            'tanggal_masuk' => ['required', 'date'],
+            'jenis_kelamin' => ['required', 'in:laki-laki,perempuan'],
+            'agama_id' => ['required', 'integer', 'exists:agamas,id'],
+            'no_telp' => ['required', 'string', 'max:20'],
+            'tempat_lahir_id' => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'tanggal_lahir' => ['required', 'date'],
+            'alamat' => ['required', 'string'],
+            'golongan_darah' => ['nullable', 'in:a,b,ab,o,none'],
+            'pendidikan_id' => ['required', 'integer', 'exists:pendidikans,id'],
+            'status_kawin' => ['required', 'in:belum kawin,kawin,duda,janda'],
             'daerah_tinggal_id' => ['required', 'integer', 'exists:indonesia_cities,code'],
-
-            // gambar
             'pas_foto' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'ktp_foto' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'sim_foto' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-
-            // Gaji
-            'status_gaji'       => ['required', 'in:harian,bulanan'],
-            'gaji_harian'       => ['required', 'numeric', 'min:0'],
-            'gaji_bulanan'      => ['required', 'numeric', 'min:0'],
-            'uang_makan'        => ['required', 'numeric', 'min:0'],
-            'bonus'             => ['required', 'numeric', 'min:0'],
-            'tunjangan'         => ['required', 'numeric', 'min:0'],
+            'status_gaji' => ['required', 'in:harian,bulanan'],
+            'gaji_harian' => ['required', 'numeric', 'min:0'],
+            'gaji_bulanan' => ['required', 'numeric', 'min:0'],
+            'uang_makan' => ['required', 'numeric', 'min:0'],
+            'bonus' => ['required', 'numeric', 'min:0'],
+            'tunjangan' => ['required', 'numeric', 'min:0'],
         ]);
-
         if ($validator->fails()) {
             logger()->info($validator->errors());
             return ApiResponseHelper::error('Validasi data gagal!', $validator->errors(), 422);
         }
-
         DB::beginTransaction();
-
         try {
             $karyawan->update([
                 'nama' => $request->nama,
@@ -212,60 +203,57 @@ class KaryawanController extends Controller
                 'cabang_id' => $request->cabang_id,
                 'tanggal_masuk' => $request->tanggal_masuk,
             ]);
-
             if ($karyawan->user) {
-                $karyawan->user->update([
-                    'name' => $request->nama
-                ]);
+                $karyawan->user->update(['name' => $request->nama]);
             }
-
-            $pasFotoPath = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
-            $ktpFotoPath = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
-            $simFotoPath = $request->file('sim_foto') ? $request->file('sim_foto')->store('uploads/sim_foto', 'public') : null;
-
-            $karyawan->detailDiri()->delete();
-            $karyawan->detailGaji()->delete();
-
-            $karyawan->detail_diri()->create([
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'agama_id' => $request->agama_id,
-                'no_telp' => $request->no_telp,
-                'tempat_lahir_id' => $request->tempat_lahir_id,
-                'tanggal_lahir' => $request->tanggal_lahir,
-                'alamat' => $request->alamat,
-                'golongan_darah' => $request->golongan_darah,
-                'pendidikan_id' => $request->pendidikan_id,
-                'status_kawin' => $request->status_kawin,
-                'daerah_tinggal_id' => $request->daerah_tinggal_id,
-                'pas_foto' => $pasFotoPath,
-                'ktp_foto' => $ktpFotoPath,
-                'sim_foto' => $simFotoPath,
+            $detailDiriData = $request->only([
+                'jenis_kelamin',
+                'agama_id',
+                'no_telp',
+                'tempat_lahir_id',
+                'tanggal_lahir',
+                'alamat',
+                'golongan_darah',
+                'pendidikan_id',
+                'status_kawin',
+                'daerah_tinggal_id',
             ]);
-
-            $karyawan->detail_gaji()->create([
-                'status_gaji' => $request->status_gaji,
-                'gaji_harian' => $request->gaji_harian,
-                'gaji_bulanan' => $request->gaji_bulanan,
-                'uang_makan' => $request->uang_makan,
-                'bonus' => $request->bonus,
-                'tunjangan' => $request->tunjangan,
-            ]);
-
+            if ($request->hasFile('pas_foto')) {
+                $detailDiriData['pas_foto'] = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
+            }
+            if ($request->hasFile('ktp_foto')) {
+                $detailDiriData['ktp_foto'] = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
+            }
+            if ($request->hasFile('sim_foto')) {
+                $detailDiriData['sim_foto'] = $request->file('sim_foto')->store('uploads/sim_foto', 'public');
+            }
+            $karyawan->detail_diri()
+                ->update($detailDiriData);
+            $karyawan->detail_gaji()
+                ->update($request->only([
+                    'status_gaji',
+                    'gaji_harian',
+                    'gaji_bulanan',
+                    'uang_makan',
+                    'bonus',
+                    'tunjangan'
+                ]));
             DB::commit();
             return ApiResponseHelper::success('Data karyawan berhasil diubah');
         } catch (Exception $e) {
-            DB::rollback();
-            logger()->error('UPDATE KARYAWAN ERROR', ['message' => $e->getMessage()]);
+            DB::rollBack();
             return ApiResponseHelper::error('Terjadi kesalahan saat menyimpan data', $e->getMessage(), 500);
         }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Karyawan $karyawan)
     {
-        //
+        $karyawan->user->delete();
+        $delete = $karyawan->delete();
+        if ($delete) {
+            return ApiResponseHelper::success('Data karyawan berhasil dinon-aktifkan');
+        } else {
+            return ApiResponseHelper::error('Data karyawan gagal dinon-aktifkan');
+        }
     }
 }

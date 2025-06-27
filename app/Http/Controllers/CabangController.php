@@ -20,18 +20,14 @@ class CabangController extends Controller
         $keyword = $request->input('q');
         $perPage = $request->input('perPage', 5);
         $combobox = $request->input('combobox', 0);
-
         $query = Cabang::with(['kota.province', 'perusahaan']);
-
         if ($codename !== 'semua') {
             $perusahaan = Perusahaan::where('codename', $codename)->first();
             if (!$perusahaan) {
                 return ApiResponseHelper::error("Perusahaan dengan codename '{$codename}' tidak ditemukan", null, 404);
             }
-
             $query->where('perusahaan_id', $perusahaan->id);
         }
-
         if ($keyword) {
             if ($combobox == 1) {
                 $query->where(function ($q) use ($keyword) {
@@ -45,16 +41,10 @@ class CabangController extends Controller
                             $qKota->where('name', 'like', "%{$keyword}%");
                         });
                 });
-                # code...
             }
         }
-
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
-
-        $title = $codename === 'semua'
-            ? 'Daftar Semua Cabang Dari Semua Perusahaan'
-            : "Daftar Cabang {$perusahaan->nama}";
-
+        $title = $codename === 'semua' ? 'Daftar Semua Cabang Dari Semua Perusahaan' : "Daftar Cabang {$perusahaan->nama}";
         return ApiResponseHelper::success($title, $cabangs);
     }
 

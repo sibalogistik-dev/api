@@ -7,7 +7,8 @@ use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\Kecamatan;
 use Laravolt\Indonesia\Models\Province;
 
-class Cabang extends Model {
+class Cabang extends Model
+{
     protected $fillable = [
         'nama',
         'alamat',
@@ -18,11 +19,13 @@ class Cabang extends Model {
         'longitude',
     ];
 
-    public function kota() {
-        return $this->belongsTo(City::class, 'kota_id', 'code');
+    public function kota()
+    {
+        return $this->belongsTo(City::class, 'kota_id', 'code')->orderBy('name');
     }
 
-    public function perusahaan() {
+    public function perusahaan()
+    {
         return $this->belongsTo(Perusahaan::class);
     }
 }

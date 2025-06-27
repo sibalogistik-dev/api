@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->date('tanggal_keluar')->nullable()->default(null);
             $table->string('kontrak')->nullable()->default(null);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
