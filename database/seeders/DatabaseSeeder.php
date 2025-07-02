@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             CabangSeeder::class,
             PerusahaanSeeder::class,
             KaryawanSeeder::class,
+
+            StatusAbsensiSeeder::class,
         ]);
     }
 }
