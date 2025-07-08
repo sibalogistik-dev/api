@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgamaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
@@ -40,6 +41,8 @@ Route::middleware('api')->group(function () {
             Route::resource('perusahaan', PerusahaanController::class)
                 ->except(['create', 'edit']);
             Route::resource('cabang', CabangController::class)
+                ->except(['create', 'edit']);
+            Route::resource('absensi', AbsensiController::class)
                 ->except(['create', 'edit']);
         });
     // Login General

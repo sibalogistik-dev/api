@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->integer('karyawan_id');
             $table->integer('status_id');
+            $table->date('tanggal');
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_keluar')->nullable();
             $table->string('img_absensi')->nullable();
             $table->string('keterangan')->nullable();
             $table->string('longitude')->nullable();

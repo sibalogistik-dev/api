@@ -8,7 +8,8 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('cabangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
@@ -16,7 +17,9 @@ return new class extends Migration {
             $table->string('telepon')->nullable();
             $table->integer('kota_id');
             $table->integer('perusahaan_id');
-            $table->decimal('latitude', 10, 8)->nullable();
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_pulang')->nullable();
+            $table->decimal('latitude', 11, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->timestamps();
         });
@@ -25,7 +28,8 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('cabangs');
     }
 };

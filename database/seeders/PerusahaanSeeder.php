@@ -14,11 +14,12 @@ class PerusahaanSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['nama' => 'SIBA Cargo', 'codename' => 'siba'],
-            ['nama' => 'Best Furniture', 'codename' => 'best'],
+            ['nama' => 'SIBA Cargo', 'codename' => 'sibacargo'],
+            ['nama' => 'Best Furniture', 'codename' => 'bestfurniture'],
             ['nama' => 'Men Cargo', 'codename' => 'mencargo'],
             ['nama' => 'Mabes', 'codename' => 'mabes'],
             ['nama' => 'SAuto8', 'codename' => 'sauto8'],
+            ['nama' => 'MBS Cargo', 'codename' => 'mbscargo'],
         ];
 
         foreach ($data as $item) {

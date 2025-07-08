@@ -15,6 +15,8 @@ class Cabang extends Model
         'telepon',
         'perusahaan_id',
         'kota_id',
+        'jam_masuk',
+        'jam_pulang',
         'latitude',
         'longitude',
     ];

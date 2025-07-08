@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             KaryawanSeeder::class,
 
             StatusAbsensiSeeder::class,
+            AbsensiSeeder::class,
         ]);
     }
 }
