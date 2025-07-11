@@ -18,13 +18,12 @@ class AbsensiSeeder extends Seeder
             [
                 'user_id' => 1,
                 'tanggal' => now()->toDateString(),
-                'jam_masuk' => '08:55:34',
+                'jam' => '08:45:32',
             ],
             [
                 'user_id' => 2,
                 'tanggal' => now()->toDateString(),
-                'jam_masuk' => '08:15:32',
-                'jam_keluar' => null,
+                'jam' => '08:55:12',
             ]
         ];
         foreach ($dataAbsen as $data) {
@@ -35,8 +34,7 @@ class AbsensiSeeder extends Seeder
                 'karyawan_id' => $kry->id,
                 'status_id' => $data['status_id'] ?? 1,
                 'tanggal' => $data['tanggal'],
-                'jam_masuk' => $data['jam_masuk'],
-                'jam_keluar' => $data['jam_keluar'] ?? null,
+                'jam' => $data['jam'],
                 'img_absensi' => null,
                 'keterangan' => null,
                 'longitude' => $long,
