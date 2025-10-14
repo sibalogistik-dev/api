@@ -75,9 +75,26 @@ class JabatanSeeder extends Seeder
             "Admin Toko"
         ];
 
+        $jabatanBaru = [
+            'Manajer Operasional dan HRD',
+            'Manajer Marketing',
+            'Manajer Digital Marketing',
+            'Manajer Finance',
+            'Staff Operasional',
+            'Staff HRD',
+            'Staff IT',
+            'Staff Digital Marketing',
+            'Staff Branding',
+            'Staff Finance',
+            'Staff Accounting',
+            'Staff Tracking',
+            'Staff Purchasing',
+            'Customer Service',
+        ];
+
         for ($i = 0; $i < count($jabatan); $i++) {
             Jabatan::create([
-                'nama' => $jabatan[$i]
+                'name' => $jabatan[$i]
             ]);
         }
     }

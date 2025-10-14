@@ -25,7 +25,7 @@ class PendidikanSeeder extends Seeder
 
         for ($i = 0; $i < count($pendidikan); $i++) {
             Pendidikan::create([
-                'nama' => $pendidikan[$i]
+                'name' => $pendidikan[$i]
             ]);
         }
     }

@@ -24,7 +24,7 @@ class AgamaSeeder extends Seeder
 
         for ($i = 0; $i < count($agama); $i++) {
             Agama::create([
-                'nama' => $agama[$i]
+                'name' => $agama[$i]
             ]);
         }
     }

@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('detail_gajis', function (Blueprint $table) {
             $table->id();
-            $table->integer('karyawan_id');
-            $table->string('no_rekening')->nullable()->default('');
-            $table->enum('status_gaji', ['harian', 'bulanan']);
-            $table->integer('gaji_bulanan')->nullable()->default(0);
-            $table->integer('gaji_harian')->nullable()->default(0);
-            $table->integer('uang_makan')->nullable()->default(0);
+            $table->integer('employee_id');
+            $table->integer('monthly_base_salary')->nullable()->default(0);
+            $table->integer('daily_base_salary')->nullable()->default(0);
+            $table->integer('meal_allowance')->nullable()->default(0);
             $table->integer('bonus')->nullable()->default(0);
-            $table->integer('tunjangan')->nullable()->default(0);
+            $table->integer('allowance')->nullable()->default(0);
             $table->timestamps();
         });
     }

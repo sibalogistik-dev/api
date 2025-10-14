@@ -13,16 +13,22 @@ class AgamaController extends Controller
      */
     public function index(Request $request)
     {
-        $keyword = $request->input('q');
-        $perPage = $request->input('perPage', 20);
+        $keyword    = $request->input('q');
+        $paginate   = $request->boolean('paginate', false);
 
         $query = Agama::query();
 
-        if ($keyword) {
-            $query->where('nama', 'LIKE', '%' . $keyword . '%');
-        }
-
-        $cabangs = $query->orderBy('id', 'asc')->paginate($perPage);
+        $cabangs = $query
+            ->orderBy('id', 'asc')
+            ->when(
+                $keyword,
+                fn($query) => $query->where('name', 'like', '%' . $keyword . '%'),
+            )
+            ->when(
+                $paginate,
+                fn($query) => $query->paginate(10),
+                fn($query) => $query->get()
+            );
 
         $title = 'Daftar Agama';
 

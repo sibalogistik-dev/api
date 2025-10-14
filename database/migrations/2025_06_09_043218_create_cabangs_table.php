@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('cabangs', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('alamat');
-            $table->string('telepon')->nullable();
-            $table->integer('kota_id');
-            $table->integer('perusahaan_id');
-            $table->time('jam_masuk')->nullable();
-            $table->time('jam_pulang')->nullable();
+            $table->string('name');
+            $table->string('address');
+            $table->string('telephone')->nullable();
+            $table->integer('city_id');
+            $table->integer('company_id');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->decimal('latitude', 11, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->timestamps();

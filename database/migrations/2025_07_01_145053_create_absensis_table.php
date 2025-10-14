@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
-            $table->integer('karyawan_id');
-            $table->integer('status_id');
-            $table->date('tanggal');
-            $table->time('jam')->nullable();
-            $table->string('img_absensi')->nullable();
-            $table->string('keterangan')->nullable();
-            $table->string('longitude')->nullable();
-            $table->string('latitude')->nullable();
+            $table->integer('employee_id');
+            $table->integer('attendance_status_id');
+            $table->date('date')->default(now());
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->string('attendance_image')->nullable()->default('storage/uploads/attendance_image/default.webp');
+            $table->string('description')->nullable();
+            $table->string('longitude')->nullable()->default('0.00000000');
+            $table->string('latitude')->nullable()->default('0.00000000');
             $table->timestamps();
         });
     }

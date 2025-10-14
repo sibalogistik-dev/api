@@ -7,18 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class DetailGaji extends Model
 {
     protected $fillable = [
-        'karyawan_id',
-        'no_rekening',
-        'status_gaji',
-        'gaji_bulanan',
-        'gaji_harian',
-        'uang_makan',
+        'employee_id',
+        'monthly_base_salary',
+        'daily_base_salary',
+        'meal_allowance',
         'bonus',
-        'tunjangan',
+        'allowance',
     ];
 
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsTo(Karyawan::class, 'employee_id');
     }
 }

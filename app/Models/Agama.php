@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Agama extends Model
 {
     protected $fillable = [
-        'nama'
+        'name'
     ];
+
+    public function DetailDiri()  {
+        return $this->hasMany(DetailDiri::class, 'religion_id');
+    }
 }

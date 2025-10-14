@@ -39,13 +39,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(Karyawan::class);
     }
-
-    public function getKaryawanIfEmployeeAttribute()
-    {
-        if ($this->user_type !== 'employee') {
-            return null;
-        }
-
-        return $this->relationLoaded('karyawan') ? $this->karyawan : $this->karyawan()->first();
-    }
 }

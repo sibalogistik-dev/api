@@ -17,9 +17,11 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'karyawan app',
             'hrd app',
+            'marketing app',
             'finance app',
-            'absensi app',
+            'vendor app',
             'logistik app',
             'mobile app',
         ];

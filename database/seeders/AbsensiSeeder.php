@@ -28,17 +28,18 @@ class AbsensiSeeder extends Seeder
         ];
         foreach ($dataAbsen as $data) {
             $kry = Karyawan::find($data['user_id']);
-            $lat = $kry->latitude ?? '0';
-            $long = $kry->longitude ?? '0';
+            $lat = $kry->latitude ?? null;
+            $long = $kry->longitude ?? null;
             Absensi::create([
-                'karyawan_id' => $kry->id,
-                'status_id' => $data['status_id'] ?? 1,
-                'tanggal' => $data['tanggal'],
-                'jam' => $data['jam'],
-                'img_absensi' => null,
-                'keterangan' => null,
-                'longitude' => $long,
-                'latitude' => $lat,
+                'employee_id'           => $kry->id,
+                'attendance_status_id'  => $data['status_id'] ?? 1,
+                'date'                  => $data['tanggal'],
+                'start_time'            => $data['jam'],
+                'end_time'              => null,
+                'attendance_image'      => null,
+                'description'           => null,
+                'longitude'             => $long,
+                'latitude'              => $lat,
             ]);
         }
     }

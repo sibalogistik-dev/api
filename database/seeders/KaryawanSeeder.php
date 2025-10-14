@@ -15,99 +15,113 @@ class KaryawanSeeder extends Seeder
     {
         $data = [
             [
-                'user_id' => null,
-                'nama' => 'Mohammad Farid Hasymi',
-                'npk' => '199708170073',
-                'cabang_id' => 1,
-                'jabatan_id' => 3,
-                'daerah_tinggal_id' => 2172,
-                'tanggal_masuk' => '2025-04-14',
-                'detail_diri' => [
-                    'karyawan_id' => null,
-                    'jenis_kelamin' => 'laki-laki',
-                    'agama_id' => 1,
-                    'no_telp' => '082283784873',
-                    'tempat_lahir_id' => 2172,
-                    'tanggal_lahir' => '1997-08-17',
-                    'alamat' => 'Jl. Kota Piring',
-                    'golongan_darah' => 'ab',
-                    'pendidikan_id' => 5,
-                    'status_kawin' => 'belum kawin',
-                    'daerah_tinggal_id' => 2172,
+                'user_id'               => 2,
+                'name'                  => 'Mohammad Farid Hasymi',
+                'npk'                   => '199708170073',
+                'branch_id'             => 1,
+                'job_title_id'          => 3,
+                'start_date'            => '2025-04-14',
+                'bank_account_number'   => '017401106946503',
+                'detail_diri'           => [
+                    'employee_id'           => 1,
+                    'gender'                => 'laki-laki',
+                    'religion_id'           => 1,
+                    'phone_number'          => '082283784873',
+                    'place_of_birth_id'     => 2172,
+                    'date_of_birth'         => '1997-08-17',
+                    'address'               => 'Jl. Kota Piring',
+                    'blood_type'            => 'ab',
+                    'education_id'          => 5,
+                    'marriage_status'       => 'belum kawin',
+                    'residential_area_id'   => 2172,
                 ],
                 'detail_gaji' => [
-                    'karyawan_id' => null,
-                    'no_rekening' => '017401106946503',
-                    'status_gaji' => 'harian',
-                    'gaji_harian' => 96153,
-                    'gaji_bulanan' => 0,
-                    'uang_makan' => 0,
-                    'bonus' => 0,
-                    'tunjangan' => 0,
+                    [
+                        'employee_id'           => 1,
+                        'monthly_base_salary'   => 2500000,
+                        'daily_base_salary'     => 96153,
+                        'monthly_base_salary'   => 0,
+                        'meal_allowance'        => 0,
+                        'bonus'                 => 0,
+                        'allowance'             => 0,
+                        'created_at'            => now(),
+                        'updated_at'            => now(),
+                    ],
+                    [
+                        'employee_id'           => 1,
+                        'monthly_base_salary'   => 3000000,
+                        'daily_base_salary'     => 115384,
+                        'monthly_base_salary'   => 0,
+                        'meal_allowance'        => 0,
+                        'bonus'                 => 0,
+                        'allowance'             => 0,
+                        'created_at'            => now(),
+                        'updated_at'            => now(),
+                    ],
                 ],
             ],
             [
-                'user_id' => null,
-                'nama' => 'Toby Fiski',
-                'npk' => '199905120010',
-                'cabang_id' => 2,
-                'jabatan_id' => 39,
-                'daerah_tinggal_id' => 2172,
-                'tanggal_masuk' => '2018-07-01',
-                'detail_diri' => [
-                    'karyawan_id' => null,
-                    'jenis_kelamin' => 'laki-laki',
-                    'agama_id' => 1,
-                    'no_telp' => '082387301492',
-                    'tempat_lahir_id' => 2172,
-                    'tanggal_lahir' => '1999-05-12',
-                    'alamat' => 'JL. Karya Perum. Griya Pinang Asri (Tanjungpinang)',
-                    'golongan_darah' => 'a',
-                    'pendidikan_id' => 4,
-                    'status_kawin' => 'kawin',
-                    'daerah_tinggal_id' => 2172,
-                    'pas_foto' => 'uploads/pas_foto/6kSUARDLWXsGr6MNeYkP8Qc4WOQFbTCUKu7ivT6p.jpg',
-                    'ktp_foto' => 'uploads/ktp_foto/Tk6hm8EGQVmRK04Gp6ERgbDrUfxIMD63CapTCZ5E.jpg',
-                    'sim_foto' => 'uploads/sim_foto/Tk6hm8EGQVmRK04Gp6ERgbDrUfxIMD63CapTCZ5E.jpg',
+                'user_id'               => 3,
+                'name'                  => 'Toby Fiski',
+                'npk'                   => '199905120010',
+                'branch_id'             => 2,
+                'job_title_id'          => 39,
+                'start_date'            => '2018-07-01',
+                'bank_account_number'   => '017401089349503',
+                'detail_diri'           => [
+                    'employee_id'           => 2,
+                    'gender'                => 'laki-laki',
+                    'religion_id'           => 1,
+                    'phone_number'          => '082387301492',
+                    'place_of_birth_id'     => 2172,
+                    'date_of_birth'         => '1999-05-12',
+                    'address'               => 'JL. Karya Perum. Griya Pinang Asri (Tanjungpinang)',
+                    'blood_type'            => 'a',
+                    'education_id'          => 4,
+                    'marriage_status'       => 'kawin',
+                    'residential_area_id'   => 2172,
                 ],
                 'detail_gaji' => [
-                    'karyawan_id' => null,
-                    'no_rekening' => '017401089349503',
-                    'status_gaji' => 'harian',
-                    'gaji_harian' => 50000,
-                    'gaji_bulanan' => 4050000,
-                    'uang_makan' => 15000,
-                    'bonus' => 20000,
-                    'tunjangan' => 70769,
+                    [
+                        'employee_id'           => 2,
+                        'monthly_base_salary'   => 4050000,
+                        'daily_base_salary'     => 50000,
+                        'meal_allowance'        => 15000,
+                        'bonus'                 => 20000,
+                        'allowance'             => 70769,
+                        'created_at'            => now(),
+                        'updated_at'            => now(),
+                    ]
                 ],
             ],
         ];
 
         for ($i = 0; $i < count($data); $i++) {
             $user = User::create([
-                'name' => $data[$i]['nama'],
-                'email' => str_replace(' ', '', strtolower($data[$i]['nama'])) . '@gmail.com',
-                'username' => str_replace(' ', '', strtolower($data[$i]['nama'])),
-                'password' => str_replace(' ', '', strtolower($data[$i]['nama'])) . '123',
+                'name'              => $data[$i]['name'],
+                'email'             => str_replace(' ', '', strtolower($data[$i]['name'])) . '@gmail.com',
+                'username'          => str_replace(' ', '', strtolower($data[$i]['name'])),
+                'password'          => str_replace(' ', '', strtolower($data[$i]['name'])) . '123',
                 'email_verified_at' => now(),
-                'user_type' => 'employee',
+                'user_type'         => 'employee',
             ]);
-            $user->givePermissionTo('absensi app');
+            $user->givePermissionTo('karyawan app');
+            if ($user->id == 2) {
+                $user->givePermissionTo('hrd app');
+            }
             $data[$i]['user_id'] = $user->id;
             $karyawan = Karyawan::create([
-                'user_id' => $user->id,
-                'nama' => $data[$i]['nama'],
-                'npk' => $data[$i]['npk'],
-                'jabatan_id' => $data[$i]['jabatan_id'],
-                'cabang_id' => $data[$i]['cabang_id'],
-                'tanggal_masuk' => $data[$i]['tanggal_masuk'],
+                'user_id'               => $user->id,
+                'name'                  => $data[$i]['name'],
+                'npk'                   => $data[$i]['npk'],
+                'job_title_id'          => $data[$i]['job_title_id'],
+                'branch_id'             => $data[$i]['branch_id'],
+                'start_date'            => $data[$i]['start_date'],
+                'bank_account_number'   => $data[$i]['bank_account_number'],
             ]);
             if ($karyawan) {
-                $idkry = $karyawan->id;
-                $data[$i]['detail_diri']['karyawan_id'] = $idkry;
                 DetailDiri::create($data[$i]['detail_diri']);
-                $data[$i]['detail_gaji']['karyawan_id'] = $idkry;
-                DetailGaji::create($data[$i]['detail_gaji']);
+                DetailGaji::insert($data[$i]['detail_gaji']);
             }
         }
     }

@@ -10,14 +10,13 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = User::create([
-            'name' => 'Administrator',
-            'email' => 'administrator@gmail.com',
-            'username' => 'administrator',
-            'password' => bcrypt('password'),
+            'name'              => 'Administrator',
+            'email'             => 'administrator@gmail.com',
+            'username'          => 'administrator',
+            'password'          => 'password',
             'email_verified_at' => now(),
-            'user_type' => 'direction',
+            'user_type'         => 'direction',
         ]);
-        // $user->assignRole('administrator');
         $user->givePermissionTo('hrd app');
     }
 }

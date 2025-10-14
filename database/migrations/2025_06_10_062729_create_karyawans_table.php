@@ -13,13 +13,14 @@ return new class extends Migration {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('nama');
+            $table->string('name');
             $table->string('npk');
-            $table->integer('jabatan_id');
-            $table->integer('cabang_id');
-            $table->date('tanggal_masuk');
-            $table->date('tanggal_keluar')->nullable()->default(null);
-            $table->string('kontrak')->nullable()->default(null);
+            $table->integer('job_title_id');
+            $table->integer('branch_id');
+            $table->date('start_date');
+            $table->date('end_date')->nullable()->default(null);
+            $table->string('contract')->nullable()->default(null);
+            $table->string('bank_account_number')->nullable()->default('');
             $table->timestamps();
             $table->softDeletes();
         });
