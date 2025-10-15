@@ -13,6 +13,6 @@ class Perusahaan extends Model
 
     public function cabangs()
     {
-        return $this->hasMany(Cabang::class);
+        return $this->hasMany(Cabang::class, 'company_id');
     }
 }
