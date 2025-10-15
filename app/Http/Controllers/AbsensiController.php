@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\IndexAbsensiRequest;
 use App\Models\Absensi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
@@ -22,46 +24,18 @@ class AbsensiController extends Controller
      *  
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(IndexAbsensiRequest $request)
     {
-        $keyword    = $request->input('q');
-        $tanggal    = $request->input('date', date('Y-m-d'));
-        $cabang     = $request->input('branch', 'all');
-        $paginate   = $request->boolean('paginate', false);
-        $perPage    = $request->integer('perPage', 10);
-        $user       = $request->user()->load('permissions', 'karyawan');
+        $validated = $request->validated();
+        $user = $request->user()->load('karyawan');
 
-        $query = Absensi::query();
+        $absensiQuery = Absensi::query()
+            ->with(['karyawan:id,name,branch_id', 'karyawan.cabang:id,name', 'statusAbsensi:id,name'])
+            ->filter($validated)
+            ->when(!$user->hasAnyPermission(['hrd app', 'finance app']), fn($query) => $query->where('employee_id', $user->karyawan->id))
+            ->latest();
 
-        $absensi = $query
-            ->where('date', $tanggal)
-            ->with([
-                'karyawan.cabang.perusahaan',
-                'statusAbsensi'
-            ])
-            ->orderBy('id', 'DESC')
-            ->when($cabang !== 'all', function ($q) use ($cabang) {
-                $q->whereHas('karyawan', function ($w) use ($cabang) {
-                    $w->where('branch_id', $cabang);
-                });
-            })
-            ->when($keyword, function ($q) use ($keyword) {
-                $q->where(function ($w) use ($keyword) {
-                    $w->where('description', 'like', "%$keyword%")
-                        ->orWhereHas('karyawan', function ($e) use ($keyword) {
-                            $e->where('name', 'like', "%$keyword%");
-                        });
-                });
-            })
-            ->when(
-                !$user->hasPermissionTo('hrd app') && !$user->hasPermissionTo('finance app'),
-                fn($query) => $query->where('employee_id', $user->karyawan['id'])
-            )
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate($perPage),
-                fn($query) => $query->get()
-            );
+        $absensi = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
 
         return ApiResponseHelper::success('Daftar Absensi', $absensi);
     }
@@ -82,10 +56,9 @@ class AbsensiController extends Controller
         $validate = Validator::make($request->all(), [
             'employee_id'           => ['required', 'integer', 'exists:karyawans,id'],
             'attendance_status_id'  => ['required', 'integer', 'exists:status_absensis,id'],
-            'attendance_image'      => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'],
-            'description'           => ['nullable', 'string', 'max:255'],
-            'longitude'             => ['required', 'float'],
-            'latitude'              => ['required', 'float'],
+            'description'           => ['required', 'string', 'max:255'],
+            'longitude'             => ['required', 'decimal:1,10'],
+            'latitude'              => ['required', 'decimal:1,10'],
             'attendance_type'       => ['required', 'string', 'in:masuk,pulang'],
         ]);
 
@@ -97,18 +70,23 @@ class AbsensiController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->except('attendance_type');
+            $dataAbsensi = $request->except('attendance_type');
 
             if ($attendance_type === 'masuk') {
-                $data['attendance_image'] = $request->file('attendance_image')->store('uploads/attendance_image', 'public');
-                $data['date'] = date('Y-m-d');
-                $data['start_time'] = date('H:i:s');
-                $absensi = Absensi::create([]);
+                $dataAbsensi['date'] = date('Y-m-d');
+                $dataAbsensi['start_time'] = date('H:i:s');
+                $absensi = Absensi::create($dataAbsensi);
+                if ($absensi) {
+                    DB::commit();
+                    return ApiResponseHelper::success('Data Absensi berhasil ditambahkan');
+                }
+                // return ApiResponseHelper::success('Data Absensi berhasil ditambahkan', $dataAbsensi);
             } elseif ($attendance_type === 'pulang') {
                 # code...
             }
         } catch (Exception $e) {
-            //throw $th;
+            DB::rollback();
+            return ApiResponseHelper::error('Terjadi kesalahan saat menyimpan data', $e->getMessage(), 500);
         }
     }
 

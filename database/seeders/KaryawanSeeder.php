@@ -106,9 +106,6 @@ class KaryawanSeeder extends Seeder
                 'user_type'         => 'employee',
             ]);
             $user->givePermissionTo('karyawan app');
-            if ($user->id == 2) {
-                $user->givePermissionTo('hrd app');
-            }
             $data[$i]['user_id'] = $user->id;
             $karyawan = Karyawan::create([
                 'user_id'               => $user->id,

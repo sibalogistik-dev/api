@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->integer('employee_id');
             $table->integer('attendance_status_id');
-            $table->date('date')->default(now());
-            $table->time('start_time')->nullable();
+            $table->date('date');
+            $table->time('start_time');
             $table->time('end_time')->nullable();
-            $table->string('attendance_image')->nullable()->default('storage/uploads/attendance_image/default.webp');
+            $table->string('attendance_image')->nullable()->default('uploads/attendance_image/default.webp');
             $table->string('description')->nullable();
-            $table->string('longitude')->nullable()->default('0.00000000');
-            $table->string('latitude')->nullable()->default('0.00000000');
+            $table->float('longitude', 10)->nullable()->default('0.00000000');
+            $table->float('latitude', 10)->nullable()->default('0.00000000');
             $table->timestamps();
         });
     }

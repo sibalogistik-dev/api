@@ -18,6 +18,30 @@ class Absensi extends Model
         'latitude',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('description', 'like', "%{$keyword}%")
+                    ->orWhereHas('karyawan', function ($query) use ($keyword) {
+                        $query->where('name', 'like', "%{$keyword}%");
+                    });
+            });
+        });
+
+        $query->when($filters['date'] ?? null, function ($query, $date) {
+            $query->where('date', $date);
+        });
+
+        $query->when($filters['branch'] ?? null, function ($query, $branch) {
+            if ($branch !== 'all') {
+                $query->whereHas('karyawan', function ($query) use ($branch) {
+                    $query->where('branch_id', $branch);
+                });
+            }
+        });
+    }
+
     public function statusAbsensi()
     {
         return $this->belongsTo(StatusAbsensi::class, 'attendance_status_id');

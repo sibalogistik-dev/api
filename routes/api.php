@@ -35,7 +35,7 @@ Route::middleware('api')->group(function () {
             Route::resource('kelurahan', KelurahanController::class)
                 ->except(['create', 'edit']);
             Route::resource('karyawan', KaryawanController::class)
-                ->except(['create', 'edit']);
+                ->except(['edit']);
             Route::resource('perusahaan', PerusahaanController::class)
                 ->except(['create', 'edit']);
             Route::resource('cabang', CabangController::class)

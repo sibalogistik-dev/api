@@ -22,16 +22,7 @@ class KaryawanController extends Controller
         $keyword = $request->input('q');
         $cabang = $request->input('cabang');
 
-        $query = Karyawan::with([
-            'jabatan',
-            'cabang',
-            'detail_diri.agama',
-            'detail_diri.tempat_lahir',
-            'detail_diri.pendidikan',
-            'detail_diri.daerah_tinggal',
-            'detail_gaji',
-            'histori_gaji',
-        ]);
+        $query = Karyawan::with(['jabatan', 'cabang.kota', 'detail_diri.agama', 'detail_diri.tempat_lahir', 'detail_diri.pendidikan', 'detail_diri.daerah_tinggal', 'detail_gaji', 'histori_gaji']);
 
         $query->when($keyword, function ($q, $keyword) {
             return $q->where(function ($subQuery) use ($keyword) {
@@ -58,38 +49,38 @@ class KaryawanController extends Controller
         return ApiResponseHelper::success('Daftar Karyawan', $karyawan);
     }
 
+    public function create()
+    {
+        //
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            // Akun
             'username'              => ['required', 'string', 'max:255', 'unique:users,username'],
             'email'                 => ['required', 'email', 'max:255', 'unique:users,email'],
             'password'              => ['required', 'string', 'min:8'],
-            // Data Pegawai
             'name'                  => ['required', 'string', 'max:255'],
             'npk'                   => ['required', 'string', 'max:50', 'unique:karyawans,npk'],
-            'jabatan_id'            => ['required', 'integer', 'exists:jabatans,id'],
-            'cabang_id'             => ['required', 'integer', 'exists:cabangs,id'],
+            'job_title_id'          => ['required', 'integer', 'exists:jabatans,id'],
+            'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['required', 'date'],
             'end_date'              => ['nullable', 'date'],
             'contract'              => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'bank_account_number'   => ['required', 'string', 'max:50', 'unique:karyawans,bank_account_number'],
-            // Data Diri
-            'jenis_kelamin'         => ['required', 'in:laki-laki,perempuan'],
-            'agama_id'              => ['required', 'integer', 'exists:agamas,id'],
-            'no_telp'               => ['required', 'string', 'max:20'],
-            'tempat_lahir_id'       => ['required', 'integer', 'exists:indonesia_cities,code'],
-            'tanggal_lahir'         => ['required', 'date'],
-            'alamat'                => ['required', 'string'],
-            'golongan_darah'        => ['nullable', 'in:a,b,ab,o,none'],
-            'pendidikan_id'         => ['required', 'integer', 'exists:pendidikans,id'],
-            'status_kawin'          => ['required', 'in:belum kawin,kawin,duda,janda'],
-            'daerah_tinggal_id'     => ['required', 'integer', 'exists:indonesia_cities,code'],
-            // gambar
-            'pas_foto'              => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'ktp_foto'              => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'sim_foto'              => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            // Gaji
+            'gender'                => ['required', 'in:laki-laki,perempuan'],
+            'religion_id'           => ['required', 'integer', 'exists:agamas,id'],
+            'phone_number'          => ['required', 'string', 'max:20'],
+            'place_of_birth_id'     => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'date_of_birth'         => ['required', 'date'],
+            'address'               => ['required', 'string'],
+            'blood_type'            => ['nullable', 'in:a,b,ab,o,none'],
+            'education_id'          => ['required', 'integer', 'exists:pendidikans,id'],
+            'marriage_status'       => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'passport_photo'        => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'id_card_photo'         => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'drivers_license_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'monthly_base_salary'   => ['required', 'numeric', 'min:0'],
             'daily_base_salary'     => ['required', 'numeric', 'min:0'],
             'meal_allowance'        => ['required', 'numeric', 'min:0'],
@@ -104,61 +95,37 @@ class KaryawanController extends Controller
         DB::beginTransaction();
 
         try {
-            $user = User::create([
-                'username'          => $request->username,
-                'name'              => $request->name,
-                'email'             => $request->email,
-                'password'          => Hash::make($request->password),
-                'email_verified_at' => now(),
-                'user_type'         => 'employee',
-            ]);
+            $userData = $request->only(['username', 'name', 'email', 'password']);
+            $userData['email_verified_at'] = now();
+            $userData['user_type'] = 'employee';
+            $user = User::create($userData);
 
             $user->givePermissionTo('karyawan app');
 
-            $karyawan = Karyawan::create([
-                'user_id'       => $user->id,
-                'name'          => $request->name,
-                'npk'           => $request->npk,
-                'jabatan_id'    => $request->jabatan_id,
-                'cabang_id'     => $request->cabang_id,
-                'start_date'    => $request->tanggal_masuk,
-            ]);
+            $karyawanData = $request->only(['name', 'npk', 'job_title_id', 'branch_id', 'start_date']);
+            $karyawanData['user_id'] = $user->id;
+
+            $karyawan = Karyawan::create($karyawanData);
 
             $pasFotoPath = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
             $ktpFotoPath = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
             $simFotoPath = $request->file('sim_foto') ? $request->file('sim_foto')->store('uploads/sim_foto', 'public') : null;
 
-            DetailDiri::create([
-                'karyawan_id'       => $karyawan->id,
-                'jenis_kelamin'     => $request->jenis_kelamin,
-                'agama_id'          => $request->agama_id,
-                'no_telp'           => $request->no_telp,
-                'tempat_lahir_id'   => $request->tempat_lahir_id,
-                'tanggal_lahir'     => $request->tanggal_lahir,
-                'alamat'            => $request->alamat,
-                'golongan_darah'    => $request->golongan_darah,
-                'pendidikan_id'     => $request->pendidikan_id,
-                'status_kawin'      => $request->status_kawin,
-                'daerah_tinggal_id' => $request->daerah_tinggal_id,
-                'pas_foto'          => $pasFotoPath,
-                'ktp_foto'          => $ktpFotoPath,
-                'sim_foto'          => $simFotoPath,
-            ]);
+            $detailDiriData = $request->only(['gender', 'region_id', 'phone_number', 'place_of_birth_id', 'date_of_birth', 'address', 'blood_type', 'education_id', 'marriage_status', 'residential_area_id']);
+            $detailDiriData['employee_id'] = $karyawan->id;
+            $detailDiriData['passport_photo'] = $pasFotoPath;
+            $detailDiriData['id_card_photo'] = $ktpFotoPath;
+            $detailDiriData['drivers_license_photo'] = $simFotoPath;
+            DetailDiri::create($detailDiriData);
 
-            DetailGaji::create([
-                'karyawan_id'           => $karyawan->id,
-                'daily_base_salary'     => $request->daily_base_salary,
-                'monthly_base_salary'   => $request->monthly_base_salary,
-                'meal_allowance'        => $request->meal_allowance,
-                'bonus'                 => $request->bonus,
-                'allowance'             => $request->allowance,
-            ]);
+            $detailGajiData = $request->only(['monthly_base_salary', 'daily_base_salary', 'meal_allowance', 'bonus', 'allowance']);
+            $detailGajiData['employee_id'] = $karyawan->id;
+            DetailGaji::create($detailGajiData);
 
             DB::commit();
             return ApiResponseHelper::success('Data karyawan berhasil ditambahkan');
         } catch (Exception $e) {
             DB::rollback();
-            // Hapus file yang mungkin sudah terunggah
             if (isset($pasFotoPath)) {
                 Storage::disk('public')->delete($pasFotoPath);
             }
@@ -188,8 +155,8 @@ class KaryawanController extends Controller
             'jabatan_id'            => ['required', 'integer', 'exists:jabatans,id'],
             'cabang_id'             => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['required', 'date'],
-            'jenis_kelamin'         => ['required', 'in:laki-laki,perempuan'],
-            'agama_id'              => ['required', 'integer', 'exists:agamas,id'],
+            'gender'         => ['required', 'in:laki-laki,perempuan'],
+            'religion_id'              => ['required', 'integer', 'exists:agamas,id'],
             'no_telp'               => ['required', 'string', 'max:20'],
             'tempat_lahir_id'       => ['required', 'integer', 'exists:indonesia_cities,code'],
             'tanggal_lahir'         => ['required', 'date'],

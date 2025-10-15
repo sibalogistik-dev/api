@@ -23,7 +23,7 @@ This is a RESTful API built with Laravel, intended for future development of an 
 The API can be tested at:
 
 <p align="center">
-    <a href="http://siba.api.frdhsym.space" target="_blank">http://siba.api.frdhsym.space</a>
+    <a href="http://api.frdhsym.space" target="_blank">http://api.frdhsym.space</a>
 </p>
 
 ---
@@ -76,6 +76,7 @@ Developed and maintained by:
 **IT Internal**
 
 -   <a href="https://github.com/neveleneve">Mohammad Farid Hasymi</a>
+-   <a href="https://github.com/hasanicahyadi">Hasani Cahyadi</a>
 
 ## ⚙️ Installation
 
