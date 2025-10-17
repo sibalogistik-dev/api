@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             AgamaSeeder::class,
             JabatanSeeder::class,
             PendidikanSeeder::class,
+            MarriageStatusSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
 

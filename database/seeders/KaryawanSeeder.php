@@ -105,7 +105,7 @@ class KaryawanSeeder extends Seeder
                 'email_verified_at' => now(),
                 'user_type'         => 'employee',
             ]);
-            $user->givePermissionTo('karyawan app');
+            $user->givePermissionTo('login karyawan');
             $data[$i]['user_id'] = $user->id;
             $karyawan = Karyawan::create([
                 'user_id'               => $user->id,

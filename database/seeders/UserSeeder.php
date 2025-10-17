@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+// use Spatie\Permission\Models\Permission;
 
 class UserSeeder extends Seeder
 {
@@ -17,6 +18,6 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'user_type'         => 'direction',
         ]);
-        $user->givePermissionTo('hrd app');
+        $user->assignRole('Super Admin');
     }
 }

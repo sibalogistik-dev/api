@@ -5,128 +5,53 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-            'device_name' => ['required', 'string', Rule::in($this->allowedDevices)],
+        $validator = Validator::make($request->all(), [
+            'username'  => 'required|string',
+            'password'  => 'required|string',
+            'app_name'  => ['required', 'string', Rule::in($this->allowedDevices)],
         ]);
-        if (!in_array($request->device_name, $this->allowedDevices)) {
-            return ApiResponseHelper::error(
-                'Nama perangkat tidak valid.',
-                null,
-                403,
-            );
+
+        if ($validator->fails()) {
+            return ApiResponseHelper::error('Validasi data gagal!', $validator->errors(), 422);
         }
+
         $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
         if (Auth::attempt([$login_type => $request->username, 'password' => $request->password])) {
             $user = Auth::user()->load(['roles.permissions', 'permissions']);
-            if (!$user->hasPermissionTo($request->device_name)) {
+            if (!$user->hasPermissionTo($request->app_name)) {
                 Auth::logout();
-                return ApiResponseHelper::error('Anda tidak memiliki akses ke aplikasi HRD.', null, 403);
+                return ApiResponseHelper::error('Anda tidak memiliki izin untuk mengakses aplikasi ini.', null, 403);
             }
-            $token = $user->createToken($request->device_name)->plainTextToken;
-            $data = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ];
-            $role = $user->roles->first()?->name ?? 'unknown';
-            $permissions = $user->getAllPermissions()->pluck('name');
-            return ApiResponseHelper::success('Login Berhasil!', [
-                'token' => $token,
-                'user' => $data,
-                'role' => $role,
-                'permissions' => $permissions,
-            ]);
-        }
-
-        return ApiResponseHelper::error('Username atau password salah', null, 401);
-    }
-
-    public function loginHRDApp(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-            'device_name' => 'required|string|in:hrd app',
-        ]);
-        $login_type = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if (Auth::attempt([$login_type => $request->username, 'password' => $request->password])) {
-            $user = Auth::user()->load(['roles.permissions', 'permissions']);
-            if (!$user->hasPermissionTo($request->device_name)) {
-                Auth::logout();
-                return ApiResponseHelper::error('Anda tidak memiliki akses ke aplikasi HRD.', null, 403);
-            }
-            $token = $user->createToken($request->device_name)->plainTextToken;
-            $data = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ];
-            $role = $user->roles->first()?->name ?? 'unknown';
-            $permissions = $user->getAllPermissions()->pluck('name');
-            return ApiResponseHelper::success('Login Berhasil!', [
-                'token' => $token,
-                'user' => $data,
-                'role' => $role,
-                'permissions' => $permissions,
-            ]);
-        }
-
-        return ApiResponseHelper::error('Username atau password salah', null, 401);
-    }
-
-    public function loginKaryawanApp(Request $request)
-    {
-        $request->validate([
-            'login' => 'required|string',
-            'password' => 'required|string',
-            'device_name' => 'required|string|in:karyawan app',
-        ]);
-        $login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if (Auth::attempt([$login_type => $request->login, 'password' => $request->password])) {
-            $user = Auth::user()->load(['roles.permissions', 'permissions']);
-            if (!$user->hasPermissionTo($request->device_name)) {
-                Auth::logout();
-                return ApiResponseHelper::error('Anda tidak memiliki akses ke aplikasi Karyawan.', null, 403);
-            }
-            $token = $user->createToken($request->device_name)->plainTextToken;
+            $token = $user->createToken($request->app_name)->plainTextToken;
             $data = [
                 'id'    => $user->id,
                 'name'  => $user->name,
-                'email' => $user->email,
+                'email' => $user->email
             ];
-            $role = $user
-                ->roles
-                ->first()?->name ?? 'unknown';
-            $permissions = $user
-                ->getAllPermissions()
-                ->pluck('name');
+            $roles = $user->getRoleNames();
+            $permissions = $user->getAllPermissions()->pluck('name');
             return ApiResponseHelper::success('Login Berhasil!', [
                 'token'         => $token,
                 'user'          => $data,
-                'role'          => $role,
+                'roles'         => $roles,
                 'permissions'   => $permissions,
             ]);
         }
 
-        return ApiResponseHelper::error('Username atau password salah', null, 401);
+        return ApiResponseHelper::error('Username atau password salah!', null, 401);
     }
-
 
     public function loginError()
     {
-        return ApiResponseHelper::error(
-            'Otentikasi diperlukan untuk mengakses sumber daya ini',
-            null,
-            401
-        );
+        return ApiResponseHelper::error('Otentikasi diperlukan untuk mengakses sumber daya ini', null, 401);
     }
 
     public function user(Request $request)
