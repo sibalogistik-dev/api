@@ -18,7 +18,7 @@ class JabatanController extends Controller
         $query = Jabatan::query();
 
         if ($keyword) {
-            $query->where('nama', 'LIKE', '%' . $keyword . '%');
+            $query->where('name', 'LIKE', '%' . $keyword . '%');
         }
 
         $jabatan = $query

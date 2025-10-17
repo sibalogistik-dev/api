@@ -107,9 +107,9 @@ class KaryawanController extends Controller
 
             $karyawan = Karyawan::create($karyawanData);
 
-            $pasFotoPath = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
-            $ktpFotoPath = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
-            $simFotoPath = $request->file('sim_foto') ? $request->file('sim_foto')->store('uploads/sim_foto', 'public') : null;
+            $pasFotoPath = $request->file('passport_photo')->store('uploads/pas_foto', 'public');
+            $ktpFotoPath = $request->file('id_card_photo')->store('uploads/ktp_foto', 'public');
+            $simFotoPath = $request->file('drivers_license_photo') ? $request->file('drivers_license_photo')->store('uploads/sim_foto', 'public') : null;
 
             $detailDiriData = $request->only(['gender', 'region_id', 'phone_number', 'place_of_birth_id', 'date_of_birth', 'address', 'blood_type', 'education_id', 'marriage_status', 'residential_area_id']);
             $detailDiriData['employee_id'] = $karyawan->id;
@@ -152,22 +152,22 @@ class KaryawanController extends Controller
         $validator = Validator::make($request->all(), [
             'name'                  => ['required', 'string', 'max:255'],
             'npk'                   => ['required', 'string', 'max:50', 'unique:karyawans,npk,' . $karyawan->id],
-            'jabatan_id'            => ['required', 'integer', 'exists:jabatans,id'],
-            'cabang_id'             => ['required', 'integer', 'exists:cabangs,id'],
+            'job_title_id'          => ['required', 'integer', 'exists:jabatans,id'],
+            'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['required', 'date'],
-            'gender'         => ['required', 'in:laki-laki,perempuan'],
-            'religion_id'              => ['required', 'integer', 'exists:agamas,id'],
+            'gender'                => ['required', 'in:laki-laki,perempuan'],
+            'religion_id'           => ['required', 'integer', 'exists:agamas,id'],
             'no_telp'               => ['required', 'string', 'max:20'],
-            'tempat_lahir_id'       => ['required', 'integer', 'exists:indonesia_cities,code'],
-            'tanggal_lahir'         => ['required', 'date'],
-            'alamat'                => ['required', 'string'],
-            'golongan_darah'        => ['nullable', 'in:a,b,ab,o,none'],
-            'pendidikan_id'         => ['required', 'integer', 'exists:pendidikans,id'],
-            'status_kawin'          => ['required', 'in:belum kawin,kawin,duda,janda'],
-            'daerah_tinggal_id'     => ['required', 'integer', 'exists:indonesia_cities,code'],
-            'pas_foto'              => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'ktp_foto'              => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'sim_foto'              => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'place_of_birth'        => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'date_of_birth'         => ['required', 'date'],
+            'address'               => ['required', 'string'],
+            'blood_type'            => ['nullable', 'in:a,b,ab,o,none'],
+            'education_id'          => ['required', 'integer', 'exists:pendidikans,id'],
+            'marriage_status'       => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'passport_photo'        => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'id_card_photo'         => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'drivers_license_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'daily_base_salary'     => ['required', 'numeric', 'min:0'],
             'monthly_base_salary'   => ['required', 'numeric', 'min:0'],
             'meal_allowance'        => ['required', 'numeric', 'min:0'],
@@ -183,33 +183,33 @@ class KaryawanController extends Controller
             $karyawan->update([
                 'name' => $request->name,
                 'npk' => $request->npk,
-                'jabatan_id' => $request->jabatan_id,
-                'cabang_id' => $request->cabang_id,
+                'job_title_id' => $request->job_title_id,
+                'branch_id' => $request->branch_id,
                 'start_date' => $request->start_date,
             ]);
             if ($karyawan->user) {
                 $karyawan->user->update(['name' => $request->name]);
             }
             $detailDiriData = $request->only([
-                'jenis_kelamin',
-                'agama_id',
-                'no_telp',
-                'tempat_lahir_id',
-                'tanggal_lahir',
-                'alamat',
-                'golongan_darah',
-                'pendidikan_id',
-                'status_kawin',
-                'daerah_tinggal_id',
+                'gender',
+                'religion_id',
+                'phone_number',
+                'place_of_birth_id',
+                'date_of_birth',
+                'address',
+                'blood_type',
+                'education_id',
+                'marriage_status',
+                'residential_area_id',
             ]);
-            if ($request->hasFile('pas_foto')) {
-                $detailDiriData['pas_foto'] = $request->file('pas_foto')->store('uploads/pas_foto', 'public');
+            if ($request->hasFile('passport_photo')) {
+                $detailDiriData['passport_photo'] = $request->file('passport_photo')->store('uploads/pas_foto', 'public');
             }
-            if ($request->hasFile('ktp_foto')) {
-                $detailDiriData['ktp_foto'] = $request->file('ktp_foto')->store('uploads/ktp_foto', 'public');
+            if ($request->hasFile('id_card_photo')) {
+                $detailDiriData['id_card_photo'] = $request->file('id_card_photo')->store('uploads/ktp_foto', 'public');
             }
-            if ($request->hasFile('sim_foto')) {
-                $detailDiriData['sim_foto'] = $request->file('sim_foto')->store('uploads/sim_foto', 'public');
+            if ($request->hasFile('drivers_license_photo')) {
+                $detailDiriData['drivers_license_photo'] = $request->file('drivers_license_photo')->store('uploads/sim_foto', 'public');
             }
             $karyawan->detail_diri()
                 ->update($detailDiriData);

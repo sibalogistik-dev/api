@@ -91,8 +91,8 @@ class PerusahaanController extends Controller
         }
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
-                $q->where('nama', 'like', '%' . $keyword . '%')
-                    ->orWhere('alamat', 'like', '%' . $keyword . '%')
+                $q->where('name', 'like', '%' . $keyword . '%')
+                    ->orWhere('address', 'like', '%' . $keyword . '%')
                     ->orWhereHas('kota', function ($kotaQuery) use ($keyword) {
                         $kotaQuery->where('name', 'like', '%' . $keyword . '%');
                     });
@@ -100,7 +100,7 @@ class PerusahaanController extends Controller
         }
         $perPage = $request->perPage ?? 5;
         $cabangs = $query->orderBy('perusahaan_id', 'asc')->paginate($perPage);
-        $title = $codename === 'semua' ? 'Daftar Semua Cabang Perusahaan' : "Daftar Cabang {$perusahaan->nama}";
+        $title = $codename === 'semua' ? 'Daftar Semua Cabang Perusahaan' : "Daftar Cabang {$perusahaan->name}";
         return ApiResponseHelper::success($title, $cabangs);
     }
 }

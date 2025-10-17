@@ -31,12 +31,12 @@ class CabangController extends Controller
         if ($keyword) {
             if ($combobox == 1) {
                 $query->where(function ($q) use ($keyword) {
-                    $q->where('nama', 'like', "%{$keyword}%");
+                    $q->where('name', 'like', "%{$keyword}%");
                 });
             } else {
                 $query->where(function ($q) use ($keyword) {
-                    $q->where('nama', 'like', "%{$keyword}%")
-                        ->orWhere('alamat', 'like', "%{$keyword}%")
+                    $q->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('address', 'like', "%{$keyword}%")
                         ->orWhereHas('kota', function ($qKota) use ($keyword) {
                             $qKota->where('name', 'like', "%{$keyword}%");
                         });
