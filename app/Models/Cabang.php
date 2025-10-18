@@ -23,17 +23,17 @@ class Cabang extends Model
         'longitude'
     ];
 
-    public function kota()
+    public function city()
     {
         return $this->belongsTo(City::class, 'city_id', 'code')->orderBy('name');
     }
 
-    public function perusahaan()
+    public function company()
     {
         return $this->belongsTo(Perusahaan::class, 'company_id');
     }
 
-    public function karyawan()
+    public function employee()
     {
         return $this->hasMany(Karyawan::class, 'branch_id');
     }

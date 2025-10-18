@@ -13,8 +13,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username'  => 'required|string',
-            'password'  => 'required|string',
+            'username'  => ['required', 'string'],
+            'password'  => ['required', 'string'],
             'app_access_key'  => ['required', 'string', Rule::in($this->allowedDevices)],
         ]);
 
@@ -60,8 +60,9 @@ class AuthController extends Controller
             'roles:id,name',
             'roles.permissions:id,name,description',
             'permissions',
-            'karyawan' => fn($query) => $query->with([
+            'employee' => fn($query) => $query->with([
                 'jobTitle:id,name',
+                'manager:id,name',
                 'branch:id,name',
                 'employeeDetails:id,employee_id,gender,religion_id,phone_number,place_of_birth_id,date_of_birth,address,blood_type,education_id,marriage_status_id,residential_area_id,passport_photo,id_card_photo',
                 'employeeDetails.religion:id,name',

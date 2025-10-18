@@ -33,15 +33,15 @@ class AbsensiController extends Controller
 
         $absensiQuery = Absensi::query()
             ->with([
-                'employee:id,name,branch_id',
-                'employee.branch:id,name',
-                'attendanceStatus:id,name'
+                'employee',
+                'employee.branch.city:code,name',
+                'attendanceStatus'
             ])
             ->filter($validated)
             ->when(!($validated['getAll'] ?? false), function ($query) use ($user) {
-                $query->where('employee_id', $user->karyawan->id);
+                $query->where('employee_id', $user->employee->id);
             })
-            ->latest();
+            ->orderBy('id', 'desc');
 
         $absensi = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
 
@@ -88,7 +88,6 @@ class AbsensiController extends Controller
                     DB::commit();
                     return ApiResponseHelper::success('Data Absensi berhasil ditambahkan');
                 }
-                // return ApiResponseHelper::success('Data Absensi berhasil ditambahkan', $dataAbsensi);
             } elseif ($attendance_type === 'pulang') {
                 # code...
             }

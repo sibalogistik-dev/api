@@ -9,7 +9,7 @@ class Karyawan extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'user_id',
@@ -23,6 +23,35 @@ class Karyawan extends Model
         'contract',
         'bank_account_number',
     ];
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('karyawans.name', 'like', "%{$keyword}%")
+                    ->orWhere('karyawans.npk', 'like', "%{$keyword}%")
+                    ->orWhereHas('branch', function ($query) use ($keyword) {
+                        $query->where('name', 'like', "%{$keyword}%");
+                    })
+                    ->orWhereHas('branch.company', function ($query) use ($keyword) {
+                        $query->where('name', 'like', "%{$keyword}%");
+                    });
+            });
+        });
+
+        $query->when($filters['company'] ?? null, function ($query, $company) {
+            if ($company !== 'all') {
+                $query->whereHas('branch.company', function ($query) use ($company) {
+                    $query->where('id', $company);
+                });
+            }
+        });
+        $query->when($filters['branch'] ?? null, function ($query, $branch) {
+            if ($branch !== 'all') {
+                $query->where('branch_id', $branch);
+            }
+        });
+    }
 
     public function user()
     {

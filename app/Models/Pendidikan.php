@@ -12,7 +12,7 @@ class Pendidikan extends Model
         'name'
     ];
 
-    public function karyawan()
+    public function employee()
     {
         return $this->hasMany(Karyawan::class, 'education_id');
     }

@@ -12,7 +12,8 @@ class Agama extends Model
         'name'
     ];
 
-    public function DetailDiri()  {
+    public function employeeDetails()
+    {
         return $this->hasMany(DetailDiri::class, 'religion_id');
     }
 }

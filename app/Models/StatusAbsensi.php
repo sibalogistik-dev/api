@@ -9,13 +9,13 @@ class StatusAbsensi extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'name',
     ];
 
-    public function absensis()
+    public function attendances()
     {
         return $this->hasMany(Absensi::class, 'attendance_status_id');
     }

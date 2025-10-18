@@ -3,48 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\IndexKaryawanRequest;
 use App\Models\DetailDiri;
 use App\Models\DetailGaji;
 use App\Models\Karyawan;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexKaryawanRequest $request)
     {
-        $perPage = $request->input('perPage', 10);
-        $keyword = $request->input('q');
-        $cabang = $request->input('cabang');
+        $validated = $request->validated();
+        $user = Auth::user()->load('employee');
 
-        $query = Karyawan::with(['jabatan', 'cabang.kota', 'detail_diri.agama', 'detail_diri.tempat_lahir', 'detail_diri.pendidikan', 'detail_diri.daerah_tinggal', 'detail_gaji', 'histori_gaji']);
+        $karyawanQuery = Karyawan::query()
+            ->with([
+                'jobTitle',
+                'branch.city:code,name',
+                'employeeDetails.religion',
+                'employeeDetails.birthPlace:code,name',
+                'employeeDetails.education',
+                'employeeDetails.residentialArea:code,name',
+                'employeeDetails.marriageStatus',
+                'salaryDetails',
+                'salaryHistory',
+            ])
+            ->filter($validated)
+            ->when(!($validated['getAll'] ?? false), function ($query) use ($user) {
+                if (isset($user->employee)) {
+                    $query->where('id', $user->employee->id);
+                }
+            })
+            ->orderBy('id', 'desc');
 
-        $query->when($keyword, function ($q, $keyword) {
-            return $q->where(function ($subQuery) use ($keyword) {
-                $subQuery->where('name', 'like', "%{$keyword}%")
-                    ->orWhere('npk', 'like', "%{$keyword}%")
-                    ->orWhereHas('jabatan', function ($jabatanQuery) use ($keyword) {
-                        $jabatanQuery->where('name', 'like', "%{$keyword}%");
-                    });
-            });
-        });
-
-        $query->when($cabang && $cabang !== 'semua', function ($q, $cabang) {
-            return $q->where('cabang_id', $cabang);
-        });
-
-        $query->orderBy('id', 'asc');
-
-        if ($request->boolean('paginate')) {
-            $karyawan = $query->paginate($perPage)->withQueryString();
-        } else {
-            $karyawan = $query->get();
-        }
+        $karyawan = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
 
         return ApiResponseHelper::success('Daftar Karyawan', $karyawan);
     }

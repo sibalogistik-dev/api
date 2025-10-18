@@ -9,13 +9,13 @@ class MarriageStatus extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'name'
     ];
 
-    public function detailDiri()
+    public function employeeDetails()
     {
         return $this->hasMany(DetailDiri::class);
     }

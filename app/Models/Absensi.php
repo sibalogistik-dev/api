@@ -25,7 +25,7 @@ class Absensi extends Model
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
             $query->where(function ($query) use ($keyword) {
                 $query->where('description', 'like', "%{$keyword}%")
-                    ->orWhereHas('karyawan', function ($query) use ($keyword) {
+                    ->orWhereHas('employee', function ($query) use ($keyword) {
                         $query->where('name', 'like', "%{$keyword}%");
                     });
             });
@@ -37,7 +37,7 @@ class Absensi extends Model
 
         $query->when($filters['branch'] ?? null, function ($query, $branch) {
             if ($branch !== 'all') {
-                $query->whereHas('karyawan', function ($query) use ($branch) {
+                $query->whereHas('employee', function ($query) use ($branch) {
                     $query->where('branch_id', $branch);
                 });
             }

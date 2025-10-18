@@ -13,7 +13,7 @@ class Perusahaan extends Model
         'codename',
     ];
 
-    public function cabangs()
+    public function branches()
     {
         return $this->hasMany(Cabang::class, 'company_id');
     }

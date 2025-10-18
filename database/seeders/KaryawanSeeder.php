@@ -20,7 +20,7 @@ class KaryawanSeeder extends Seeder
                 'npk'                   => '199708170073',
                 'branch_id'             => 1,
                 'job_title_id'          => 16,
-                'manager_id'            => 4,
+                'manager_id'            => 3,
                 'start_date'            => '2025-04-14',
                 'bank_account_number'   => '017401106946503',
                 'detail_diri'           => [
@@ -67,7 +67,7 @@ class KaryawanSeeder extends Seeder
                 'npk'                   => '199905120010',
                 'branch_id'             => 2,
                 'job_title_id'          => 15,
-                'manager_id'            => 4,
+                'manager_id'            => 3,
                 'start_date'            => '2018-07-01',
                 'bank_account_number'   => '017401089349503',
                 'detail_diri'           => [

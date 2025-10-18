@@ -23,10 +23,11 @@ class IndexKaryawanRequest extends FormRequest
     {
         return [
             'q'        => ['nullable', 'string', 'max:100'],
-            'date'     => ['nullable', 'date'],
+            'company'  => ['nullable', 'string'],
             'branch'   => ['nullable', 'string'],
             'paginate' => ['nullable', 'boolean'],
             'perPage'  => ['nullable', 'integer', 'min:1', 'max:100'],
+            'getAll'   => ['nullable', 'boolean'],
         ];
     }
 }
