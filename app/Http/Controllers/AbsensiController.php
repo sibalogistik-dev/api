@@ -7,8 +7,8 @@ use App\Http\Requests\IndexAbsensiRequest;
 use App\Models\Absensi;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
@@ -17,22 +17,30 @@ class AbsensiController extends Controller
      * Display a listing of the resource.
      * 
      * params {Request} $request 
+     * params {boolean} $request->paginate  (important)
      * params {string}  $request->date      (important)
-     * params {string}  $request->keyword   (optional)
+     * params {string}  $request->q         (optional)
      * params {string}  $request->branch    (optional)
      * params {int}     $request->perPage   (optional)
+     * params {boolean} $request->getAll    (optional)
      *  
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(IndexAbsensiRequest $request)
     {
         $validated = $request->validated();
-        $user = $request->user()->load('karyawan');
+        $user = Auth::user()->load('employee');
 
         $absensiQuery = Absensi::query()
-            ->with(['karyawan:id,name,branch_id', 'karyawan.cabang:id,name', 'statusAbsensi:id,name'])
+            ->with([
+                'employee:id,name,branch_id',
+                'employee.branch:id,name',
+                'attendanceStatus:id,name'
+            ])
             ->filter($validated)
-            ->when(!$user->hasAnyPermission(['hrd app', 'finance app']), fn($query) => $query->where('employee_id', $user->karyawan->id))
+            ->when(!($validated['getAll'] ?? false), function ($query) use ($user) {
+                $query->where('employee_id', $user->karyawan->id);
+            })
             ->latest();
 
         $absensi = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();

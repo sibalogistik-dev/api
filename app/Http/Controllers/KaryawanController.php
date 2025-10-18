@@ -76,7 +76,7 @@ class KaryawanController extends Controller
             'address'               => ['required', 'string'],
             'blood_type'            => ['nullable', 'in:a,b,ab,o,none'],
             'education_id'          => ['required', 'integer', 'exists:pendidikans,id'],
-            'marriage_status'       => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'marriage_status_id'    => ['required', 'integer', 'in:belum kawin,kawin,duda,janda'],
             'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
             'passport_photo'        => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'id_card_photo'         => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
@@ -95,15 +95,15 @@ class KaryawanController extends Controller
         DB::beginTransaction();
 
         try {
-            $userData = $request->only(['username', 'name', 'email', 'password']);
-            $userData['email_verified_at'] = now();
-            $userData['user_type'] = 'employee';
-            $user = User::create($userData);
+            $userData                       = $request->only(['username', 'name', 'email', 'password']);
+            $userData['email_verified_at']  = now();
+            $userData['user_type']          = 'employee';
+            $user                           = User::create($userData);
 
             $user->givePermissionTo('karyawan app');
 
-            $karyawanData = $request->only(['name', 'npk', 'job_title_id', 'branch_id', 'start_date']);
-            $karyawanData['user_id'] = $user->id;
+            $karyawanData               = $request->only(['name', 'npk', 'job_title_id', 'branch_id', 'start_date']);
+            $karyawanData['user_id']    = $user->id;
 
             $karyawan = Karyawan::create($karyawanData);
 
@@ -111,15 +111,15 @@ class KaryawanController extends Controller
             $ktpFotoPath = $request->file('id_card_photo')->store('uploads/ktp_foto', 'public');
             $simFotoPath = $request->file('drivers_license_photo') ? $request->file('drivers_license_photo')->store('uploads/sim_foto', 'public') : null;
 
-            $detailDiriData = $request->only(['gender', 'region_id', 'phone_number', 'place_of_birth_id', 'date_of_birth', 'address', 'blood_type', 'education_id', 'marriage_status', 'residential_area_id']);
-            $detailDiriData['employee_id'] = $karyawan->id;
-            $detailDiriData['passport_photo'] = $pasFotoPath;
-            $detailDiriData['id_card_photo'] = $ktpFotoPath;
-            $detailDiriData['drivers_license_photo'] = $simFotoPath;
+            $detailDiriData                             = $request->only(['gender', 'region_id', 'phone_number', 'place_of_birth_id', 'date_of_birth', 'address', 'blood_type', 'education_id', 'marriage_status_id', 'residential_area_id']);
+            $detailDiriData['employee_id']              = $karyawan->id;
+            $detailDiriData['passport_photo']           = $pasFotoPath;
+            $detailDiriData['id_card_photo']            = $ktpFotoPath;
+            $detailDiriData['drivers_license_photo']    = $simFotoPath;
             DetailDiri::create($detailDiriData);
 
-            $detailGajiData = $request->only(['monthly_base_salary', 'daily_base_salary', 'meal_allowance', 'bonus', 'allowance']);
-            $detailGajiData['employee_id'] = $karyawan->id;
+            $detailGajiData                 = $request->only(['monthly_base_salary', 'daily_base_salary', 'meal_allowance', 'bonus', 'allowance']);
+            $detailGajiData['employee_id']  = $karyawan->id;
             DetailGaji::create($detailGajiData);
 
             DB::commit();
@@ -141,9 +141,15 @@ class KaryawanController extends Controller
 
     public function show(Karyawan $karyawan)
     {
-        $data = Karyawan::with('detail_diri', 'detail_gaji')
-            ->withTrashed()
-            ->find($karyawan->id);
+        $data = Karyawan::with([
+            'employeeDetails.religion',
+            'employeeDetails.birthPlace:code,name',
+            'employeeDetails.education',
+            'employeeDetails.residentialArea:code,name',
+            'employeeDetails.marriageStatus',
+            'jobTitle',
+            'attendance.attendanceStatus',
+        ])->withTrashed()->find($karyawan->id);
         return ApiResponseHelper::success('Detail Data karyawan', $data);
     }
 
@@ -163,7 +169,7 @@ class KaryawanController extends Controller
             'address'               => ['required', 'string'],
             'blood_type'            => ['nullable', 'in:a,b,ab,o,none'],
             'education_id'          => ['required', 'integer', 'exists:pendidikans,id'],
-            'marriage_status'       => ['required', 'in:belum kawin,kawin,duda,janda'],
+            'marriage_status_id'    => ['required', 'in:belum kawin,kawin,duda,janda'],
             'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
             'passport_photo'        => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'id_card_photo'         => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],

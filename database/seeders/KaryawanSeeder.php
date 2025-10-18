@@ -19,7 +19,8 @@ class KaryawanSeeder extends Seeder
                 'name'                  => 'Mohammad Farid Hasymi',
                 'npk'                   => '199708170073',
                 'branch_id'             => 1,
-                'job_title_id'          => 3,
+                'job_title_id'          => 16,
+                'manager_id'            => 4,
                 'start_date'            => '2025-04-14',
                 'bank_account_number'   => '017401106946503',
                 'detail_diri'           => [
@@ -32,7 +33,7 @@ class KaryawanSeeder extends Seeder
                     'address'               => 'Jl. Kota Piring',
                     'blood_type'            => 'ab',
                     'education_id'          => 5,
-                    'marriage_status'       => 'belum kawin',
+                    'marriage_status_id'    => 1,
                     'residential_area_id'   => 2172,
                 ],
                 'detail_gaji' => [
@@ -65,7 +66,8 @@ class KaryawanSeeder extends Seeder
                 'name'                  => 'Toby Fiski',
                 'npk'                   => '199905120010',
                 'branch_id'             => 2,
-                'job_title_id'          => 39,
+                'job_title_id'          => 15,
+                'manager_id'            => 4,
                 'start_date'            => '2018-07-01',
                 'bank_account_number'   => '017401089349503',
                 'detail_diri'           => [
@@ -78,7 +80,7 @@ class KaryawanSeeder extends Seeder
                     'address'               => 'JL. Karya Perum. Griya Pinang Asri (Tanjungpinang)',
                     'blood_type'            => 'a',
                     'education_id'          => 4,
-                    'marriage_status'       => 'kawin',
+                    'marriage_status_id'    => 2,
                     'residential_area_id'   => 2172,
                 ],
                 'detail_gaji' => [
@@ -89,6 +91,41 @@ class KaryawanSeeder extends Seeder
                         'meal_allowance'        => 15000,
                         'bonus'                 => 20000,
                         'allowance'             => 70769,
+                        'created_at'            => now(),
+                        'updated_at'            => now(),
+                    ]
+                ],
+            ],
+            [
+                'user_id'               => 4,
+                'name'                  => 'Galuh Mayang Sari',
+                'npk'                   => '199706020015',
+                'branch_id'             => 1,
+                'job_title_id'          => 4,
+                'manager_id'            => null,
+                'start_date'            => '2020-06-15',
+                'bank_account_number'   => '017401089343507',
+                'detail_diri'           => [
+                    'employee_id'           => 3,
+                    'gender'                => 'perempuan',
+                    'religion_id'           => 1,
+                    'phone_number'          => '082383311213',
+                    'place_of_birth_id'     => 2172,
+                    'date_of_birth'         => '1997-06-02',
+                    'address'               => 'Kampung Baru (Dabo Singkep)',
+                    'blood_type'            => 'a',
+                    'education_id'          => 4,
+                    'marriage_status_id'    => 1,
+                    'residential_area_id'   => 2172,
+                ],
+                'detail_gaji' => [
+                    [
+                        'employee_id'           => 3,
+                        'monthly_base_salary'   => 5600000,
+                        'daily_base_salary'     => 138462,
+                        'meal_allowance'        => 15000,
+                        'bonus'                 => 0,
+                        'allowance'             => 61925,
                         'created_at'            => now(),
                         'updated_at'            => now(),
                     ]
@@ -105,13 +142,14 @@ class KaryawanSeeder extends Seeder
                 'email_verified_at' => now(),
                 'user_type'         => 'employee',
             ]);
-            $user->givePermissionTo('login karyawan');
+            $user->assignRole('Karyawan');
             $data[$i]['user_id'] = $user->id;
             $karyawan = Karyawan::create([
                 'user_id'               => $user->id,
                 'name'                  => $data[$i]['name'],
                 'npk'                   => $data[$i]['npk'],
                 'job_title_id'          => $data[$i]['job_title_id'],
+                'manager_id'            => $data[$i]['manager_id'],
                 'branch_id'             => $data[$i]['branch_id'],
                 'start_date'            => $data[$i]['start_date'],
                 'bank_account_number'   => $data[$i]['bank_account_number'],

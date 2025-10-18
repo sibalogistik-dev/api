@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailGaji extends Model
 {
+    protected $hidden = ['updated_at', 'created_at'];
+
     protected $fillable = [
         'employee_id',
         'monthly_base_salary',
@@ -15,7 +17,7 @@ class DetailGaji extends Model
         'allowance',
     ];
 
-    public function karyawan()
+    public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');
     }

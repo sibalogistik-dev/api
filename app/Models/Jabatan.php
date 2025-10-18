@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jabatan extends Model
 {
+    protected $hidden = ['updated_at', 'created_at'];
+
     protected $fillable = [
         'name'
     ];

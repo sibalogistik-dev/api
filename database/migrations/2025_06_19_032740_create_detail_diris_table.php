@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('address');
             $table->enum('blood_type', ['a', 'b', 'ab', 'o', 'none'])->default('none');
             $table->integer('education_id');
-            $table->enum('marriage_status', ['belum kawin', 'kawin', 'janda', 'duda']);
+            $table->integer('marriage_status_id');
             $table->integer('residential_area_id');
             $table->string('passport_photo')->default('uploads/pas_foto/default.webp');
             $table->string('id_card_photo')->default('uploads/ktp_foto/default.webp');

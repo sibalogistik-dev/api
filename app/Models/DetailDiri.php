@@ -7,6 +7,8 @@ use Laravolt\Indonesia\Models\City;
 
 class DetailDiri extends Model
 {
+    protected $hidden = ['updated_at', 'created_at'];
+
     protected $fillable = [
         'employee_id',
         'gender',
@@ -17,35 +19,40 @@ class DetailDiri extends Model
         'address',
         'blood_type',
         'education_id',
-        'marriage_status',
+        'marriage_status_id',
         'residential_area_id',
         'passport_photo',
         'id_card_photo',
         'drivers_license_photo',
     ];
 
-    public function karyawan()
+    public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');
     }
 
-    public function agama()
+    public function religion()
     {
         return $this->belongsTo(Agama::class, 'religion_id');
     }
 
-    public function tempat_lahir()
+    public function birthPlace()
     {
         return $this->belongsTo(City::class, 'place_of_birth_id', 'code');
     }
 
-    public function pendidikan()
+    public function education()
     {
         return $this->belongsTo(Pendidikan::class, 'education_id');
     }
 
-    public function daerah_tinggal()
+    public function residentialArea()
     {
         return $this->belongsTo(City::class, 'residential_area_id', 'code');
+    }
+
+    public  function marriageStatus()
+    {
+        return $this->belongsTo(MarriageStatus::class);
     }
 }

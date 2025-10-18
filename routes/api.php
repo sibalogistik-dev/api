@@ -52,8 +52,6 @@ Route::middleware('api')->group(function () {
                 ->except(['create', 'edit']);
         });
 
-
-
     Route::get('/province/get', [IndonesiaController::class, 'getProvince']);
     Route::get('/province/get/{code}', [IndonesiaController::class, 'getProvince']);
     Route::get('/province/get/{code}/city', [IndonesiaController::class, 'getProvinceCity']);

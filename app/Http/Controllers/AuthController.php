@@ -15,7 +15,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'username'  => 'required|string',
             'password'  => 'required|string',
-            'app_name'  => ['required', 'string', Rule::in($this->allowedDevices)],
+            'app_access_key'  => ['required', 'string', Rule::in($this->allowedDevices)],
         ]);
 
         if ($validator->fails()) {
@@ -26,11 +26,11 @@ class AuthController extends Controller
 
         if (Auth::attempt([$login_type => $request->username, 'password' => $request->password])) {
             $user = Auth::user()->load(['roles.permissions', 'permissions']);
-            if (!$user->hasPermissionTo($request->app_name)) {
+            if (!$user->hasPermissionTo($request->app_access_key)) {
                 Auth::logout();
                 return ApiResponseHelper::error('Anda tidak memiliki izin untuk mengakses aplikasi ini.', null, 403);
             }
-            $token = $user->createToken($request->app_name)->plainTextToken;
+            $token = $user->createToken($request->app_access_key)->plainTextToken;
             $data = [
                 'id'    => $user->id,
                 'name'  => $user->name,
@@ -56,10 +56,22 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = $request->user()->load([
-            'roles.permissions',
+        $user = Auth::user()->load([
+            'roles:id,name',
+            'roles.permissions:id,name,description',
             'permissions',
-            'karyawan' => fn($query) => $query->with(['jabatan', 'cabang', 'detail_diri', 'detail_gaji', 'histori_gaji']),
+            'karyawan' => fn($query) => $query->with([
+                'jobTitle:id,name',
+                'branch:id,name',
+                'employeeDetails:id,employee_id,gender,religion_id,phone_number,place_of_birth_id,date_of_birth,address,blood_type,education_id,marriage_status_id,residential_area_id,passport_photo,id_card_photo',
+                'employeeDetails.religion:id,name',
+                'employeeDetails.birthPlace:code,name',
+                'employeeDetails.education:id,name',
+                'employeeDetails.residentialArea:code,name',
+                'employeeDetails.marriageStatus:id,name',
+                'salaryDetails:id,monthly_base_salary,daily_base_salary,meal_allowance,bonus,allowance',
+                'salaryHistory',
+            ]),
         ]);
         return ApiResponseHelper::success('Data profil pengguna berhasil diambil', $user);
     }

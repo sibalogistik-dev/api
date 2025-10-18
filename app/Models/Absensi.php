@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model
 {
+    protected $hidden = ['updated_at', 'created_at'];
+
     protected $fillable = [
         'employee_id',
         'attendance_status_id',
@@ -42,12 +44,12 @@ class Absensi extends Model
         });
     }
 
-    public function statusAbsensi()
+    public function attendanceStatus()
     {
         return $this->belongsTo(StatusAbsensi::class, 'attendance_status_id');
     }
 
-    public function karyawan()
+    public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');
     }

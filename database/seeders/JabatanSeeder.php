@@ -76,25 +76,32 @@ class JabatanSeeder extends Seeder
         ];
 
         $jabatanBaru = [
-            'Manajer Operasional dan HRD',
-            'Manajer Marketing',
-            'Manajer Digital Marketing',
-            'Manajer Finance',
-            'Staff Operasional',
-            'Staff HRD',
-            'Staff IT',
+            'Direktur',
+            'Manager Marketing',
+            'Manager Digital Marketing',
+            'Manager Operasional',
+            'Manager Finance',
+            'HRD',
+            'Admin Customer Service',
+            'Admin Gudang',
+            'Admin Tracking',
+            'Admin Pusat',
+            'Admin Rental',
+            'Admin Purchasing',
+            'Tim Marketing',
             'Staff Digital Marketing',
+            'Staff Operasional',
+            'Staff IT',
             'Staff Branding',
-            'Staff Finance',
             'Staff Accounting',
-            'Staff Tracking',
-            'Staff Purchasing',
-            'Customer Service',
+            'Staff Finance',
+            'Receiving',
+            'Koordinator Operasional',
         ];
 
-        for ($i = 0; $i < count($jabatan); $i++) {
+        for ($i = 0; $i < count($jabatanBaru); $i++) {
             Jabatan::create([
-                'name' => $jabatan[$i]
+                'name' => $jabatanBaru[$i]
             ]);
         }
     }

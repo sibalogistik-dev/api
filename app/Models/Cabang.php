@@ -9,6 +9,8 @@ use Laravolt\Indonesia\Models\Province;
 
 class Cabang extends Model
 {
+    protected $hidden = ['updated_at', 'created_at'];
+
     protected $fillable = [
         'name',
         'address',

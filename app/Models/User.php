@@ -14,6 +14,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles, SoftDeletes;
 
+    protected $hidden = ['password', 'remember_token'];
+
     protected $fillable = [
         'name',
         'email',
@@ -21,8 +23,6 @@ class User extends Authenticatable
         'password',
         'user_type',
     ];
-
-    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
@@ -32,7 +32,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function karyawan()
+    public function employee()
     {
         return $this->hasOne(Karyawan::class);
     }

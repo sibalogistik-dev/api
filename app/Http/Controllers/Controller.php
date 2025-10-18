@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 abstract class Controller
 {
     public $allowedDevices = [
-        'login karyawan',
-        'login hrd',
-        'login marketing',
-        'login finance',
-        'login vendor',
-        'login logistik',
-        'login mobile',
+        'app.access.karyawan',
+        'app.access.hrd',
+        'app.access.finance',
+        'app.access.logistik',
+        'app.access.marketing',
     ];
 }
