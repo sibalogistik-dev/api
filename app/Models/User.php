@@ -22,6 +22,7 @@ class User extends Authenticatable
         'username',
         'password',
         'user_type',
+        'email_verified_at'
     ];
 
     protected function casts(): array

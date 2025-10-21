@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('residential_area_id');
             $table->string('passport_photo')->default('uploads/pas_foto/default.webp');
             $table->string('id_card_photo')->default('uploads/ktp_foto/default.webp');
-            $table->string('drivers_license_photo')->default('uploads/sim_foto/default.webp');
+            $table->string('drivers_license_photo')->nullable();
             $table->timestamps();
         });
     }
