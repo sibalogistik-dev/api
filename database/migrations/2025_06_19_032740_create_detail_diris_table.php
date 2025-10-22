@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('id_card_photo')->default('uploads/ktp_foto/default.webp');
             $table->string('drivers_license_photo')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

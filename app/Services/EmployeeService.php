@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Exception;
 
-class KaryawanService
+class EmployeeService
 {
-    public function createEmployee(array $data)
+    public function create(array $data)
     {
         $filePaths = [];
 
@@ -91,11 +91,11 @@ class KaryawanService
                     Storage::disk('public')->delete($path);
                 }
             }
-            throw new Exception('Gagal menyimpan data karyawan: ' . $e->getMessage());
+            throw new Exception('Failed to save employee data: ' . $e->getMessage());
         }
     }
 
-    public function updateEmployee(Karyawan $karyawan, array $data)
+    public function update(Karyawan $karyawan, array $data)
     {
         $newFilePaths   = [];
         $oldFilePaths   = [];
@@ -197,7 +197,7 @@ class KaryawanService
                 }
             }
 
-            throw new Exception('Gagal mengupdate data karyawan: ' . $e->getMessage());
+            throw new Exception('Failed to update employee data: ' . $e->getMessage());
         }
     }
 

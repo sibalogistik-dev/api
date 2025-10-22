@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->decimal('latitude', 11, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

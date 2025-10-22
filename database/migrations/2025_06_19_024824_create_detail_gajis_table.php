@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('bonus')->nullable()->default(0);
             $table->integer('allowance')->nullable()->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravolt\Indonesia\Models\City;
 
 class DetailDiri extends Model
 {
+    use SoftDeletes;
+
     protected $hidden = ['updated_at', 'created_at'];
 
     protected $fillable = [

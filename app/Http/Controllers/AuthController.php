@@ -13,9 +13,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username'  => ['required', 'string'],
-            'password'  => ['required', 'string'],
-            'app_access_key'  => ['required', 'string', Rule::in($this->allowedDevices)],
+            'username'          => ['required', 'string'],
+            'password'          => ['required', 'string'],
+            'app_access_key'    => ['required', 'string', Rule::in($this->allowedDevices)],
         ]);
 
         if ($validator->fails()) {

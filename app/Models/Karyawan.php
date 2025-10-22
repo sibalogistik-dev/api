@@ -39,13 +39,6 @@ class Karyawan extends Model
             });
         });
 
-        $query->when($filters['company'] ?? null, function ($query, $company) {
-            if ($company !== 'all') {
-                $query->whereHas('branch.company', function ($query) use ($company) {
-                    $query->where('id', $company);
-                });
-            }
-        });
         $query->when($filters['branch'] ?? null, function ($query, $branch) {
             if ($branch !== 'all') {
                 $query->where('branch_id', $branch);
@@ -93,12 +86,12 @@ class Karyawan extends Model
         return $this->hasMany(Karyawan::class, 'manager_id');
     }
 
-    public function isManagerOf(Karyawan $targetKaryawan): bool
+    public function isManagerOf(Karyawan $targetKaryawan)
     {
         return $targetKaryawan->manager_id === $this->id;
     }
 
-    public function isManagerOfRecursive(Karyawan $targetKaryawan): bool
+    public function isManagerOfRecursive(Karyawan $targetKaryawan)
     {
         $current = $targetKaryawan;
 

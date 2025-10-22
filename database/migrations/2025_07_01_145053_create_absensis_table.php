@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('longitude', 10)->nullable()->default('0.00000000');
             $table->float('latitude', 10)->nullable()->default('0.00000000');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

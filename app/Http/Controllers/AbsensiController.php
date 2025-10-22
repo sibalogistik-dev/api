@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
-use App\Http\Requests\IndexAbsensiRequest;
+use App\Http\Requests\AttendanceIndexRequest;
 use App\Models\Absensi;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,20 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * 
-     * params {Request} $request 
-     * params {boolean} $request->paginate  (important)
-     * params {string}  $request->date      (important)
-     * params {string}  $request->q         (optional)
-     * params {string}  $request->branch    (optional)
-     * params {int}     $request->perPage   (optional)
-     * params {boolean} $request->getAll    (optional)
-     *  
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index(IndexAbsensiRequest $request)
+    public function index(AttendanceIndexRequest $request)
     {
         $validated = $request->validated();
         $user = Auth::user()->load('employee');

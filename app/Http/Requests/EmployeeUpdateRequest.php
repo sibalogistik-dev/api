@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class UpdateKaryawanRequest extends FormRequest
+class EmployeeUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,9 +17,11 @@ class UpdateKaryawanRequest extends FormRequest
 
     public function rules(): array
     {
+        $karyawanId = $this->route('karyawan')->id;
+
         return [
             'name'                  => ['required', 'string', 'max:255'],
-            'npk'                   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'npk')->ignore($this->route('karyawan')->id)],
+            'npk'                   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'npk')->ignore($karyawanId)],
 
             'job_title_id'          => ['required', 'integer', 'exists:jabatans,id'],
             'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
@@ -27,7 +29,7 @@ class UpdateKaryawanRequest extends FormRequest
             'end_date'              => ['nullable', 'date'],
             'contract'              => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
 
-            'bank_account_number'   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'bank_account_number')->ignore($this->route('karyawan')->id)],
+            'bank_account_number'   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'bank_account_number')->ignore($karyawanId)],
             'gender'                => ['required', 'in:laki-laki,perempuan'],
             'religion_id'           => ['required', 'integer', 'exists:agamas,id'],
 
