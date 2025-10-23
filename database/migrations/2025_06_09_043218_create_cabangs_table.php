@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('address');
             $table->string('telephone')->nullable();
-            $table->integer('city_id');
+            $table->bigInteger('village_id');
             $table->integer('company_id');
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();

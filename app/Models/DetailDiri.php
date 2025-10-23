@@ -10,7 +10,7 @@ class DetailDiri extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'employee_id',

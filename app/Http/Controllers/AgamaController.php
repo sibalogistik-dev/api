@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class AgamaController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -55,7 +55,7 @@ class AgamaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Agama $agama)
+    public function show(Agama $religion)
     {
         //
     }
@@ -63,7 +63,7 @@ class AgamaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Agama $agama)
+    public function edit(Agama $religion)
     {
         //
     }
@@ -71,7 +71,7 @@ class AgamaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Agama $agama)
+    public function update(Request $request, Agama $religion)
     {
         //
     }
@@ -79,7 +79,7 @@ class AgamaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Agama $agama)
+    public function destroy(Agama $religion)
     {
         //
     }

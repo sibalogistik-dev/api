@@ -9,12 +9,12 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class EmployeeStoreRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'username'              => ['required', 'string', 'max:255', 'unique:users,username'],

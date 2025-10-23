@@ -4,118 +4,106 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
+use App\Http\Requests\AttendanceStoreRequest;
 use App\Models\Absensi;
+use App\Models\StatusAbsensi;
+use App\Services\AttendanceService;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
 {
-    public function index(AttendanceIndexRequest $request)
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
     {
-        $validated = $request->validated();
-        $user = Auth::user()->load('employee');
-
-        $absensiQuery = Absensi::query()
-            ->with([
-                'employee',
-                'employee.branch.city:code,name',
-                'attendanceStatus'
-            ])
-            ->filter($validated)
-            ->when(!($validated['getAll'] ?? false), function ($query) use ($user) {
-                $query->where('employee_id', $user->employee->id);
-            })
-            ->orderBy('id', 'desc');
-
-        $absensi = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
-
-        return ApiResponseHelper::success('Daftar Absensi', $absensi);
+        $this->attendanceService = $attendanceService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index(AttendanceIndexRequest $request)
+    {
+        $validated      = $request->validated();
+        $user           = Auth::user();
+        $absensiQuery   = Absensi::query()->filter($validated);
+        if (!($validated['getAll'] ?? false)) {
+            $employee   = $user->employee;
+            if ($employee) {
+                $absensiQuery->where('employee_id', $employee->id);
+            }
+        }
+        $absensiQuery->orderBy('id', 'desc');
+        $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
+        $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
+        $transformedAbsensi = $itemsToTransform->map(function ($item) {
+            return [
+                'id'                    => $item->id,
+                'name'                  => $item->employee->name,
+                'status'                => $item->attendanceStatus->name,
+                'description'           => $item->description,
+                'date'                  => $item->date,
+                'checked_in'            => $item->start_time,
+                'checked_out'           => $item->end_time,
+                'checked_in_latitude'   => $item->latitude,
+                'checked_in_longitude'  => $item->longitude,
+                'attendance_image'      => $item->attendance_image,
+            ];
+        });
+        if ($absensi instanceof LengthAwarePaginator) {
+            return ApiResponseHelper::success("Attendance's list", $absensi->setCollection($transformedAbsensi));
+        } else {
+            return ApiResponseHelper::success("Attendance's list", $transformedAbsensi);
+        }
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(AttendanceStoreRequest $request)
     {
-        $validate = Validator::make($request->all(), [
-            'employee_id'           => ['required', 'integer', 'exists:karyawans,id'],
-            'attendance_status_id'  => ['required', 'integer', 'exists:status_absensis,id'],
-            'description'           => ['required', 'string', 'max:255'],
-            'longitude'             => ['required', 'decimal:1,10'],
-            'latitude'              => ['required', 'decimal:1,10'],
-            'attendance_type'       => ['required', 'string', 'in:masuk,pulang'],
-        ]);
-
-        if ($validate->fails()) {
-            return ApiResponseHelper::error('Validasi data gagal!', $validate->errors(), 422);
-        }
-
-        $attendance_type = $request->input('attendance_type');
-        DB::beginTransaction();
-
         try {
-            $dataAbsensi = $request->except('attendance_type');
-
-            if ($attendance_type === 'masuk') {
-                $dataAbsensi['date'] = date('Y-m-d');
-                $dataAbsensi['start_time'] = date('H:i:s');
-                $absensi = Absensi::create($dataAbsensi);
-                if ($absensi) {
-                    DB::commit();
-                    return ApiResponseHelper::success('Data Absensi berhasil ditambahkan');
-                }
-            } elseif ($attendance_type === 'pulang') {
-                # code...
+            if ($request->input('attendance_type') === 'masuk') {
+                $attendance = $this->attendanceService->createIn($request->validated());
+            } else if ($request->input('attendance_type') === 'pulang') {
+                $attendance = $this->attendanceService->createOut($request->validated());
             }
+            return ApiResponseHelper::success("Attendance's list", $attendance);
         } catch (Exception $e) {
-            DB::rollback();
-            return ApiResponseHelper::error('Terjadi kesalahan saat menyimpan data', $e->getMessage(), 500);
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Absensi $absensi)
+    public function show($absensi)
     {
-        $absensi->load(
-            'karyawan.jabatan',
-            'karyawan.cabang.perusahaan',
-            'statusAbsensi'
-        );
-        return ApiResponseHelper::success('Data Absensi', $absensi);
+        $query = Absensi::withTrashed()->find($absensi);
+        $data = [
+            'id'                    => $query->id,
+            'name'                  => $query->employee->name,
+            'status'                => $query->attendanceStatus->name,
+            'description'           => $query->description,
+            'date'                  => $query->date,
+            'checked_in'            => $query->start_time,
+            'checked_out'           => $query->end_time,
+            'checked_in_latitude'   => $query->latitude,
+            'checked_in_longitude'  => $query->longitude,
+            'attendance_image'      => $query->attendance_image,
+        ];
+        return ApiResponseHelper::success('Attendance detail', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Absensi $absensi)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Absensi $absensi)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Absensi $absensi)
     {
         //

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BranchIndexRequest extends FormRequest
+class CompanyIndexRequest extends FormRequest
 {
     public function authorize()
     {
@@ -15,7 +15,6 @@ class BranchIndexRequest extends FormRequest
     {
         return [
             'q'        => ['nullable', 'string', 'max:100'],
-            'company'  => ['nullable', 'string'],
             'paginate' => ['nullable', 'boolean'],
             'perPage'  => ['nullable', 'integer', 'min:1', 'max:100'],
         ];

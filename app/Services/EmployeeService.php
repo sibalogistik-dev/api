@@ -7,7 +7,6 @@ use App\Models\Karyawan;
 use App\Models\DetailDiri;
 use App\Models\DetailGaji;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Exception;
@@ -17,9 +16,7 @@ class EmployeeService
     public function create(array $data)
     {
         $filePaths = [];
-
         DB::beginTransaction();
-
         try {
             $user = User::create([
                 'username'          => $data['username'],
@@ -30,7 +27,6 @@ class EmployeeService
                 'user_type'         => 'employee',
             ]);
             $user->givePermissionTo('app.access.karyawan');
-
             $karyawanData = [
                 'user_id'             => $user->id,
                 'name'                => $data['name'],
@@ -40,21 +36,16 @@ class EmployeeService
                 'branch_id'           => $data['branch_id'],
                 'start_date'          => $data['start_date'],
             ];
-
             if (!empty($data['contract'])) {
                 $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
                 $karyawanData['contract'] = $filePaths['contract'];
             }
-
             $karyawan = Karyawan::create($karyawanData);
-
             $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
             $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
-
             if (!empty($data['drivers_license_photo'])) {
                 $filePaths['drivers_license_photo'] = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
             }
-
             DetailDiri::create([
                 'employee_id'           => $karyawan->id,
                 'gender'                => $data['gender'],
@@ -71,7 +62,6 @@ class EmployeeService
                 'id_card_photo'         => $filePaths['id_card_photo'],
                 'drivers_license_photo' => $filePaths['drivers_license_photo'] ?? null,
             ]);
-
             DetailGaji::create([
                 'employee_id'         => $karyawan->id,
                 'monthly_base_salary' => $data['monthly_base_salary'],
@@ -82,7 +72,6 @@ class EmployeeService
             ]);
 
             DB::commit();
-
             return $karyawan;
         } catch (Exception $e) {
             DB::rollback();
@@ -99,12 +88,9 @@ class EmployeeService
     {
         $newFilePaths   = [];
         $oldFilePaths   = [];
-
         DB::beginTransaction();
-
         try {
             $karyawan->loadMissing('user');
-
             $karyawanData = [
                 'name'                => $data['name'],
                 'bank_account_number' => $data['bank_account_number'],
@@ -114,17 +100,14 @@ class EmployeeService
                 'start_date'          => $data['start_date'],
                 'end_date'            => $data['end_date'] ?? null,
             ];
-
             if (!empty($data['contract'])) {
                 $oldFilePaths[]             = $karyawan->contract;
                 $newFilePaths['contract']   = $this->storeFile($data['contract'], 'uploads/kontrak');
                 $karyawanData['contract']   = $newFilePaths['contract'];
             }
             $karyawan->update($karyawanData);
-
             $karyawan->loadMissing('employeeDetails');
             $details    = $karyawan->employeeDetails;
-
             $detailDiriData = [
                 'gender'                => $data['gender'],
                 'religion_id'           => $data['religion_id'],
@@ -137,32 +120,27 @@ class EmployeeService
                 'marriage_status_id'    => $data['marriage_status_id'],
                 'residential_area_id'   => $data['residential_area_id'],
             ];
-
             if (!empty($data['passport_photo']) && $details) {
                 $oldFilePaths[]                     = $details->passport_photo;
                 $newFilePaths['passport_photo']     = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
                 $detailDiriData['passport_photo']   = $newFilePaths['passport_photo'];
             }
-
             if (!empty($data['id_card_photo']) && $details) {
                 $oldFilePaths[]                     = $details->id_card_photo;
                 $newFilePaths['id_card_photo']      = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
                 $detailDiriData['id_card_photo']    = $newFilePaths['id_card_photo'];
             }
-
             if (!empty($data['drivers_license_photo']) && $details) {
                 $oldFilePaths[]                             = $details->drivers_license_photo;
                 $newFilePaths['drivers_license_photo']      = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
                 $detailDiriData['drivers_license_photo']    = $newFilePaths['drivers_license_photo'];
             }
-
             if ($details) {
                 $details->update($detailDiriData);
             } else {
                 $detailDiriData['employee_id'] = $karyawan->id;
                 DetailDiri::create($detailDiriData);
             }
-
             $karyawan->loadMissing('salaryDetails');
             $detailGajiData = [
                 'monthly_base_salary' => $data['monthly_base_salary'],
@@ -171,32 +149,26 @@ class EmployeeService
                 'bonus'               => $data['bonus'],
                 'allowance'           => $data['allowance'],
             ];
-
             if ($karyawan->salaryDetails) {
                 $karyawan->salaryDetails->update($detailGajiData);
             } else {
                 $detailGajiData['employee_id'] = $karyawan->id;
                 DetailGaji::create($detailGajiData);
             }
-
             DB::commit();
-
             foreach ($oldFilePaths as $path) {
                 if ($path) {
                     Storage::disk('public')->delete($path);
                 }
             }
-
             return $karyawan;
         } catch (Exception $e) {
             DB::rollback();
-
             foreach ($newFilePaths as $path) {
                 if ($path) {
                     Storage::disk('public')->delete($path);
                 }
             }
-
             throw new Exception('Failed to update employee data: ' . $e->getMessage());
         }
     }

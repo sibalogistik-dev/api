@@ -22,16 +22,11 @@ class KaryawanController extends Controller
 
     public function index(EmployeeIndexRequest $request)
     {
-        $validated = $request->validated();
-        $karyawanQuery = Karyawan::query()
-            ->filter($validated)
-            ->orderBy('id', 'desc');
-
-        $karyawan = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
-
-        $itemsToTransform = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
-
-        $transformedKaryawan = $itemsToTransform->map(function ($item) {
+        $validated              = $request->validated();
+        $karyawanQuery          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
+        $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
+        $itemsToTransform       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
+        $transformedKaryawan    = $itemsToTransform->map(function ($item) {
             return [
                 'id'                => $item->id,
                 'name'              => $item->name,
@@ -41,7 +36,6 @@ class KaryawanController extends Controller
                 'passport_photo'    => $item->employeeDetails->passport_photo ?? null,
             ];
         });
-
         if ($karyawan instanceof LengthAwarePaginator) {
             return ApiResponseHelper::success('Employees list', $karyawan->setCollection($transformedKaryawan));
         } else {

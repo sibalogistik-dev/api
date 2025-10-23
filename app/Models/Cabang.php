@@ -5,18 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\Village;
 
 class Cabang extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'name',
         'address',
         'telephone',
-        'city_id',
+        'village_id',
         'company_id',
         'start_time',
         'end_time',
@@ -44,9 +45,9 @@ class Cabang extends Model
         });
     }
 
-    public function city()
+    public function village()
     {
-        return $this->belongsTo(City::class, 'city_id', 'code')->orderBy('name');
+        return $this->belongsTo(Village::class, 'village_id', 'code')->orderBy('name');
     }
 
     public function company()

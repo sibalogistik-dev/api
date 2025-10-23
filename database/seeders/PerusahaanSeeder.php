@@ -17,7 +17,6 @@ class PerusahaanSeeder extends Seeder
             ['name' => 'SIBA Cargo', 'codename' => 'sibacargo'],
             ['name' => 'Best Furniture', 'codename' => 'bestfurniture'],
             ['name' => 'Men Cargo', 'codename' => 'mencargo'],
-            ['name' => 'Mabes', 'codename' => 'mabes'],
             ['name' => 'SAuto8', 'codename' => 'sauto8'],
             ['name' => 'MBS Cargo', 'codename' => 'mbscargo'],
         ];

@@ -25,30 +25,30 @@ Route::middleware('api')->group(function () {
 
             /* resource routes */
             // master data
-            Route::resource('agama', AgamaController::class)
+            Route::resource('religion', AgamaController::class)
                 ->except(['create', 'edit']);
-            Route::resource('perusahaan', PerusahaanController::class)
+            Route::resource('company', PerusahaanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('pendidikan', PendidikanController::class)
+            Route::resource('education', PendidikanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('status-nikah', MarriageStatusController::class)
+            Route::resource('marriage_status', MarriageStatusController::class)
                 ->except(['create', 'edit']);
 
-            Route::resource('absensi', AbsensiController::class)
+            Route::resource('attendance', AbsensiController::class)
                 ->except(['create', 'edit']);
-            Route::resource('cabang', CabangController::class)
+            Route::resource('branch', CabangController::class)
                 ->except(['create', 'edit']);
-            Route::resource('jabatan', JabatanController::class)
+            Route::resource('job_title', JabatanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('karyawan', KaryawanController::class)
+            Route::resource('employee', KaryawanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('kecamatan', KecamatanController::class)
+            Route::resource('district', KecamatanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('kelurahan', KelurahanController::class)
+            Route::resource('village', KelurahanController::class)
                 ->except(['create', 'edit']);
-            Route::resource('kotakab', KotaKabController::class)
+            Route::resource('city', KotaKabController::class)
                 ->except(['create', 'edit']);
-            Route::resource('provinsi', ProvinsiController::class)
+            Route::resource('province', ProvinsiController::class)
                 ->except(['create', 'edit']);
         });
 

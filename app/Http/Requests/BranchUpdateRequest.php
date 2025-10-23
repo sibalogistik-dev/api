@@ -6,18 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BranchUpdateRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'name'          => ['required', 'string', 'max:255'],
             'address'       => ['required', 'string', 'max:255'],
             'telephone'     => ['nullable', 'string', 'max:255'],
-            'city_id'       => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'village_id'    => ['required', 'integer', 'exists:indonesia_villages,code'],
             'company_id'    => ['required', 'integer', 'exists:perusahaans,id'],
             'start_time'    => ['required', 'date_format:H:i:s'],
             'end_time'      => ['required', 'date_format:H:i:s', 'after:start_time'],

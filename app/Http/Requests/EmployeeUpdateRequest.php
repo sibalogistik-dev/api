@@ -10,12 +10,12 @@ use Illuminate\Validation\Rule;
 
 class EmployeeUpdateRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         $karyawanId = $this->route('karyawan')->id;
 

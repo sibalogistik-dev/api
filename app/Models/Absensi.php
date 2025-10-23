@@ -9,7 +9,7 @@ class Absensi extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at'];
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $fillable = [
         'employee_id',
@@ -43,6 +43,12 @@ class Absensi extends Model
                 $query->whereHas('employee', function ($query) use ($branch) {
                     $query->where('branch_id', $branch);
                 });
+            }
+        });
+
+        $query->when($filters['status'] ?? null, function ($query, $status) {
+            if ($status !== 'all') {
+                $query->where('attendance_status_id', $status);
             }
         });
     }
