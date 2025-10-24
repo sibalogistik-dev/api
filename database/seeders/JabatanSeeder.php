@@ -85,7 +85,7 @@ class JabatanSeeder extends Seeder
             'Admin Customer Service',
             'Admin Gudang',
             'Admin Tracking',
-            'Admin Pusat',
+            'Admin Cabang',
             'Admin Rental',
             'Admin Purchasing',
             'Tim Marketing',

@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->time('end_time')->nullable();
             $table->decimal('latitude', 11, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
+            $table->integer('attendance_radius')->nullable()->default(200);
             $table->timestamps();
             $table->softDeletes();
         });

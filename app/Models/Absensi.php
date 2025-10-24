@@ -21,6 +21,7 @@ class Absensi extends Model
         'description',
         'longitude',
         'latitude',
+        'late_arrival_time',
     ];
 
     public function scopeFilter($query, array $filters)

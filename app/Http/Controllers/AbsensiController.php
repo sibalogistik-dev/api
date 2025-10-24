@@ -6,7 +6,6 @@ use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
 use App\Http\Requests\AttendanceStoreRequest;
 use App\Models\Absensi;
-use App\Models\StatusAbsensi;
 use App\Services\AttendanceService;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -41,36 +40,24 @@ class AbsensiController extends Controller
                 'id'                    => $item->id,
                 'name'                  => $item->employee->name,
                 'status'                => $item->attendanceStatus->name,
-                'description'           => $item->description,
                 'date'                  => $item->date,
                 'checked_in'            => $item->start_time,
                 'checked_out'           => $item->end_time,
-                'checked_in_latitude'   => $item->latitude,
-                'checked_in_longitude'  => $item->longitude,
-                'attendance_image'      => $item->attendance_image,
             ];
         });
-        if ($absensi instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success("Attendance's list", $absensi->setCollection($transformedAbsensi));
-        } else {
-            return ApiResponseHelper::success("Attendance's list", $transformedAbsensi);
-        }
-    }
 
-    public function create()
-    {
-        //
+        if ($absensi instanceof LengthAwarePaginator) {
+            return ApiResponseHelper::success('Attendance list', $absensi, $transformedAbsensi);
+        }
+
+        return ApiResponseHelper::success('Attendance list', $transformedAbsensi);
     }
 
     public function store(AttendanceStoreRequest $request)
     {
         try {
-            if ($request->input('attendance_type') === 'masuk') {
-                $attendance = $this->attendanceService->createIn($request->validated());
-            } else if ($request->input('attendance_type') === 'pulang') {
-                $attendance = $this->attendanceService->createOut($request->validated());
-            }
-            return ApiResponseHelper::success("Attendance's list", $attendance);
+            $attendance = $this->attendanceService->create($request->validated());
+            return ApiResponseHelper::success("Attendance successfully recorded.", $attendance);
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
         }
@@ -90,6 +77,7 @@ class AbsensiController extends Controller
             'checked_in_latitude'   => $query->latitude,
             'checked_in_longitude'  => $query->longitude,
             'attendance_image'      => $query->attendance_image,
+            'late_arrival_time'     => $query->late_arrival_time,
         ];
         return ApiResponseHelper::success('Attendance detail', $data);
     }

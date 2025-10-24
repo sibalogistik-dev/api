@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CabangSeeder::class,
             PerusahaanSeeder::class,
             KaryawanSeeder::class,
+            RemoteAttendanceSeeder::class,
 
             StatusAbsensiSeeder::class,
             AbsensiSeeder::class,
