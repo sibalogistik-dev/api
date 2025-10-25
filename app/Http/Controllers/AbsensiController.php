@@ -6,6 +6,7 @@ use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
 use App\Http\Requests\AttendanceStoreRequest;
 use App\Models\Absensi;
+use App\Models\Karyawan;
 use App\Services\AttendanceService;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -38,11 +39,12 @@ class AbsensiController extends Controller
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
             return [
                 'id'                    => $item->id,
-                'name'                  => $item->employee->name,
-                'status'                => $item->attendanceStatus->name,
+                'employee_id'           => $item->employee_id,
+                'attendance_status_id'  => $item->attendance_status_id,
                 'date'                  => $item->date,
                 'checked_in'            => $item->start_time,
                 'checked_out'           => $item->end_time,
+                'description'           => $item->description,
             ];
         });
 
@@ -65,7 +67,10 @@ class AbsensiController extends Controller
 
     public function show($absensi)
     {
-        $query = Absensi::withTrashed()->find($absensi);
+        $query = Absensi::find($absensi);
+        if (!$query) {
+            return ApiResponseHelper::error('Attendance not found', [], 404);
+        }
         $data = [
             'id'                    => $query->id,
             'name'                  => $query->employee->name,
@@ -95,5 +100,39 @@ class AbsensiController extends Controller
     public function destroy(Absensi $absensi)
     {
         //
+    }
+
+    public function employeeAttendance($employee, Request $request)
+    {
+        $employee = Karyawan::find($employee);
+        if (!$employee) {
+            return ApiResponseHelper::error('Employee not found', [], 404);
+        }
+        $attendanceQuery = Absensi::query()
+            ->where('employee_id', $employee->id)
+            ->orderBy('id', 'desc');
+
+        $attendanceQuery->when(
+            $request->has('date') && $request->input('date'),
+            fn($query)  => $query->where('date', '=', $request->input('date'))
+        );
+        $attendance = $attendanceQuery->when(
+            $request->has('paginate') && $request->input('paginate'),
+            fn($query)  => $query->paginate($request->input('perPage', 10)),
+            fn($query)  => $query->get()
+        );
+
+        $data = $attendance->map(function ($item) {
+            return [
+                'id'                => $item->id,
+                'date'              => $item->date,
+                'status'            => $item->attendanceStatus->name,
+                'checked_in'        => $item->start_time,
+                'checked_out'       => $item->end_time,
+                'late'              => $item->late_arrival_time ? true : false,
+                'late_arrival_time' => $item->late_arrival_time,
+            ];
+        });
+        return ApiResponseHelper::success("Employee's attendance", $data);
     }
 }

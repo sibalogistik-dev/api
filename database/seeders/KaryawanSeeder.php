@@ -28,7 +28,7 @@ class KaryawanSeeder extends Seeder
             $managerIds = [1, 2, 3];
         }
 
-        $areaIds = [2172, 2173, 2174, 2175, 2176];
+        $areaIds = [2101, 2102, 2103, 2104, 2105, 2171, 2172];
 
         $data = [
             [
@@ -55,12 +55,20 @@ class KaryawanSeeder extends Seeder
                 'detail_gaji'           => [
                     [
                         'employee_id'           => 3,
+                        'monthly_base_salary'   => 5548000,
+                        'daily_base_salary'     => 136462,
+                        'meal_allowance'        => 15000,
+                        'bonus'                 => 0,
+                        'allowance'             => 61925,
+                    ],
+                    [
+                        'employee_id'           => 3,
                         'monthly_base_salary'   => 5600000,
                         'daily_base_salary'     => 138462,
                         'meal_allowance'        => 15000,
                         'bonus'                 => 0,
                         'allowance'             => 61925,
-                    ]
+                    ],
                 ],
             ],
         ];

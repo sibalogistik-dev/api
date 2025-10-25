@@ -50,9 +50,8 @@ class AttendanceService
         $filePaths = [];
         try {
             $attendance_status  = StatusAbsensi::find($data['attendance_status_id']);
-            $kantor = $karyawan->branch;
-
-            $attendanceData = [
+            $kantor             = $karyawan->branch;
+            $attendanceData     = [
                 'employee_id'           => $data['employee_id'],
                 'attendance_status_id'  => $data['attendance_status_id'],
                 'description'           => $data['description'],
@@ -144,11 +143,10 @@ class AttendanceService
 
     private function storeFile(UploadedFile $file, string $path, string $employeeName, int $quality = 90)
     {
-        $saneName = Str::slug($employeeName);
-        $filename = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
-        $fullPath = $path . '/' . $filename;
-
-        $imageContent = Image::read($file->getRealPath())->toWebp($quality);
+        $saneName       = Str::slug($employeeName);
+        $filename       = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
+        $fullPath       = $path . '/' . $filename;
+        $imageContent   = Image::read($file->getRealPath())->toWebp($quality);
 
         Storage::disk('public')->put($fullPath, (string) $imageContent);
 
@@ -157,18 +155,16 @@ class AttendanceService
 
     private function hitungJarak($lat_kantor, $long_kantor, $lat_pengguna, $long_pengguna)
     {
-        $earthRadius = 6371000;
-        $lat1Rad = deg2rad($lat_kantor);
-        $long1Rad = deg2rad($long_kantor);
-        $lat2Rad = deg2rad($lat_pengguna);
-        $long2Rad = deg2rad($long_pengguna);
-        $deltaLat = $lat2Rad - $lat1Rad;
-        $deltaLong = $long2Rad - $long1Rad;
-        $hitung_radian = sin($deltaLat / 2) * sin($deltaLat / 2)
-            + cos($lat1Rad) * cos($lat2Rad)
-            * sin($deltaLong / 2) * sin($deltaLong / 2);
-        $hitung_radian = 2 * atan2(sqrt($hitung_radian), sqrt(1 - $hitung_radian));
-        $distance = round($earthRadius * $hitung_radian, 0);
+        $earthRadius    = 6371000;
+        $lat1Rad        = deg2rad($lat_kantor);
+        $long1Rad       = deg2rad($long_kantor);
+        $lat2Rad        = deg2rad($lat_pengguna);
+        $long2Rad       = deg2rad($long_pengguna);
+        $deltaLat       = $lat2Rad - $lat1Rad;
+        $deltaLong      = $long2Rad - $long1Rad;
+        $hitung_radian  = sin($deltaLat / 2) * sin($deltaLat / 2) + cos($lat1Rad) * cos($lat2Rad) * sin($deltaLong / 2) * sin($deltaLong / 2);
+        $hitung_radian  = 2 * atan2(sqrt($hitung_radian), sqrt(1 - $hitung_radian));
+        $distance       = round($earthRadius * $hitung_radian, 0);
         return $distance;
     }
 

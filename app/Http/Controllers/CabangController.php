@@ -60,28 +60,33 @@ class CabangController extends Controller
         }
     }
 
-    public function show($cabang)
+    public function show($branch)
     {
-        $data   = Cabang::withTrashed()->find($cabang);
-        if ($data) {
-            return ApiResponseHelper::success("Branch's detail", $data);
+        $cabang = Cabang::find($branch);
+        if (!$cabang) {
+            return ApiResponseHelper::error("Branch not found", [], 404);
         }
-        return ApiResponseHelper::error("Branch not found", [], 404);
+        return ApiResponseHelper::success("Branch's detail", $branch);
     }
 
-    public function update(Cabang $cabang, BranchUpdateRequest $request)
+    public function update(Cabang $branch, BranchUpdateRequest $request)
     {
         try {
-            $this->branchService->update($cabang, $request->validated());
+            $this->branchService->update($branch, $request->validated());
             return ApiResponseHelper::success('Branch data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when updating branch data', $e->getMessage(), 500);
         }
     }
 
-    public function destroy(Cabang $cabang)
+    public function destroy($branch)
     {
-        $delete = $cabang->delete();
+        $branch = Cabang::find($branch);
+        if (!$branch) {
+            return ApiResponseHelper::error('Branch not found', [], 404);
+        }
+
+        $delete = $branch->delete();
         if ($delete) {
             return ApiResponseHelper::success('Branch data has been deleted successfully');
         } else {

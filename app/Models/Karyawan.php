@@ -34,7 +34,8 @@ class Karyawan extends Model
                         $query->where('name', 'like', "%{$keyword}%");
                     })
                     ->orWhereHas('branch.company', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
+                        $query->where('name', 'like', "%{$keyword}%")
+                            ->orWhere('codename', 'like', "%{$keyword}%");
                     });
             });
         });

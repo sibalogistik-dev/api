@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
+use App\Models\Karyawan;
 use Illuminate\Http\Request;
 
 class SalaryDetailsController extends Controller
@@ -60,5 +62,41 @@ class SalaryDetailsController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function employeeSalary($employee)
+    {
+        $employee = Karyawan::find($employee);
+        if (!$employee) {
+            return ApiResponseHelper::error('Employee not found', [], 404);
+        }
+        $data = [
+            'monthly_base_salary'   => $employee->salaryDetails->monthly_base_salary ?? 0,
+            'daily_base_salary'     => $employee->salaryDetails->daily_base_salary ?? 0,
+            'meal_allowance'        => $employee->salaryDetails->meal_allowance ?? 0,
+            'bonus'                 => $employee->salaryDetails->bonus ?? 0,
+            'allowance'             => $employee->salaryDetails->allowance ?? 0,
+        ];
+        return ApiResponseHelper::success("Employee's salary data", $data);
+    }
+
+    public function employeeSalaryHistory($employee)
+    {
+        $employee = Karyawan::find($employee);
+        if (!$employee) {
+            return ApiResponseHelper::error('Employee not found', [], 404);
+        }
+        $data = $employee->salaryHistory->map(function ($item) {
+            return [
+                'id'                    => $item->id,
+                'monthly_base_salary'   => $item->monthly_base_salary   ?? 0,
+                'daily_base_salary'     => $item->daily_base_salary     ?? 0,
+                'meal_allowance'        => $item->meal_allowance        ?? 0,
+                'bonus'                 => $item->bonus                 ?? 0,
+                'allowance'             => $item->allowance             ?? 0,
+            ];
+        });
+        return ApiResponseHelper::success("Employee's salary history", $data);
     }
 }

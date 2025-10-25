@@ -3,84 +3,62 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\ReligionIndexRequest;
+use App\Http\Requests\ReligionStoreRequest;
+use App\Http\Requests\ReligionUpdateRequest;
 use App\Models\Agama;
 use Illuminate\Http\Request;
 
 class AgamaController extends Controller
 {
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(ReligionIndexRequest $request)
     {
-        $keyword    = $request->input('q');
-        $paginate   = $request->boolean('paginate', false);
-
-        $query = Agama::query();
-
-        $cabangs = $query
-            ->orderBy('id', 'asc')
-            ->when(
-                $keyword,
-                fn($query) => $query->where('name', 'like', '%' . $keyword . '%'),
-            )
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate(10),
-                fn($query) => $query->get()
-            );
-
-        $title = 'Daftar Agama';
-
-        return ApiResponseHelper::success($title, $cabangs);
+        $validated = $request->validated();
+        $religionQuery = Agama::query()->filter($validated)->orderBy('id');
+        $religion = isset($validated['paginate']) && $validated['paginate'] ? $religionQuery->paginate($validated['perPage'] ?? 10) : $religionQuery->get();
+        return ApiResponseHelper::success('Religion list', $religion);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(ReligionStoreRequest $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Agama $religion)
+    public function show($religion)
     {
-        //
+        $agama = Agama::find($religion);
+        if (!$agama) {
+            return ApiResponseHelper::error('Religion not found', [], 404);
+        }
+        return ApiResponseHelper::success('Religion detail', $agama);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Agama $religion)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Agama $religion)
+    public function update(ReligionUpdateRequest $request, $religion)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Agama $religion)
+    public function destroy($religion)
     {
-        //
+        $agama = Agama::find($religion);
+        if (!$agama) {
+            return ApiResponseHelper::error('Religion not found', [], 404);
+        }
+        $delete = $agama->delete();
+        if ($delete) {
+            return ApiResponseHelper::success('Religion data has been deleted successfully');
+        } else {
+            return ApiResponseHelper::error('Religion data failed to delete', null, 500);
+        }
     }
 }

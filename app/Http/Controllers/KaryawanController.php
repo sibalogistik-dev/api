@@ -58,30 +58,37 @@ class KaryawanController extends Controller
         }
     }
 
-    public function show($karyawan)
+    public function show(Karyawan $employee)
     {
-        $data = Karyawan::withTrashed()->find($karyawan);
-        if ($data) {
-            return ApiResponseHelper::success("Employee's Detail", $data);
+        if ($employee) {
+            return ApiResponseHelper::success("Employee's Detail", $employee);
         } else {
             return ApiResponseHelper::success("Employee's Detail", []);
         }
     }
 
-    public function update(EmployeeUpdateRequest $request, Karyawan $karyawan)
+    public function update(EmployeeUpdateRequest $request, $employee)
     {
         try {
-            $this->employeeService->update($karyawan, $request->validated());
+            $employee = Karyawan::find($employee);
+            if (!$employee) {
+                throw new Exception('Employee not found');
+            }
+            $this->employeeService->update($employee, $request->validated());
             return ApiResponseHelper::success('Employee data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when updating employee data', $e->getMessage(), 500);
         }
     }
 
-    public function destroy(Karyawan $karyawan)
+    public function destroy($employee)
     {
-        $karyawan->user->delete();
-        $delete = $karyawan->delete();
+        $employee = Karyawan::find($employee);
+        if (!$employee) {
+            return ApiResponseHelper::error('Employee not found', [], 404);
+        }
+        $employee->user->delete();
+        $delete = $employee->delete();
         if ($delete) {
             return ApiResponseHelper::success('Employee data has been deleted successfully');
         } else {

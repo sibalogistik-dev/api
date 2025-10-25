@@ -3,75 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\JobTitleIndexRequest;
+use App\Http\Requests\JobTitleStoreRequest;
+use App\Http\Requests\JobTitleUpdateRequest;
 use App\Models\Jabatan;
+use App\Services\JobTitleService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class JabatanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    protected $jobTitleService;
+
+    public function __construct(JobTitleService $jobTitleService)
     {
-        $keyword = $request->input('q');
-        $perPage = $request->input('perPage', 5);
-        $query = Jabatan::query();
-
-        if ($keyword) {
-            $query->where('name', 'LIKE', '%' . $keyword . '%');
-        }
-
-        $jabatan = $query
-            ->orderBy('id', 'ASC')
-            ->paginate($perPage);
-        return ApiResponseHelper::success('Daftar Jabatan', $jabatan);
+        $this->jobTitleService = $jobTitleService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index(JobTitleIndexRequest $request)
+    {
+        $validated          = $request->validated();
+        $jabatanQuery       = Jabatan::query()->filter($validated);
+        $jabatan            = isset($validated['paginate']) && $validated['paginate'] ? $jabatanQuery->paginate($validated['perPage'] ?? 10) : $jabatanQuery->get();
+        $itemsToTransform   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
+        $transformedJabatan = $itemsToTransform->map(function ($item) {
+            return [
+                'id'    => $item->id,
+                'name'  => $item->name,
+            ];
+        });
+        if ($jabatan instanceof LengthAwarePaginator) {
+            return ApiResponseHelper::success('Job titles list', $jabatan->setCollection($transformedJabatan));
+        } else {
+            return ApiResponseHelper::success('Job titles list', $transformedJabatan);
+        }
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(JobTitleStoreRequest $request)
+    {
+        try {
+            $job_title = $this->jobTitleService->create($request->validated());
+            return ApiResponseHelper::success('Job title data has been added successfully', $job_title);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving job title data', $e->getMessage(), 500);
+        }
+    }
+
+    public function show($job_title)
+    {
+        $job_title = Jabatan::find($job_title);
+        if (!$job_title) {
+            return ApiResponseHelper::error('Job title not found', [], 404);
+        }
+        return ApiResponseHelper::success('Job title detail', $job_title);
+    }
+
+    public function edit(Jabatan $job_title)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Jabatan $jabatan)
+    public function update(JobTitleUpdateRequest $request, $job_title)
     {
-        return ApiResponseHelper::success('Detail Data Jabatan', $jabatan);
+        try {
+            $job_title = Jabatan::find($job_title);
+            if (!$job_title) {
+                throw new Exception('Job title not found');
+            }
+            $this->jobTitleService->update($job_title, $request->validated());
+            return ApiResponseHelper::success('Job title data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating job titke data', $e->getMessage(), 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Jabatan $jabatan)
+    public function destroy($job_title)
     {
-        //
-    }
+        $job_title = Jabatan::find($job_title);
+        if (!$job_title) {
+            return ApiResponseHelper::error('Job title not found', [], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Jabatan $jabatan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Jabatan $jabatan)
-    {
-        //
+        $delete = $job_title->delete();
+        if ($delete) {
+            return ApiResponseHelper::success('Job title data has been deleted successfully');
+        } else {
+            return ApiResponseHelper::error('Job title data failed to delete', null, 500);
+        }
     }
 }

@@ -15,6 +15,15 @@ class Jabatan extends Model
         'name'
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%");
+            });
+        });
+    }
+
     public function employee()
     {
         return $this->hasMany(Karyawan::class, 'job_title_id');

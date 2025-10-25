@@ -15,6 +15,13 @@ class Agama extends Model
         'name'
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where('name', 'like', "%{$keyword}%");
+        });
+    }
+
     public function employeeDetails()
     {
         return $this->hasMany(DetailDiri::class, 'religion_id');
