@@ -66,11 +66,11 @@ class KaryawanSeeder extends Seeder
         ];
 
         for ($i = 0; $i < 30; $i++) {
-            $name = $faker->firstName() . ' ' . $faker->lastName();
-            $birthDate = $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d');
-            $gender = $faker->randomElement(['laki-laki', 'perempuan']);
-            $monthlyBaseSalary = $faker->numberBetween(4000000, 10000000);
-            $dailyBaseSalary = round($monthlyBaseSalary / 25);
+            $name               = $faker->firstName() . ' ' . $faker->lastName();
+            $birthDate          = $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d');
+            $gender             = $faker->randomElement(['laki-laki', 'perempuan']);
+            $monthlyBaseSalary  = $faker->numberBetween(4000000, 10000000);
+            $dailyBaseSalary    = round($monthlyBaseSalary / 25);
 
             $data[] = [
                 'name'                  => $name,

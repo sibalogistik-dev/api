@@ -31,8 +31,8 @@ class KaryawanController extends Controller
                 'id'                => $item->id,
                 'name'              => $item->name,
                 'npk'               => $item->npk,
-                'job_title'         => $item->jobTitle->name ?? null,
-                'branch'            => $item->branch->name ?? null,
+                'job_title_id'      => $item->job_title_id,
+                'branch_id'         => $item->branch_id,
                 'passport_photo'    => $item->employeeDetails->passport_photo ?? null,
             ];
         });
