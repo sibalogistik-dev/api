@@ -40,11 +40,6 @@ class JabatanController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(JobTitleStoreRequest $request)
     {
         try {
@@ -62,11 +57,6 @@ class JabatanController extends Controller
             return ApiResponseHelper::error('Job title not found', [], 404);
         }
         return ApiResponseHelper::success('Job title detail', $job_title);
-    }
-
-    public function edit(Jabatan $job_title)
-    {
-        //
     }
 
     public function update(JobTitleUpdateRequest $request, $job_title)
@@ -89,7 +79,6 @@ class JabatanController extends Controller
         if (!$job_title) {
             return ApiResponseHelper::error('Job title not found', [], 404);
         }
-
         $delete = $job_title->delete();
         if ($delete) {
             return ApiResponseHelper::success('Job title data has been deleted successfully');

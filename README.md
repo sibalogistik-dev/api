@@ -97,7 +97,8 @@ php artisan migrate
 
 # Install and setup Laravolt Indonesia
 php artisan vendor:publish --provider="Laravolt\Indonesia\ServiceProvider"
-php artisan migrate
+php artisan migrate --seed
+php artisan laravolt:indonesia:seed
 
 # Start the development server
 php artisan serve

@@ -20,10 +20,6 @@ class AttendanceStoreRequest extends FormRequest
             'longitude'             => ['required', 'decimal:1,10', 'min:-180', 'max:180'],
             'latitude'              => ['required', 'decimal:1,10', 'min:-90', 'max:90'],
             'attendance_image'      => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
-            // optional
-            'date'                  => ['nullable', 'date'],
-            'start_time'            => ['nullable', 'date_format:H:i:s'],
-            'end_time'              => ['nullable', 'date_format:H:i:s'],
         ];
     }
 }

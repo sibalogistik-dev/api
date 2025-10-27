@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
 use App\Http\Requests\AttendanceStoreRequest;
+use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Absensi;
 use App\Models\Karyawan;
 use App\Services\AttendanceService;
@@ -65,9 +66,9 @@ class AbsensiController extends Controller
         }
     }
 
-    public function show($absensi)
+    public function show($attendance)
     {
-        $query = Absensi::find($absensi);
+        $query = Absensi::find($attendance);
         if (!$query) {
             return ApiResponseHelper::error('Attendance not found', [], 404);
         }
@@ -87,19 +88,31 @@ class AbsensiController extends Controller
         return ApiResponseHelper::success('Attendance detail', $data);
     }
 
-    public function edit(Absensi $absensi)
+    public function update(AttendanceUpdateRequest $request, $attendance)
     {
-        //
+        try {
+            $abs = Absensi::find($attendance);
+            if (!$abs) {
+                throw new Exception('Attendance not found');
+            }
+            $absensi = $this->attendanceService->update($abs, $request->validated());
+            return ApiResponseHelper::success("Attendance successfully recorded.", $absensi);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
+        }
     }
 
-    public function update(Request $request, Absensi $absensi)
+    public function destroy($attendance)
     {
-        //
-    }
-
-    public function destroy(Absensi $absensi)
-    {
-        //
+        $absensi = Absensi::find($attendance);
+        if (!$absensi) {
+            return ApiResponseHelper::error('Attendance data not found', [], 404);
+        }
+        $delete = $absensi->delete();
+        if (!$delete) {
+            return ApiResponseHelper::error('Attendance data failed to delete', null, 500);
+        }
+        return ApiResponseHelper::success('Attendance data has been deleted successfully');
     }
 
     public function employeeAttendance($employee, Request $request)
@@ -129,6 +142,7 @@ class AbsensiController extends Controller
                 'status'            => $item->attendanceStatus->name,
                 'checked_in'        => $item->start_time,
                 'checked_out'       => $item->end_time,
+                'description'       => $item->description,
                 'late'              => $item->late_arrival_time ? true : false,
                 'late_arrival_time' => $item->late_arrival_time,
             ];

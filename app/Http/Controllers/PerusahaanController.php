@@ -56,53 +56,66 @@ class PerusahaanController extends Controller
         }
     }
 
-    public function show($perusahaan)
+    public function show($company)
     {
-        $company = Perusahaan::withTrashed()->find($perusahaan);
-        if ($company) {
-            $data = [
-                'id'                => $company->id,
-                'name'              => $company->name,
-                'codename'          => $company->codename
-            ];
-            $branches = $company->branches;
-            if ($branches) {
-                $data['branches'] = $branches->map(function ($branch) {
-                    return [
-                        'id'        => $branch->id,
-                        'name'      => $branch->name,
-                        'address'   => $branch->address,
-                        'telephone' => $branch->telephone,
-                        'province'  => $branch->village->district->city->province->name,
-                        'city'      => $branch->village->district->city->name,
-                        'district'  => $branch->village->district->name,
-                        'village'   => $branch->village->name,
-                    ];
-                });
-            }
-            return ApiResponseHelper::success("Company's detail", $data);
+        $company = Perusahaan::find($company);
+        if (!$company) {
+            return ApiResponseHelper::error('Company not found', [], 404);
         }
-        return ApiResponseHelper::error('Company not found', [], 404);
+        $data = [
+            'id'                => $company->id,
+            'name'              => $company->name,
+            'codename'          => $company->codename
+        ];
+        return ApiResponseHelper::success("Company's detail", $data);
     }
 
-    public function update(CompanyUpdateRequest $request, Perusahaan $perusahaan)
+    public function update(CompanyUpdateRequest $request, Perusahaan $company)
     {
         try {
-            $this->companyService->update($perusahaan, $request->validated());
+            $this->companyService->update($company, $request->validated());
             return ApiResponseHelper::success('Company data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when updating company data', $e->getMessage(), 500);
         }
     }
 
-    public function destroy(Perusahaan $perusahaan)
+    public function destroy($company)
     {
-        $perusahaan->branches()->delete();
-        $delete = $perusahaan->delete();
-        if ($delete) {
+        try {
+            $company = Perusahaan::find($company);
+            if (!$company) {
+                return ApiResponseHelper::error('Company data not found', null, 404);
+            }
+            $company->branches()->delete();
+            $delete = $company->delete();
+            if (!$delete) {
+                return ApiResponseHelper::error('Company data failed to delete', null, 500);
+            }
             return ApiResponseHelper::success('Company data has been deleted successfully');
-        } else {
-            return ApiResponseHelper::error('Company data failed to delete', null, 500);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Company data failed to delete', $e->getMessage(), 500);
         }
+    }
+
+    public function companyBranches($company)
+    {
+        $company = Perusahaan::find($company);
+        if (!$company) {
+            return ApiResponseHelper::error('Company data not found', null, 404);
+        }
+        $branches = $company->branches->map(function ($item) {
+            return [
+                'id'                => $item->id,
+                'name'              => $item->name,
+                'address'           => $item->address,
+                'telephone'         => $item->telephone ?? null,
+                'province'          => $item->village->district->city->province->name,
+                'city'              => $item->village->district->city->name,
+                'district'          => $item->village->district->name,
+                'village'           => $item->village->name,
+            ];
+        });
+        return ApiResponseHelper::success("Company's branches", $branches);
     }
 }

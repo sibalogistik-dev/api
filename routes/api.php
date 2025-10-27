@@ -12,6 +12,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\KotaKabController;
 use App\Http\Controllers\MarriageStatusController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PendidikanController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\ProvinsiController;
@@ -43,12 +44,14 @@ Route::middleware('api')->group(function () {
                 'attendance'        => AbsensiController::class,
                 'branch'            => CabangController::class,
                 'employee'          => KaryawanController::class,
+                'payroll'           => PayrollController::class,
             ]);
 
             Route::get('employee/{employee}/details',           [EmployeeDetailsController::class,  'employeeDetails']);
             Route::get('employee/{employee}/salary',            [SalaryDetailsController::class,    'employeeSalary']);
             Route::get('employee/{employee}/salary-histories',  [SalaryDetailsController::class,    'employeeSalaryHistory']);
             Route::get('employee/{employee}/attendances',       [AbsensiController::class,          'employeeAttendance']);
+            Route::get('company/{company}/branches',            [PerusahaanController::class,       'companyBranches']);
         });
 
     Route::get('/province/get',                 [IndonesiaController::class, 'getProvince']);

@@ -43,11 +43,6 @@ class KaryawanController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(EmployeeStoreRequest $request)
     {
         try {
@@ -58,13 +53,13 @@ class KaryawanController extends Controller
         }
     }
 
-    public function show(Karyawan $employee)
+    public function show($employee)
     {
-        if ($employee) {
-            return ApiResponseHelper::success("Employee's Detail", $employee);
-        } else {
+        $employee = Karyawan::find($employee);
+        if (!$employee) {
             return ApiResponseHelper::success("Employee's Detail", []);
         }
+        return ApiResponseHelper::success("Employee's Detail", $employee);
     }
 
     public function update(EmployeeUpdateRequest $request, $employee)

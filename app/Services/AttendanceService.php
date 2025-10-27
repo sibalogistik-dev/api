@@ -20,8 +20,8 @@ class AttendanceService
     {
         DB::beginTransaction();
         try {
-            $today = $data['date'] ?? Carbon::now()->toDateString();
-            $karyawan = Karyawan::find($data['employee_id']);
+            $today      = $data['date'] ?? Carbon::now()->toDateString();
+            $karyawan   = Karyawan::find($data['employee_id']);
 
             if (!$karyawan) {
                 throw new Exception('Employee data not found.');
@@ -138,7 +138,26 @@ class AttendanceService
 
     public function update(Absensi $absensi, array $data)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $update = [
+                'attendance_status_id'  => $data['attendance_status_id'],
+                'description'           => $data['description'],
+                'start_time'            => $data['start_time']
+            ];
+            if (isset($data['end_time'])) {
+                $update['end_time'] = $data['end_time'];
+            }
+            $late   = $this->countLate($update['start_time'], $absensi->employee->branch->start_time);
+            $update['late_arrival_time']    = $late;
+
+            $absensi->update($update);
+            DB::commit();
+            return $absensi;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Failed to update attendance data: ' . $e->getMessage());
+        }
     }
 
     private function storeFile(UploadedFile $file, string $path, string $employeeName, int $quality = 90)
@@ -171,8 +190,8 @@ class AttendanceService
     private function countLate($actual_time, $required_start_time)
     {
         try {
-            $actual = Carbon::parse($actual_time);
-            $required = Carbon::parse($required_start_time);
+            $actual     = Carbon::parse($actual_time);
+            $required   = Carbon::parse($required_start_time);
             if ($actual->isAfter($required)) {
                 return abs((int) $actual->diffInMinutes($required));
             }

@@ -45,11 +45,6 @@ class CabangController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(BranchStoreRequest $request)
     {
         try {
