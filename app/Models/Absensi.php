@@ -21,6 +21,8 @@ class Absensi extends Model
         'description',
         'longitude',
         'latitude',
+        'half_day',
+        'sick_note',
         'late_arrival_time',
     ];
 

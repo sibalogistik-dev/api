@@ -14,6 +14,8 @@ class KaryawanSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
+        $salary_type = ['monthly', 'daily'];
+
         $jobTitleIds = Jabatan::where('id', '!=', 1)->pluck('id')->toArray();
         if (empty($jobTitleIds)) {
             $jobTitleIds = [1];
@@ -55,30 +57,34 @@ class KaryawanSeeder extends Seeder
                 'detail_gaji'           => [
                     [
                         'employee_id'           => 3,
+                        'salary_type'           => 'monthly',
                         'monthly_base_salary'   => 5548000,
                         'daily_base_salary'     => 136462,
                         'meal_allowance'        => 15000,
                         'bonus'                 => 0,
                         'allowance'             => 61925,
+                        'overtime'              => 10000,
                     ],
                     [
                         'employee_id'           => 3,
+                        'salary_type'           => 'monthly',
                         'monthly_base_salary'   => 5600000,
                         'daily_base_salary'     => 138462,
                         'meal_allowance'        => 15000,
                         'bonus'                 => 0,
                         'allowance'             => 61925,
+                        'overtime'              => 10000,
                     ],
                 ],
             ],
         ];
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $name               = $faker->firstName() . ' ' . $faker->lastName();
             $birthDate          = $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d');
             $gender             = $faker->randomElement(['laki-laki', 'perempuan']);
-            $monthlyBaseSalary  = $faker->numberBetween(4000000, 10000000);
-            $dailyBaseSalary    = round($monthlyBaseSalary / 25);
+            $monthlyBaseSalary  = $faker->numberBetween(4000000, 7000000);
+            $dailyBaseSalary    = round($monthlyBaseSalary / 26);
 
             $data[] = [
                 'name'                  => $name,
@@ -104,13 +110,14 @@ class KaryawanSeeder extends Seeder
                 'detail_gaji'           => [
                     [
                         'employee_id'           => null,
+                        'salary_type'           => 'monthly',
+                        // 'salary_type'           => $salary_type[rand(0, 1)],
                         'monthly_base_salary'   => $monthlyBaseSalary,
                         'daily_base_salary'     => $dailyBaseSalary,
                         'meal_allowance'        => $faker->randomElement([15000, 20000, 25000]),
                         'bonus'                 => $faker->randomElement([0, 500000, 1000000]),
                         'allowance'             => $faker->numberBetween(50000, 200000),
-                        'created_at'            => now(),
-                        'updated_at'            => now(),
+                        'overtime'              => 10000,
                     ]
                 ],
             ];
@@ -142,8 +149,8 @@ class KaryawanSeeder extends Seeder
             ]);
 
             if ($karyawan) {
-                $detailDiriData = $karyawanData['detail_diri'];
-                $detailDiriData['employee_id'] = $karyawan->id;
+                $detailDiriData                 = $karyawanData['detail_diri'];
+                $detailDiriData['employee_id']  = $karyawan->id;
                 DetailDiri::create($detailDiriData);
 
                 foreach ($karyawanData['detail_gaji'] as $detailGajiItem) {

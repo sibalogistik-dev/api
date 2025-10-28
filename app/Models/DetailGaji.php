@@ -13,11 +13,13 @@ class DetailGaji extends Model
 
     protected $fillable = [
         'employee_id',
+        'salary_type',
         'monthly_base_salary',
         'daily_base_salary',
         'meal_allowance',
         'bonus',
         'allowance',
+        'overtime',
     ];
 
     public function employee()

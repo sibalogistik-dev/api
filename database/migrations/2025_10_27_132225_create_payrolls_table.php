@@ -18,8 +18,12 @@ return new class extends Migration
             $table->date('period_start');
             $table->date('period_end');
             $table->integer('monthly_base_salary')->default(0);
-            $table->integer('total_work_days')->default(0);
+            $table->integer('total_present_days')->default(0);
             $table->integer('total_absent_days')->default(0);
+            $table->integer('total_sick_days')->default(0);
+            $table->integer('total_leave_days')->default(0);
+            $table->integer('total_permission_days')->default(0);
+            $table->integer('total_off_days')->default(0);
             $table->integer('total_late_minutes')->default(0);
             $table->integer('overtime_hours')->default(0);
             $table->integer('deductions')->default(0);

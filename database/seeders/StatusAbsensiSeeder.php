@@ -14,13 +14,12 @@ class StatusAbsensiSeeder extends Seeder
     public function run(): void
     {
         $statusAbsensi = [
-            ['name' => 'Hadir'],
-            ['name' => 'Izin'],
-            ['name' => 'Sakit'],
-            ['name' => 'Tanpa Keterangan'],
-            ['name' => 'Cuti'],
-            ['name' => 'Libur'],
-            ['name' => 'Pulang'],
+            ['name' => 'Hadir'], // 1
+            ['name' => 'Izin'], // 2
+            ['name' => 'Sakit'], // 3
+            ['name' => 'Tanpa Keterangan'], // 4
+            ['name' => 'Cuti'], // 5
+            ['name' => 'Libur'], // 6
         ];
         foreach ($statusAbsensi as $status) {
             StatusAbsensi::create($status);

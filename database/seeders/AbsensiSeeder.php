@@ -32,9 +32,13 @@ class AbsensiSeeder extends Seeder
                 $brst           = Carbon::parse($branchStartTime);
                 $lateArrival    = $st->isAfter($brst) ? abs((int) $st->diffInMinutes($brst)) : 0;
 
+                $attendance_status  = rand(0, 100) <= 95 ? 1 : rand(2, 6);
+                $half_day           = $attendance_status === 1 ? rand(1, 100) > 95 : false;
+                $sick_note          = $attendance_status === 3 ? rand(1, 100) > 95 : false;;
+
                 Absensi::create([
-                    'employee_id'           => $dataAbsen[$j],
-                    'attendance_status_id'  => rand(1, 2),
+                    'employee_id'           => $kry->id,
+                    'attendance_status_id'  => $attendance_status,
                     // 'attendance_status_id'  => 1,
                     'date'                  => $date->format('Y-m-d'),
                     'start_time'            => $startTime,
@@ -43,7 +47,9 @@ class AbsensiSeeder extends Seeder
                     'description'           => 'Deskripsi Absensi ' . $kry->name,
                     'latitude'              => $cabang->latitude,
                     'longitude'             => $cabang->longitude,
-                    'late_arrival_time'     => $lateArrival,
+                    'half_day'              => $half_day,
+                    'sick_note'             => $sick_note,
+                    'late_arrival_time'     => $half_day || $attendance_status !== 1 ? 0 : $lateArrival,
                 ]);
             }
         }

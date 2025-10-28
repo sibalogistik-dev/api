@@ -16,65 +16,171 @@ class GeneratePayrollCommand extends Command
 
     public function handle()
     {
-        $month = $this->argument('month') ?? now()->format('Y-m');
-        $periodStart = Carbon::parse("$month-28")->subMonth()->startOfDay();
-        $periodEnd = Carbon::parse("$month-27")->endOfDay();
+        $month          = $this->argument('month') ?? now()->format('Y-m');
+        $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
+        $periodEnd      = Carbon::parse("$month-27")->endOfDay();
 
-        $periodName = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+        $period = [
+            'start' => $periodStart->format('Y-m-d'),
+            'end'   => $periodEnd->format('Y-m-d'),
+        ];
+        $periodName     = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
         $this->info("Generating $periodName ($periodStart → $periodEnd)");
 
-        DB::transaction(function () use ($periodStart, $periodEnd, $periodName) {
-            $employees = Karyawan::all();
+        DB::transaction(function () use ($periodStart, $periodEnd, $periodName, $period) {
+            $employees  = Karyawan::all();
 
             foreach ($employees as $employee) {
-                $attendances = Absensi::where('employee_id', $employee->id)
+                $attendances    = Absensi::where('employee_id', $employee->id)
                     ->whereBetween('date', [$periodStart, $periodEnd])
                     ->get();
-
-                $totalWorkDays      = $attendances->where('attendance_status_id', 1)->count();
-                $totalAbsentDays    = $attendances->whereIn('attendance_status_id', [2, 3, 4, 5, 6])->count();
-                $totalLateMinutes   = $attendances->sum('late_arrival_time');
-
-                $monthlyBase    = $employee->salaryDetails->monthly_base_salary ?? 0;
-                $dailyBase      = $employee->salaryDetails->daily_base_salary ?? 0;
-                $deductions     = $this->calculateDeductions($dailyBase, $totalLateMinutes, $totalAbsentDays);
-                $allowances     = $this->calculateAllowances($employee->salaryDetails->bonus, $employee->salaryDetails->meal_allowance, $employee->salaryDetails->allowance);
-                $netSalary      = ($monthlyBase + $allowances) - $deductions;
-
-                Payroll::updateOrCreate(
-                    [
-                        'employee_id' => $employee->id,
-                        'period_start' => $periodStart,
-                        'period_end' => $periodEnd,
-                    ],
-                    [
-                        'period_name' => $periodName,
-                        'monthly_base_salary' => $monthlyBase,
-                        'total_work_days' => $totalWorkDays,
-                        'total_absent_days' => $totalAbsentDays,
-                        'total_late_minutes' => $totalLateMinutes,
-                        'deductions' => $deductions,
-                        'allowances' => $allowances,
-                        'net_salary' => $netSalary,
-                        'generated_at' => now(),
-                    ]
-                );
+                if ($employee->salaryDetails->salary_type == 'monthly') {
+                    $this->calculateMonthlyPayroll($employee, $attendances, $period, $periodName);
+                } else {
+                    $this->calculateDailyPayroll($employee, $attendances, $period, $periodName);
+                }
             }
         });
 
         $this->info('Payroll generation complete.');
     }
 
-    private function calculateDeductions(float $baseSalary, int $lateMinutes, int $absentDays): float
+    private function calculateMonthlyPayroll($employee, $attendances, $period, $periodName)
     {
-        $perDay = $baseSalary;
-        $absentPenalty = ((int) $perDay) * $absentDays;
-        $latePenalty = $lateMinutes * 666;
-        return (int) ($absentPenalty + $latePenalty);
+        $net_salary     = 0;
+        $deductions     = 0;
+        $allowances     = 0;
+
+        $employee_id    = $employee->id;
+        $base_salary    = [
+            'daily'             => $employee->salaryDetails->daily_base_salary,
+            'monthly'           => $employee->salaryDetails->monthly_base_salary,
+            'allowance'         => $employee->salaryDetails->allowance,
+            'meal_allowance'    => $employee->salaryDetails->meal_allowance,
+            'bonus'             => $employee->salaryDetails->bonus,
+            'overtime'          => $employee->salaryDetails->overtime,
+        ];
+
+        $lateMinutes        = 0;
+        $overtimeHours      = 0;
+        $totalAttendances   = 0;
+        $presentDays        = 0;
+        $absentDays         = 0;
+        $halfDays           = 0;
+        $permissionDays     = 0;
+        $sickDays           = 0;
+        $leaveDays          = 0;
+        $offDays            = 0;
+
+        foreach ($attendances as $attendance) {
+            $totalAttendances++;
+            $lateMinutes    += $attendance->late_arrival_time;
+            $absentDays     += $attendance->attendance_status_id === 6 ? 1 : 0;
+            $halfDays       += $attendance->half_day ? 1 : 0;
+            $permissionDays += $attendance->attendance_status_id === 2 ? 1 : 0;
+            // $attendance->sick_note && ($attendance->attendanceStatus->name === 'Sakit'  || $attendance->attendanceStatus->name === 'sakit') ? $sickDays++ : $absentDays++;
+            if ($attendance->sick_note && ($attendance->attendanceStatus->name === 'Sakit'  || $attendance->attendanceStatus->name === 'sakit')) {
+                $sickDays       += 1;
+            } else {
+                $absentDays     += 1;
+            }
+            $leaveDays      += $attendance->attendanceStatus->name === 'Cuti'   || $attendance->attendanceStatus->name === 'cuti'   ? 1 : 0;
+            $offDays        += $attendance->attendanceStatus->name === 'Libur'  || $attendance->attendanceStatus->name === 'libur'  ? 1 : 0;
+        }
+
+        $presentDays    = $totalAttendances - ($absentDays + $permissionDays + $sickDays + $leaveDays + $offDays);
+
+        $deductions     += $this->calculateAbsent($base_salary, $absentDays);
+        $deductions     += $this->calculateHalfDay($base_salary, $halfDays);
+        $deductions     += $this->calculatePermission($base_salary, $permissionDays);
+        $deductions     += $this->calculateSick($base_salary, $permissionDays);
+        $deductions     += $this->calculateLeave($base_salary, $permissionDays);
+        $deductions     += $this->calculateDayOff($base_salary, $permissionDays);
+        $deductions     += $this->calculateLate($lateMinutes);
+
+        $allowances     += $this->calculateAllowance($base_salary, $totalAttendances);
+
+
+        $net_salary     = $base_salary['monthly'] - $deductions + $allowances;
+
+        $payroll = [
+            'employee_id'           => $employee_id,
+            'period_name'           => $periodName,
+            'period_start'          => $period['start'],
+            'period_end'            => $period['end'],
+            'total_present_days'    => $presentDays,
+            'total_absent_days'     => $absentDays,
+            'total_sick_days'       => $sickDays,
+            'total_leave_days'      => $leaveDays,
+            'total_permission_days' => $permissionDays,
+            'total_off_days'        => $offDays,
+            'total_late_minutes'    => $lateMinutes,
+            'overtime_hours'        => $overtimeHours,
+            'monthly_base_salary'   => $base_salary['monthly'],
+            'deductions'            => $deductions,
+            'allowances'            => $allowances,
+            'net_salary'            => $net_salary,
+            'generated_at'          => now(),
+        ];
+        Payroll::create($payroll);
     }
 
-    private function calculateAllowances($employee): float
+    private function calculateDailyPayroll($employee, $attendances, $period, $periodName)
     {
-        return 0;
+        // 
+    }
+
+    // tanpa keterangan
+    private function calculateAbsent($base_salary, $totalDays)
+    {
+        return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    // setengah hari
+    private function calculateHalfDay($base_salary, $totalDays)
+    {
+        return (int) (($base_salary['daily'] / 2) * $totalDays);
+    }
+
+    // izin
+    private function calculatePermission($base_salary, $totalDays)
+    {
+        return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    // sakit
+    private function calculateSick($base_salary, $totalDays)
+    {
+        return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    // cuti
+    private function calculateLeave($base_salary, $totalDays)
+    {
+        return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    // libur
+    private function calculateDayOff($base_salary, $totalDays)
+    {
+        return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    // terlambat
+    private function calculateLate($totalMinutes)
+    {
+        $decrement = 666;
+        return $totalMinutes * $decrement;
+    }
+
+    // jam lembur
+    private function calculateOvertime($overtime, $totalDays)
+    {
+        // 
+    }
+
+    private function calculateAllowance($base_salary, $totalDays)
+    {
+        return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 }
