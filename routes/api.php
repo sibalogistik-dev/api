@@ -54,12 +54,13 @@ Route::middleware('api')->group(function () {
             Route::get('company/{company}/branches',            [PerusahaanController::class,       'companyBranches']);
         });
 
-    Route::get('/province/get',                 [IndonesiaController::class, 'getProvince']);
-    Route::get('/province/get/{code}',          [IndonesiaController::class, 'getProvince']);
-    Route::get('/province/get/{code}/city',     [IndonesiaController::class, 'getProvinceCity']);
-    Route::get('/city/get/{code}',              [IndonesiaController::class, 'getCity']);
-    Route::get('/city/get/{code}/district',     [IndonesiaController::class, 'getCityDistrict']);
-    Route::get('/district/get/{code}',          [IndonesiaController::class, 'getDistrict']);
-    Route::get('/district/get/{code}/village',  [IndonesiaController::class, 'getDistrictVillage']);
-    Route::get('/village/get/{code}',           [IndonesiaController::class, 'getVillage']);
+    // getter public routes
+    Route::get('/get/province',                 [IndonesiaController::class, 'getProvince']);
+    Route::get('/get/province/{code}',          [IndonesiaController::class, 'getProvince']);
+    Route::get('/get/province/{code}/city',     [IndonesiaController::class, 'getProvinceCity']);
+    Route::get('/get/city/{code}',              [IndonesiaController::class, 'getCity']);
+    Route::get('/get/city/{code}/district',     [IndonesiaController::class, 'getCityDistrict']);
+    Route::get('/get/district/{code}',          [IndonesiaController::class, 'getDistrict']);
+    Route::get('/get/district/{code}/village',  [IndonesiaController::class, 'getDistrictVillage']);
+    Route::get('/get/village/{code}',           [IndonesiaController::class, 'getVillage']);
 });
