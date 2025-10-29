@@ -59,20 +59,20 @@ class KaryawanSeeder extends Seeder
                         'employee_id'           => 3,
                         'salary_type'           => 'monthly',
                         'monthly_base_salary'   => 5548000,
-                        'daily_base_salary'     => 136462,
+                        'daily_base_salary'     => (int) 5548000 / 26,
                         'meal_allowance'        => 15000,
                         'bonus'                 => 0,
-                        'allowance'             => 61925,
+                        'allowance'             => 60000,
                         'overtime'              => 10000,
                     ],
                     [
                         'employee_id'           => 3,
                         'salary_type'           => 'monthly',
                         'monthly_base_salary'   => 5600000,
-                        'daily_base_salary'     => 138462,
+                        'daily_base_salary'     => (int) 5600000 / 26,
                         'meal_allowance'        => 15000,
                         'bonus'                 => 0,
-                        'allowance'             => 61925,
+                        'allowance'             => 60000,
                         'overtime'              => 10000,
                     ],
                 ],
@@ -83,7 +83,7 @@ class KaryawanSeeder extends Seeder
             $name               = $faker->firstName() . ' ' . $faker->lastName();
             $birthDate          = $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d');
             $gender             = $faker->randomElement(['laki-laki', 'perempuan']);
-            $monthlyBaseSalary  = $faker->numberBetween(4000000, 7000000);
+            $monthlyBaseSalary  = $faker->randomElement([2000000, 3000000, 4000000, 5000000]);
             $dailyBaseSalary    = round($monthlyBaseSalary / 26);
 
             $data[] = [
@@ -115,8 +115,8 @@ class KaryawanSeeder extends Seeder
                         'monthly_base_salary'   => $monthlyBaseSalary,
                         'daily_base_salary'     => $dailyBaseSalary,
                         'meal_allowance'        => $faker->randomElement([15000, 20000, 25000]),
-                        'bonus'                 => $faker->randomElement([0, 500000, 1000000]),
-                        'allowance'             => $faker->numberBetween(50000, 200000),
+                        'bonus'                 => $faker->randomElement([0, 50000, 100000]),
+                        'allowance'             => $faker->randomElement([20000, 40000, 60000, 80000, 100000]),
                         'overtime'              => 10000,
                     ]
                 ],

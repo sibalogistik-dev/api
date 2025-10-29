@@ -12,6 +12,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\KelurahanController;
 use App\Http\Controllers\KotaKabController;
 use App\Http\Controllers\MarriageStatusController;
+use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PendidikanController;
 use App\Http\Controllers\PerusahaanController;
@@ -43,6 +44,7 @@ Route::middleware('api')->group(function () {
                 'company'           => PerusahaanController::class,
                 'attendance'        => AbsensiController::class,
                 'branch'            => CabangController::class,
+                'overtime'          => OvertimeController::class,
                 'employee'          => KaryawanController::class,
                 'payroll'           => PayrollController::class,
             ]);

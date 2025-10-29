@@ -64,7 +64,6 @@ class GeneratePayrollCommand extends Command
         $lateMinutes        = 0;
         $overtimeHours      = 0;
         $totalAttendances   = 0;
-        $presentDays        = 0;
         $absentDays         = 0;
         $halfDays           = 0;
         $permissionDays     = 0;
@@ -73,22 +72,37 @@ class GeneratePayrollCommand extends Command
         $offDays            = 0;
 
         foreach ($attendances as $attendance) {
-            $totalAttendances++;
             $lateMinutes    += $attendance->late_arrival_time;
-            $absentDays     += $attendance->attendance_status_id === 6 ? 1 : 0;
-            $halfDays       += $attendance->half_day ? 1 : 0;
-            $permissionDays += $attendance->attendance_status_id === 2 ? 1 : 0;
-            // $attendance->sick_note && ($attendance->attendanceStatus->name === 'Sakit'  || $attendance->attendanceStatus->name === 'sakit') ? $sickDays++ : $absentDays++;
-            if ($attendance->sick_note && ($attendance->attendanceStatus->name === 'Sakit'  || $attendance->attendanceStatus->name === 'sakit')) {
-                $sickDays       += 1;
-            } else {
-                $absentDays     += 1;
+            $statusAbsensi  = $attendance->attendance_status_id;
+            if ($statusAbsensi == 1) {
+                $totalAttendances++;
+                continue;
             }
-            $leaveDays      += $attendance->attendanceStatus->name === 'Cuti'   || $attendance->attendanceStatus->name === 'cuti'   ? 1 : 0;
-            $offDays        += $attendance->attendanceStatus->name === 'Libur'  || $attendance->attendanceStatus->name === 'libur'  ? 1 : 0;
+            if ($statusAbsensi == 2) {
+                $permissionDays++;
+                continue;
+            }
+            if ($attendance->sick_note && $attendance->attendance_status_id == 3) {
+                $sickDays++;
+            } else {
+                $absentDays++;
+            }
+            if ($statusAbsensi == 4) {
+                $absentDays++;
+                continue;
+            }
+            if ($statusAbsensi == 5) {
+                $leaveDays++;
+                continue;
+            }
+            if ($statusAbsensi == 6) {
+                $offDays++;
+                continue;
+            }
+            if ($attendance->half_day) {
+                $halfDays++;
+            }
         }
-
-        $presentDays    = $totalAttendances - ($absentDays + $permissionDays + $sickDays + $leaveDays + $offDays);
 
         $deductions     += $this->calculateAbsent($base_salary, $absentDays);
         $deductions     += $this->calculateHalfDay($base_salary, $halfDays);
@@ -99,7 +113,7 @@ class GeneratePayrollCommand extends Command
         $deductions     += $this->calculateLate($lateMinutes);
 
         $allowances     += $this->calculateAllowance($base_salary, $totalAttendances);
-
+        $allowances     += $this->calculateOvertime($base_salary, $totalAttendances);
 
         $net_salary     = $base_salary['monthly'] - $deductions + $allowances;
 
@@ -108,7 +122,7 @@ class GeneratePayrollCommand extends Command
             'period_name'           => $periodName,
             'period_start'          => $period['start'],
             'period_end'            => $period['end'],
-            'total_present_days'    => $presentDays,
+            'total_present_days'    => $totalAttendances,
             'total_absent_days'     => $absentDays,
             'total_sick_days'       => $sickDays,
             'total_leave_days'      => $leaveDays,
@@ -131,7 +145,7 @@ class GeneratePayrollCommand extends Command
     }
 
     // tanpa keterangan
-    private function calculateAbsent($base_salary, $totalDays)
+    private function calculateAbsent($base_salary, $totalDays, $type = 'monthly')
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
@@ -169,14 +183,14 @@ class GeneratePayrollCommand extends Command
     // terlambat
     private function calculateLate($totalMinutes)
     {
-        $decrement = 666;
+        $decrement = 1000;
         return $totalMinutes * $decrement;
     }
 
     // jam lembur
     private function calculateOvertime($overtime, $totalDays)
     {
-        // 
+        return 0;
     }
 
     private function calculateAllowance($base_salary, $totalDays)

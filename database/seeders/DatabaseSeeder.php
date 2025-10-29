@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 
             StatusAbsensiSeeder::class,
             AbsensiSeeder::class,
+            OvertimeSeeder::class,
         ]);
     }
 }
