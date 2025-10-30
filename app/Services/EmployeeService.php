@@ -41,9 +41,15 @@ class EmployeeService
                 $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
                 $karyawanData['contract'] = $filePaths['contract'];
             }
+            if (!empty($data['id_card_photo'])) {
+                $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
+                $karyawanData['id_card_photo'] = $filePaths['id_card_photo'];
+            }
+            if (!empty($data['passport_photo'])) {
+                $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
+                $karyawanData['passport_photo'] = $filePaths['passport_photo'];
+            }
             $karyawan = Karyawan::create($karyawanData);
-            $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
-            $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
             if (!empty($data['drivers_license_photo'])) {
                 $filePaths['drivers_license_photo'] = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
             }
