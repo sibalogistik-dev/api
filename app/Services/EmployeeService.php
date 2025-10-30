@@ -59,8 +59,8 @@ class EmployeeService
                 'education_id'          => $data['education_id'],
                 'marriage_status_id'    => $data['marriage_status_id'],
                 'residential_area_id'   => $data['residential_area_id'],
-                'passport_photo'        => $filePaths['passport_photo'],
-                'id_card_photo'         => $filePaths['id_card_photo'],
+                'passport_photo'        => $filePaths['passport_photo'] ?? null,
+                'id_card_photo'         => $filePaths['id_card_photo'] ?? null,
                 'drivers_license_photo' => $filePaths['drivers_license_photo'] ?? null,
             ]);
             DetailGaji::create([
