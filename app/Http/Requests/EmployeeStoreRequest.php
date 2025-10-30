@@ -51,11 +51,11 @@ class EmployeeStoreRequest extends FormRequest
             'id_card_photo'         => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'drivers_license_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
 
-            'monthly_base_salary'   => ['required', 'numeric', 'min:0'],
-            'daily_base_salary'     => ['required', 'numeric', 'min:0'],
-            'meal_allowance'        => ['required', 'numeric', 'min:0'],
-            'bonus'                 => ['required', 'numeric', 'min:0'],
-            'allowance'             => ['required', 'numeric', 'min:0'],
+            'monthly_base_salary'   => ['required', 'integer', 'min:0'],
+            'daily_base_salary'     => ['required', 'integer', 'min:0'],
+            'meal_allowance'        => ['required', 'integer', 'min:0'],
+            'bonus'                 => ['required', 'integer', 'min:0'],
+            'allowance'             => ['required', 'integer', 'min:0'],
         ];
     }
 

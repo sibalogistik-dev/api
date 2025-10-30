@@ -41,15 +41,13 @@ class EmployeeService
                 $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
                 $karyawanData['contract'] = $filePaths['contract'];
             }
+            $karyawan = Karyawan::create($karyawanData);
             if (!empty($data['id_card_photo'])) {
                 $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
-                $karyawanData['id_card_photo'] = $filePaths['id_card_photo'];
             }
             if (!empty($data['passport_photo'])) {
                 $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
-                $karyawanData['passport_photo'] = $filePaths['passport_photo'];
             }
-            $karyawan = Karyawan::create($karyawanData);
             if (!empty($data['drivers_license_photo'])) {
                 $filePaths['drivers_license_photo'] = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
             }
@@ -65,17 +63,17 @@ class EmployeeService
                 'education_id'          => $data['education_id'],
                 'marriage_status_id'    => $data['marriage_status_id'],
                 'residential_area_id'   => $data['residential_area_id'],
-                'passport_photo'        => $filePaths['passport_photo'] ?? null,
-                'id_card_photo'         => $filePaths['id_card_photo'] ?? null,
-                'drivers_license_photo' => $filePaths['drivers_license_photo'] ?? null,
+                'passport_photo'        => $filePaths['passport_photo'] ?? 'uploads/pas_foto/default.webp',
+                'id_card_photo'         => $filePaths['id_card_photo'] ?? 'uploads/ktp_foto/default.webp',
+                'drivers_license_photo' => $filePaths['drivers_license_photo'] ?? 'uploads/sim_foto/default.webp',
             ]);
             DetailGaji::create([
-                'employee_id'         => $karyawan->id,
-                'monthly_base_salary' => $data['monthly_base_salary'],
-                'daily_base_salary'   => $data['daily_base_salary'],
-                'meal_allowance'      => $data['meal_allowance'],
-                'bonus'               => $data['bonus'],
-                'allowance'           => $data['allowance'],
+                'employee_id'           => $karyawan->id,
+                'monthly_base_salary'   => $data['monthly_base_salary'],
+                'daily_base_salary'     => $data['daily_base_salary'],
+                'meal_allowance'        => $data['meal_allowance'],
+                'bonus'                 => $data['bonus'],
+                'allowance'             => $data['allowance'],
             ]);
 
             DB::commit();

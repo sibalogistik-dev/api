@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('place_of_birth_id');
             $table->date('date_of_birth');
             $table->string('address');
-            $table->enum('blood_type', ['a', 'b', 'ab', 'o', 'none'])->default('none');
+            $table->enum('blood_type', ['a', 'b', 'ab', 'o', 'none'])->nullable()->default('none');
             $table->integer('education_id');
             $table->integer('marriage_status_id');
             $table->integer('residential_area_id');
