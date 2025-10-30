@@ -115,4 +115,9 @@ class Karyawan extends Model
     {
         return $this->hasMany(RemoteAttendance::class, 'employee_id');
     }
+
+    public function overtime()
+    {
+        return $this->hasMany(Overtime::class, 'employee_id');
+    }
 }

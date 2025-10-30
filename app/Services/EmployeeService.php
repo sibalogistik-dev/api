@@ -33,6 +33,7 @@ class EmployeeService
                 'bank_account_number' => $data['bank_account_number'],
                 'npk'                 => $data['npk'],
                 'job_title_id'        => $data['job_title_id'],
+                'manager_id'          => $data['manager_id'] ?? null,
                 'branch_id'           => $data['branch_id'],
                 'start_date'          => $data['start_date'],
             ];

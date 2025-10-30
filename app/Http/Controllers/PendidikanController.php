@@ -14,7 +14,7 @@ class PendidikanController extends Controller
     public function index()
     {
         $pendidikan = Pendidikan::orderBy('id', 'ASC')->get();
-        return ApiResponseHelper::success('Daftar Pendidikan', $pendidikan);
+        return ApiResponseHelper::success('Education list', $pendidikan);
     }
 
     public function store(Request $request)

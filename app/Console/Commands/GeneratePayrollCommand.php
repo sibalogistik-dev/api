@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Absensi;
 use App\Models\Karyawan;
+use App\Models\Overtime;
 use App\Models\Payroll;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -34,10 +35,14 @@ class GeneratePayrollCommand extends Command
                 $attendances    = Absensi::where('employee_id', $employee->id)
                     ->whereBetween('date', [$periodStart, $periodEnd])
                     ->get();
+                $overtimes      = Overtime::where('employee_id', $employee->id)
+                    ->whereBetween('start_time', [$periodStart, $periodEnd])
+                    ->where('approved', true)
+                    ->get();
                 if ($employee->salaryDetails->salary_type == 'monthly') {
-                    $this->calculateMonthlyPayroll($employee, $attendances, $period, $periodName);
+                    $this->calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName);
                 } else {
-                    $this->calculateDailyPayroll($employee, $attendances, $period, $periodName);
+                    $this->calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName);
                 }
             }
         });
@@ -45,11 +50,12 @@ class GeneratePayrollCommand extends Command
         $this->info('Payroll generation complete.');
     }
 
-    private function calculateMonthlyPayroll($employee, $attendances, $period, $periodName)
+    private function calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName)
     {
-        $net_salary     = 0;
-        $deductions     = 0;
-        $allowances     = 0;
+        $net_salary         = 0;
+        $deductions         = 0;
+        $allowances         = 0;
+        $overtimes_bonus    = 0;
 
         $employee_id    = $employee->id;
         $base_salary    = [
@@ -61,8 +67,11 @@ class GeneratePayrollCommand extends Command
             'overtime'          => $employee->salaryDetails->overtime,
         ];
 
+        $max_days           = 26;
+
         $lateMinutes        = 0;
-        $overtimeHours      = 0;
+        $overtimeMinutes    = 0;
+        $totalData          = 0;
         $totalAttendances   = 0;
         $absentDays         = 0;
         $halfDays           = 0;
@@ -72,128 +81,229 @@ class GeneratePayrollCommand extends Command
         $offDays            = 0;
 
         foreach ($attendances as $attendance) {
+            $totalData++;
             $lateMinutes    += $attendance->late_arrival_time;
             $statusAbsensi  = $attendance->attendance_status_id;
             if ($statusAbsensi == 1) {
-                $totalAttendances++;
-                continue;
+                if ($attendance->half_day) {
+                    $halfDays++;
+                } else {
+                    $totalAttendances++;
+                }
             }
             if ($statusAbsensi == 2) {
                 $permissionDays++;
-                continue;
             }
-            if ($attendance->sick_note && $attendance->attendance_status_id == 3) {
-                $sickDays++;
-            } else {
-                $absentDays++;
+            if ($attendance->attendance_status_id === 3) {
+                if ($attendance->sick_note) {
+                    $sickDays++;
+                } else {
+                    $absentDays++;
+                }
             }
             if ($statusAbsensi == 4) {
                 $absentDays++;
-                continue;
             }
             if ($statusAbsensi == 5) {
                 $leaveDays++;
-                continue;
             }
             if ($statusAbsensi == 6) {
                 $offDays++;
-                continue;
-            }
-            if ($attendance->half_day) {
-                $halfDays++;
             }
         }
 
-        $deductions     += $this->calculateAbsent($base_salary, $absentDays);
-        $deductions     += $this->calculateHalfDay($base_salary, $halfDays);
-        $deductions     += $this->calculatePermission($base_salary, $permissionDays);
-        $deductions     += $this->calculateSick($base_salary, $permissionDays);
-        $deductions     += $this->calculateLeave($base_salary, $permissionDays);
-        $deductions     += $this->calculateDayOff($base_salary, $permissionDays);
-        $deductions     += $this->calculateLate($lateMinutes);
+        foreach ($overtimes as $overtime) {
+            $start              = Carbon::parse($overtime->start_time);
+            $end                = Carbon::parse($overtime->end_time);
+            $diffMinutes        = $start->diffInMinutes($end);
+            $overtimeMinutes    += $diffMinutes;
+        }
 
-        $allowances     += $this->calculateAllowance($base_salary, $totalAttendances);
-        $allowances     += $this->calculateOvertime($base_salary, $totalAttendances);
+        $deductions         += $this->calculateAbsentMonthly($base_salary, $absentDays);
+        $deductions         += $this->calculateHalfDayMonthly($base_salary, $halfDays);
+        $deductions         += $this->calculatePermissionMonthly($base_salary, $permissionDays);
+        $deductions         += $this->calculateSickMonthly($base_salary, $sickDays);
+        $deductions         += $this->calculateLeaveMonthly($base_salary, $leaveDays);
+        $deductions         += $this->calculateDayOffMonthly($base_salary, $offDays);
+        $deductions         += $this->calculateLateMonthly($lateMinutes);
 
-        $net_salary     = $base_salary['monthly'] - $deductions + $allowances;
+        $allowances         += $this->calculateAllowanceMonthly($base_salary, $totalData == $max_days ? $totalData : $max_days);
+
+        $overtimes_bonus    += $this->calculateOvertimeMonthly($base_salary, $overtimeMinutes);
+
+        $net_salary         = $base_salary['monthly'] - $deductions + $allowances + $overtimes_bonus;
 
         $payroll = [
-            'employee_id'           => $employee_id,
-            'period_name'           => $periodName,
-            'period_start'          => $period['start'],
-            'period_end'            => $period['end'],
-            'total_present_days'    => $totalAttendances,
-            'total_absent_days'     => $absentDays,
-            'total_sick_days'       => $sickDays,
-            'total_leave_days'      => $leaveDays,
-            'total_permission_days' => $permissionDays,
-            'total_off_days'        => $offDays,
-            'total_late_minutes'    => $lateMinutes,
-            'overtime_hours'        => $overtimeHours,
-            'monthly_base_salary'   => $base_salary['monthly'],
-            'deductions'            => $deductions,
-            'allowances'            => $allowances,
-            'net_salary'            => $net_salary,
-            'generated_at'          => now(),
+            'employee_id'               => $employee_id,
+            'period_name'               => $periodName,
+            'period_start'              => $period['start'],
+            'period_end'                => $period['end'],
+            'monthly_base_salary'       => $base_salary['monthly'],
+            'days'                      => $totalData,
+            'present_days'              => $totalAttendances,
+            'half_days'                 => $halfDays,
+            'absent_days'               => $absentDays,
+            'sick_days'                 => $sickDays,
+            'leave_days'                => $leaveDays,
+            'permission_days'           => $permissionDays,
+            'off_days'                  => $offDays,
+            'overtime_minutes'          => $overtimeMinutes,
+            'late_minutes'              => $lateMinutes,
+            'deductions'                => $deductions,
+            'allowances'                => $allowances,
+            'overtime'                  => $overtimes_bonus,
+            'net_salary'                => $net_salary,
+            'generated_at'              => now(),
         ];
         Payroll::create($payroll);
     }
 
-    private function calculateDailyPayroll($employee, $attendances, $period, $periodName)
+    private function calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName)
     {
-        // 
+        $net_salary         = 0;
+        $deductions         = 0;
+        $allowances         = 0;
+        $overtimes_bonus    = 0;
+
+        $employee_id    = $employee->id;
+        $base_salary    = [
+            'daily'             => $employee->salaryDetails->daily_base_salary,
+            'allowance'         => $employee->salaryDetails->allowance,
+            'meal_allowance'    => $employee->salaryDetails->meal_allowance,
+            'bonus'             => $employee->salaryDetails->bonus,
+            'overtime'          => $employee->salaryDetails->overtime,
+        ];
+
+        $max_days           = 26;
+
+        $lateMinutes        = 0;
+        $overtimeMinutes    = 0;
+        $totalData          = 0;
+        $totalAttendances   = 0;
+        $absentDays         = 0;
+        $halfDays           = 0;
+        $permissionDays     = 0;
+        $sickDays           = 0;
+        $leaveDays          = 0;
+        $offDays            = 0;
+
+        foreach ($attendances as $attendance) {
+            $totalData++;
+            $lateMinutes    += $attendance->late_arrival_time;
+            $statusAbsensi  = $attendance->attendance_status_id;
+            if ($statusAbsensi == 1) {
+                if ($attendance->half_day) {
+                    $halfDays++;
+                } else {
+                    $totalAttendances++;
+                }
+            }
+            if ($statusAbsensi == 2) {
+                $permissionDays++;
+            }
+            if ($attendance->attendance_status_id === 3) {
+                if ($attendance->sick_note) {
+                    $sickDays++;
+                } else {
+                    $absentDays++;
+                }
+            }
+            if ($statusAbsensi == 4) {
+                $absentDays++;
+            }
+            if ($statusAbsensi == 5) {
+                $leaveDays++;
+            }
+            if ($statusAbsensi == 6) {
+                $offDays++;
+            }
+        }
+
+        foreach ($overtimes as $overtime) {
+            $start              = Carbon::parse($overtime->start_time);
+            $end                = Carbon::parse($overtime->end_time);
+            $diffMinutes        = $start->diffInMinutes($end);
+            $overtimeMinutes    += $diffMinutes;
+        }
+
+        $deductions         += $this->calculateLateMonthly($lateMinutes);
+
+        $payroll = [
+            'employee_id'               => $employee_id,
+            'period_name'               => $periodName,
+            'period_start'              => $period['start'],
+            'period_end'                => $period['end'],
+            'monthly_base_salary'       => $base_salary['monthly'],
+            'days'                      => $totalData,
+            'present_days'              => $totalAttendances,
+            'half_days'                 => $halfDays,
+            'absent_days'               => $absentDays,
+            'sick_days'                 => $sickDays,
+            'leave_days'                => $leaveDays,
+            'permission_days'           => $permissionDays,
+            'off_days'                  => $offDays,
+            'overtime_minutes'          => $overtimeMinutes,
+            'late_minutes'              => $lateMinutes,
+            'deductions'                => $deductions,
+            'allowances'                => $allowances,
+            'overtime'                  => $overtimes_bonus,
+            'net_salary'                => $net_salary,
+            'generated_at'              => now(),
+        ];
     }
 
-    // tanpa keterangan
-    private function calculateAbsent($base_salary, $totalDays, $type = 'monthly')
+    private function calculatePresentDaily($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    // setengah hari
-    private function calculateHalfDay($base_salary, $totalDays)
+    private function calculateLeaveDaily($base_salary, $totalDays)
+    {
+        return $base_salary['daily'] * $totalDays;
+    }
+
+    private function calculateAbsentMonthly($base_salary, $totalDays)
+    {
+        return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    private function calculateHalfDayMonthly($base_salary, $totalDays)
     {
         return (int) (($base_salary['daily'] / 2) * $totalDays);
     }
 
-    // izin
-    private function calculatePermission($base_salary, $totalDays)
+    private function calculatePermissionMonthly($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    // sakit
-    private function calculateSick($base_salary, $totalDays)
+    private function calculateSickMonthly($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    // cuti
-    private function calculateLeave($base_salary, $totalDays)
+    private function calculateLeaveMonthly($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    // libur
-    private function calculateDayOff($base_salary, $totalDays)
+    private function calculateDayOffMonthly($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    // terlambat
-    private function calculateLate($totalMinutes)
+    private function calculateLateMonthly($totalMinutes)
     {
         $decrement = 1000;
         return $totalMinutes * $decrement;
     }
 
-    // jam lembur
-    private function calculateOvertime($overtime, $totalDays)
+    private function calculateOvertimeMonthly($overtime, $totalDays)
     {
-        return 0;
+        return (int) ($overtime['overtime'] * $totalDays);
     }
 
-    private function calculateAllowance($base_salary, $totalDays)
+    private function calculateAllowanceMonthly($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }

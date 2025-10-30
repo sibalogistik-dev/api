@@ -17,21 +17,25 @@ return new class extends Migration
             $table->string('period_name');
             $table->date('period_start');
             $table->date('period_end');
-            $table->integer('monthly_base_salary')->default(0);
-            $table->integer('total_present_days')->default(0);
-            $table->integer('total_absent_days')->default(0);
-            $table->integer('total_sick_days')->default(0);
-            $table->integer('total_leave_days')->default(0);
-            $table->integer('total_permission_days')->default(0);
-            $table->integer('total_off_days')->default(0);
-            $table->integer('total_late_minutes')->default(0);
-            $table->integer('overtime_hours')->default(0);
+            $table->enum('salary_type', ['monthly', 'daily'])->default('monthly');
+            $table->integer('base_salary')->default(0);
+            $table->integer('days')->default(0);
+            $table->integer('present_days')->default(0);
+            $table->integer('half_days')->default(0);
+            $table->integer('absent_days')->default(0);
+            $table->integer('sick_days')->default(0);
+            $table->integer('leave_days')->default(0);
+            $table->integer('permission_days')->default(0);
+            $table->integer('off_days')->default(0);
+            $table->integer('late_minutes')->default(0);
+            $table->integer('overtime_minutes')->default(0);
             $table->integer('deductions')->default(0);
             $table->integer('allowances')->default(0);
+            $table->integer('overtime')->default(0);
             $table->integer('net_salary')->default(0);
             $table->timestamp('generated_at')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

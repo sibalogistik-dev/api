@@ -38,12 +38,11 @@ class OvertimeSeeder extends Seeder
                         $end->second = 59;
                     }
 
-
                     Overtime::create([
                         'employee_id'   => $kry[$i],
                         'start_time'    => $date->format('Y-m-d') . ' ' . $start->format('H:i:s'),
                         'end_time'      => $date->format('Y-m-d') . ' ' . $end->format('H:i:s'),
-                        'approved'      => false,
+                        'approved'      => rand(0, 1),
                     ]);
                 }
             }

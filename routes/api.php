@@ -31,7 +31,7 @@ Route::middleware('api')->group(function () {
                 // master data
                 'religion'          => AgamaController::class,
                 'education'         => PendidikanController::class,
-                'marriage_status'   => MarriageStatusController::class,
+                'marriage-status'   => MarriageStatusController::class,
                 'job-title'         => JabatanController::class,
 
                 // Indonesia Regional
