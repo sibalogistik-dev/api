@@ -24,9 +24,9 @@ return new class extends Migration
             $table->integer('education_id');
             $table->integer('marriage_status_id');
             $table->integer('residential_area_id');
-            $table->string('passport_photo')->default('uploads/pas_foto/default.webp');
-            $table->string('id_card_photo')->default('uploads/ktp_foto/default.webp');
-            $table->string('drivers_license_photo')->nullable();
+            $table->string('passport_photo')->nullable()->default('uploads/pas_foto/default.webp');
+            $table->string('id_card_photo')->nullable()->default('uploads/ktp_foto/default.webp');
+            $table->string('drivers_license_photo')->nullable()->default('uploads/sim_foto/default.webp');
             $table->timestamps();
             $table->softDeletes();
         });
