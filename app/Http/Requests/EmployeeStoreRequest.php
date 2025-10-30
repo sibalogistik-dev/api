@@ -25,6 +25,7 @@ class EmployeeStoreRequest extends FormRequest
             'npk'                   => ['required', 'string', 'max:50', 'unique:karyawans,npk'],
 
             'job_title_id'          => ['required', 'integer', 'exists:jabatans,id'],
+            'manager_id'            => ['nullable', 'integer', 'exists:karyawans,id'],
             'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['required', 'date'],
             'end_date'              => ['nullable', 'date'],
@@ -46,8 +47,8 @@ class EmployeeStoreRequest extends FormRequest
 
             'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
 
-            'passport_photo'        => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
-            'id_card_photo'         => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'passport_photo'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'id_card_photo'         => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'drivers_license_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
 
             'monthly_base_salary'   => ['required', 'numeric', 'min:0'],
