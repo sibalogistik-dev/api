@@ -36,6 +36,7 @@ class EmployeeService
                 'manager_id'          => $data['manager_id'] ?? null,
                 'branch_id'           => $data['branch_id'],
                 'start_date'          => $data['start_date'],
+                'end_date'            => $data['end_date'],
             ];
             if (!empty($data['contract'])) {
                 $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
