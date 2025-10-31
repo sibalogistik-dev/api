@@ -29,7 +29,7 @@ class EmployeeStoreRequest extends FormRequest
             'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['required', 'date'],
             'end_date'              => ['nullable', 'date'],
-            'contract'              => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'contract'              => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
 
             'bank_account_number'   => ['required', 'string', 'max:50', 'unique:karyawans,bank_account_number'],
             'gender'                => ['required', 'in:laki-laki,perempuan'],
