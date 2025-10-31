@@ -20,6 +20,7 @@ class GeneratePayrollCommand extends Command
         $month          = $this->argument('month') ?? now()->format('Y-m');
         $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
         $periodEnd      = Carbon::parse("$month-27")->endOfDay();
+        $totalDays = $this->countDaysInPeriod($month, true);
 
         $period = [
             'start' => $periodStart->format('Y-m-d'),
@@ -40,17 +41,18 @@ class GeneratePayrollCommand extends Command
                     ->where('approved', true)
                     ->get();
                 if ($employee->salaryDetails->salary_type == 'monthly') {
-                    $this->calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName);
-                } else {
-                    $this->calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName);
+                    $this->calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName, $totalDays);
+                } else if ($employee->salaryDetails->salary_type == 'daily') {
+                    $this->calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName, $totalDays);
                 }
             }
         });
 
         $this->info('Payroll generation complete.');
+        $this->info("Jumlah hari kerja (tanpa Minggu): $totalDays");
     }
 
-    private function calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName)
+    private function calculateMonthlyPayroll($employee, $attendances, $overtimes, $period, $periodName, $totalDays)
     {
         $net_salary         = 0;
         $deductions         = 0;
@@ -119,7 +121,13 @@ class GeneratePayrollCommand extends Command
             $overtimeMinutes    += $diffMinutes;
         }
 
-        $deductions         += $this->calculateAbsentMonthly($base_salary, $absentDays);
+        if ($totalDays > $max_days) {
+            # code...
+        }else {
+            # code...
+        }
+
+        $deductions         += $this->calculateAbsent($base_salary, $absentDays);
         $deductions         += $this->calculateHalfDay($base_salary, $halfDays);
         $deductions         += $this->calculatePermission($base_salary, $permissionDays);
         $deductions         += $this->calculateSickMonthly($base_salary, $sickDays);
@@ -127,7 +135,7 @@ class GeneratePayrollCommand extends Command
         $deductions         += $this->calculateDayOff($base_salary, $offDays);
         $deductions         += $this->calculateLate($lateMinutes);
 
-        $allowances         += $this->calculateAllowanceMonthly($base_salary, $totalData == $max_days ? $totalData : $max_days);
+        $allowances         += $this->calculateAllowance($base_salary, $totalData == $max_days ? $totalData : $max_days);
 
         $overtimes_bonus    += $this->calculateOvertime($base_salary, $overtimeMinutes);
 
@@ -159,7 +167,7 @@ class GeneratePayrollCommand extends Command
         Payroll::create($payroll);
     }
 
-    private function calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName)
+    private function calculateDailyPayroll($employee, $attendances, $overtimes, $period, $periodName, $totalDays)
     {
         $net_salary         = 0;
         $total_base_salary  = 0;
@@ -224,14 +232,14 @@ class GeneratePayrollCommand extends Command
 
         $total_base_salary  += $this->calculateBaseSalaryDaily($base_salary, $totalData);
 
-        $deductions         += $this->calculateAbsentMonthly($base_salary, $absentDays);
+        $deductions         += $this->calculateAbsent($base_salary, $absentDays);
         $deductions         += $this->calculateHalfDay($base_salary, $halfDays);
         $deductions         += $this->calculatePermission($base_salary, $permissionDays);
         $deductions         += $this->calculateLeave($base_salary, $leaveDays);
         $deductions         += $this->calculateDayOff($base_salary, $offDays);
         $deductions         += $this->calculateLate($lateMinutes);
 
-        $allowances         += $this->calculateAllowanceDaily($base_salary, $totalData);
+        $allowances         += $this->calculateAllowance($base_salary, $totalData);
 
         $overtimes_bonus    += $this->calculateOvertime($base_salary, $overtimeMinutes);
 
@@ -268,12 +276,7 @@ class GeneratePayrollCommand extends Command
         return $base_salary['daily'] * $totalDays;
     }
 
-    private function calculateAllowanceDaily($base_salary, $totalDays)
-    {
-        return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
-    }
-
-    private function calculateAbsentMonthly($base_salary, $totalDays)
+    private function calculateAbsent($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
@@ -315,8 +318,30 @@ class GeneratePayrollCommand extends Command
         return (1000 * (int) $totalDays);
     }
 
-    private function calculateAllowanceMonthly($base_salary, $totalDays)
+    private function calculateAllowance($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    private function countDaysInPeriod($month, $excludeSundays = false)
+    {
+        $start = Carbon::parse("$month-28")->subMonth()->startOfDay();
+        $end   = Carbon::parse("$month-27")->endOfDay();
+
+        $days = 0;
+        $current = $start->copy();
+
+        while ($current->lte($end)) {
+            if ($excludeSundays) {
+                if ($current->dayOfWeek !== Carbon::SUNDAY) {
+                    $days++;
+                }
+            } else {
+                $days++;
+            }
+            $current->addDay();
+        }
+
+        return $days;
     }
 }

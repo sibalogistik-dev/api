@@ -13,6 +13,8 @@ class AbsensiSeeder extends Seeder
 {
     public function run(): void
     {
+        // $dataAbsen = Karyawan::pluck('id')->toArray();
+
         $dataAbsen = [1, 2, 3, 4, 5];
 
         for ($j = 0; $j < count($dataAbsen); $j++) {
