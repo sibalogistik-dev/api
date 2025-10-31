@@ -29,7 +29,7 @@ class GeneratePayrollCommand extends Command
         $periodName     = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
         $this->info("Generating $periodName ($periodStart → $periodEnd)");
 
-        DB::transaction(function () use ($periodStart, $periodEnd, $periodName, $period) {
+        DB::transaction(function () use ($periodStart, $periodEnd, $periodName, $period, $totalDays) {
             $employees  = Karyawan::all();
 
             foreach ($employees as $employee) {
@@ -123,7 +123,7 @@ class GeneratePayrollCommand extends Command
 
         if ($totalDays > $max_days) {
             # code...
-        }else {
+        } else {
             # code...
         }
 
