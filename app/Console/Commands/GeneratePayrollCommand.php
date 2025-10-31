@@ -121,10 +121,10 @@ class GeneratePayrollCommand extends Command
 
         $deductions         += $this->calculateAbsentMonthly($base_salary, $absentDays);
         $deductions         += $this->calculateHalfDay($base_salary, $halfDays);
-        $deductions         += $this->calculatePermissionMonthly($base_salary, $permissionDays);
+        $deductions         += $this->calculatePermission($base_salary, $permissionDays);
         $deductions         += $this->calculateSickMonthly($base_salary, $sickDays);
-        $deductions         += $this->calculateLeaveMonthly($base_salary, $leaveDays);
-        $deductions         += $this->calculateDayOffMonthly($base_salary, $offDays);
+        $deductions         += $this->calculateLeave($base_salary, $leaveDays);
+        $deductions         += $this->calculateDayOff($base_salary, $offDays);
         $deductions         += $this->calculateLate($lateMinutes);
 
         $allowances         += $this->calculateAllowanceMonthly($base_salary, $totalData == $max_days ? $totalData : $max_days);
@@ -226,9 +226,9 @@ class GeneratePayrollCommand extends Command
 
         $deductions         += $this->calculateAbsentMonthly($base_salary, $absentDays);
         $deductions         += $this->calculateHalfDay($base_salary, $halfDays);
-        $deductions         += $this->calculatePermissionMonthly($base_salary, $permissionDays);
-        $deductions         += $this->calculateLeaveMonthly($base_salary, $leaveDays);
-        $deductions         += $this->calculateDayOffMonthly($base_salary, $offDays);
+        $deductions         += $this->calculatePermission($base_salary, $permissionDays);
+        $deductions         += $this->calculateLeave($base_salary, $leaveDays);
+        $deductions         += $this->calculateDayOff($base_salary, $offDays);
         $deductions         += $this->calculateLate($lateMinutes);
 
         $allowances         += $this->calculateAllowanceDaily($base_salary, $totalData);
@@ -243,7 +243,7 @@ class GeneratePayrollCommand extends Command
             'period_start'              => $period['start'],
             'period_end'                => $period['end'],
             'salary_type'               => 'daily',
-            'base_salary'               => $total_base_salary, // checked
+            'base_salary'               => $total_base_salary,
             'days'                      => $totalData,
             'present_days'              => $totalAttendances,
             'half_days'                 => $halfDays,
@@ -252,7 +252,7 @@ class GeneratePayrollCommand extends Command
             'leave_days'                => $leaveDays,
             'permission_days'           => $permissionDays,
             'off_days'                  => $offDays,
-            'overtime_minutes'          => $overtimeMinutes,
+            'overtime_minutes'          => round($overtimeMinutes),
             'late_minutes'              => $lateMinutes,
             'deductions'                => $deductions,
             'allowances'                => $allowances,
@@ -283,7 +283,7 @@ class GeneratePayrollCommand extends Command
         return (int) (($base_salary['daily'] / 2) * $totalDays);
     }
 
-    private function calculatePermissionMonthly($base_salary, $totalDays)
+    private function calculatePermission($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
@@ -293,12 +293,12 @@ class GeneratePayrollCommand extends Command
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    private function calculateLeaveMonthly($base_salary, $totalDays)
+    private function calculateLeave($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
 
-    private function calculateDayOffMonthly($base_salary, $totalDays)
+    private function calculateDayOff($base_salary, $totalDays)
     {
         return ($base_salary['daily'] + $base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
     }
@@ -311,8 +311,8 @@ class GeneratePayrollCommand extends Command
 
     private function calculateOvertime($overtime, $totalDays)
     {
-        // return (int) ($overtime['overtime'] * $totalDays);
-        return (int) (1000 * $totalDays);
+        // return ($overtime['overtime'] * (int) $totalDays);
+        return (1000 * (int) $totalDays);
     }
 
     private function calculateAllowanceMonthly($base_salary, $totalDays)

@@ -89,9 +89,9 @@ class AttendanceService
                 $late                                   = $this->countLate($attendanceData['start_time'], $kantor->start_time);
                 $attendanceData['late_arrival_time']    = $late;
             } else {
-                $attendanceData['date']             = $today;
-                $attendanceData['start_time']       = '00:00:00';
-                $attendanceData['attendance_image'] = 'uploads/attendance_image/default.webp';
+                $attendanceData['date']                 = $today;
+                $attendanceData['start_time']           = '00:00:00';
+                $attendanceData['attendance_image']     = 'uploads/attendance_image/default.webp';
             }
 
             $attendance = Absensi::create($attendanceData);
