@@ -74,7 +74,7 @@ class GeneratePayrollCommand extends Command
         $lateMinutes        = 0;
         $overtimeMinutes    = 0;
         $totalData          = 0;
-        $totalAttendances   = 0;
+        $ttendances   = 0;
         $absentDays         = 0;
         $halfDays           = 0;
         $permissionDays     = 0;
@@ -90,7 +90,7 @@ class GeneratePayrollCommand extends Command
                 if ($attendance->half_day) {
                     $halfDays++;
                 } else {
-                    $totalAttendances++;
+                    $ttendances++;
                 }
             }
             if ($statusAbsensi == 2) {
@@ -113,7 +113,7 @@ class GeneratePayrollCommand extends Command
                 $offDays++;
             }
         }
-
+        $totalAtendancesData = $ttendances + $halfDays + $permissionDays + $sickDays + $leaveDays + $offDays;
         foreach ($overtimes as $overtime) {
             $start              = Carbon::parse($overtime->start_time);
             $end                = Carbon::parse($overtime->end_time);
@@ -121,10 +121,12 @@ class GeneratePayrollCommand extends Command
             $overtimeMinutes    += $diffMinutes;
         }
 
-        if ($totalDays > $max_days) {
-            // 
-        } else {
-            # code...
+        if ($attendances->isEmpty()) {
+            $absentDays = $totalDays;
+        }
+
+        if ($totalAtendancesData != $totalData) {
+            $absentDays += $totalData - $totalAtendancesData;
         }
 
         $deductions         += $this->calculateAbsent($base_salary, $absentDays);
@@ -135,11 +137,15 @@ class GeneratePayrollCommand extends Command
         $deductions         += $this->calculateDayOff($base_salary, $offDays);
         $deductions         += $this->calculateLate($lateMinutes);
 
-        $allowances         += $this->calculateAllowance($base_salary, $totalData == $max_days ? $totalData : $max_days);
+        $allowances         += $this->calculateAllowance(
+            $base_salary,
+            $ttendances > 0 ? $ttendances : 0
+        );
 
         $overtimes_bonus    += $this->calculateOvertime($base_salary, $overtimeMinutes);
 
-        $net_salary         = $base_salary['monthly'] - $deductions + $allowances + $overtimes_bonus;
+        // $net_salary         = $base_salary['monthly'] - $deductions + $allowances + $overtimes_bonus;
+        $net_salary = max(0, $base_salary['monthly'] - $deductions + $allowances + $overtimes_bonus);
 
         $payroll = [
             'employee_id'               => $employee_id,
@@ -149,7 +155,7 @@ class GeneratePayrollCommand extends Command
             'salary_type'               => 'monthly',
             'base_salary'               => $base_salary['monthly'],
             'days'                      => $totalDays,
-            'present_days'              => $totalAttendances,
+            'present_days'              => $ttendances,
             'half_days'                 => $halfDays,
             'absent_days'               => $absentDays,
             'sick_days'                 => $sickDays,
