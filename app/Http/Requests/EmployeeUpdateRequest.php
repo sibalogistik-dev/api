@@ -20,40 +20,40 @@ class EmployeeUpdateRequest extends FormRequest
         $karyawanId = $this->route('karyawan')->id;
 
         return [
-            'name'                  => ['required', 'string', 'max:255'],
-            'npk'                   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'npk')->ignore($karyawanId)],
+            'name'                  => ['nullable', 'string', 'max:255'],
+            'npk'                   => ['nullable', 'string', 'max:50', Rule::unique('karyawans', 'npk')->ignore($karyawanId)],
 
-            'job_title_id'          => ['required', 'integer', 'exists:jabatans,id'],
-            'branch_id'             => ['required', 'integer', 'exists:cabangs,id'],
-            'start_date'            => ['required', 'date'],
+            'job_title_id'          => ['nullable', 'integer', 'exists:jabatans,id'],
+            'branch_id'             => ['nullable', 'integer', 'exists:cabangs,id'],
+            'start_date'            => ['nullable', 'date'],
             'end_date'              => ['nullable', 'date'],
             'contract'              => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
 
-            'bank_account_number'   => ['required', 'string', 'max:50', Rule::unique('karyawans', 'bank_account_number')->ignore($karyawanId)],
-            'gender'                => ['required', 'in:laki-laki,perempuan'],
-            'religion_id'           => ['required', 'integer', 'exists:agamas,id'],
+            'bank_account_number'   => ['nullable', 'string', 'max:50', Rule::unique('karyawans', 'bank_account_number')->ignore($karyawanId)],
+            'gender'                => ['nullable', 'in:laki-laki,perempuan'],
+            'religion_id'           => ['nullable', 'integer', 'exists:agamas,id'],
 
-            'phone_number'          => ['required', 'string', 'max:20'],
+            'phone_number'          => ['nullable', 'string', 'max:20'],
 
-            'place_of_birth_id'     => ['required', 'integer', 'exists:indonesia_cities,code'],
-            'date_of_birth'         => ['required', 'date'],
-            'address'               => ['required', 'string'],
+            'place_of_birth_id'     => ['nullable', 'integer', 'exists:indonesia_cities,code'],
+            'date_of_birth'         => ['nullable', 'date'],
+            'address'               => ['nullable', 'string'],
             'blood_type'            => ['nullable', 'string', 'in:a,b,ab,o,none'],
-            'education_id'          => ['required', 'integer', 'exists:pendidikans,id'],
+            'education_id'          => ['nullable', 'integer', 'exists:pendidikans,id'],
 
-            'marriage_status_id'    => ['required', 'integer', 'exists:marriage_statuses,id'],
+            'marriage_status_id'    => ['nullable', 'integer', 'exists:marriage_statuses,id'],
 
-            'residential_area_id'   => ['required', 'integer', 'exists:indonesia_cities,code'],
+            'residential_area_id'   => ['nullable', 'integer', 'exists:indonesia_cities,code'],
 
             'passport_photo'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'id_card_photo'         => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'drivers_license_photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
 
-            'monthly_base_salary'   => ['required', 'numeric', 'min:0'],
-            'daily_base_salary'     => ['required', 'numeric', 'min:0'],
-            'meal_allowance'        => ['required', 'numeric', 'min:0'],
-            'bonus'                 => ['required', 'numeric', 'min:0'],
-            'allowance'             => ['required', 'numeric', 'min:0'],
+            'monthly_base_salary'   => ['nullable', 'numeric', 'min:0'],
+            'daily_base_salary'     => ['nullable', 'numeric', 'min:0'],
+            'meal_allowance'        => ['nullable', 'numeric', 'min:0'],
+            'bonus'                 => ['nullable', 'numeric', 'min:0'],
+            'allowance'             => ['nullable', 'numeric', 'min:0'],
         ];
     }
 
