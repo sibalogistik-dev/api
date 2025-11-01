@@ -113,7 +113,7 @@ class EmployeeService
             }
             $karyawan->update($karyawanData);
             $karyawan->loadMissing('employeeDetails');
-            $details    = $karyawan->employeeDetails;
+            $details        = $karyawan->employeeDetails;
             $detailDiriData = [
                 'gender'                => $data['gender'],
                 'religion_id'           => $data['religion_id'],
