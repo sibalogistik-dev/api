@@ -17,7 +17,7 @@ class EmployeeUpdateRequest extends FormRequest
 
     public function rules()
     {
-        $karyawanId = $this->route('employee')->employee;
+        $karyawanId = $this->route('employee');
 
         return [
             'name'                  => ['nullable', 'string', 'max:255'],
