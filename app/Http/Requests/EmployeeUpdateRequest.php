@@ -27,7 +27,7 @@ class EmployeeUpdateRequest extends FormRequest
             'branch_id'             => ['nullable', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['nullable', 'date'],
             'end_date'              => ['nullable', 'date'],
-            'contract'              => ['nullable', 'image', 'mimes:pdf,doc,docx', 'max:2048'],
+            'contract'              => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
 
             'bank_account_number'   => ['nullable', 'string', 'max:50', Rule::unique('karyawans', 'bank_account_number')->ignore($karyawanId)],
             'gender'                => ['nullable', 'in:laki-laki,perempuan'],
