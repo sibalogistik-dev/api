@@ -106,7 +106,7 @@ class EmployeeService
                 'start_date'          => $data['start_date'],
                 'end_date'            => $data['end_date'] ?? null,
             ];
-            if (!empty($data['contract'])) {
+            if (isset($data['contract']) && !empty($data['contract'])) {
                 $oldFilePaths[]             = $karyawan->contract;
                 $newFilePaths['contract']   = $this->storeFile($data['contract'], 'uploads/kontrak');
                 $karyawanData['contract']   = $newFilePaths['contract'];
@@ -126,17 +126,17 @@ class EmployeeService
                 'marriage_status_id'    => $data['marriage_status_id'],
                 'residential_area_id'   => $data['residential_area_id'],
             ];
-            if (!empty($data['passport_photo']) && $details) {
+            if (!empty($data['passport_photo']) && isset($data['passport_photo']) && $details) {
                 $oldFilePaths[]                     = $details->passport_photo;
                 $newFilePaths['passport_photo']     = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
                 $detailDiriData['passport_photo']   = $newFilePaths['passport_photo'];
             }
-            if (!empty($data['id_card_photo']) && $details) {
+            if (!empty($data['id_card_photo']) && isset($data['id_card_photo']) && $details) {
                 $oldFilePaths[]                     = $details->id_card_photo;
                 $newFilePaths['id_card_photo']      = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
                 $detailDiriData['id_card_photo']    = $newFilePaths['id_card_photo'];
             }
-            if (!empty($data['drivers_license_photo']) && $details) {
+            if (!empty($data['drivers_license_photo']) && isset($data['drivers_license_photo']) && $details) {
                 $oldFilePaths[]                             = $details->drivers_license_photo;
                 $newFilePaths['drivers_license_photo']      = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
                 $detailDiriData['drivers_license_photo']    = $newFilePaths['drivers_license_photo'];

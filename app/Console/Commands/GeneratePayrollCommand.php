@@ -122,7 +122,7 @@ class GeneratePayrollCommand extends Command
         }
 
         if ($totalDays > $max_days) {
-            # code...
+            // 
         } else {
             # code...
         }
@@ -148,7 +148,7 @@ class GeneratePayrollCommand extends Command
             'period_end'                => $period['end'],
             'salary_type'               => 'monthly',
             'base_salary'               => $base_salary['monthly'],
-            'days'                      => $totalData,
+            'days'                      => $totalDays,
             'present_days'              => $totalAttendances,
             'half_days'                 => $halfDays,
             'absent_days'               => $absentDays,
