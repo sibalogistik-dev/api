@@ -24,6 +24,9 @@ class JobDescription extends Model
             $query->where('task_name', 'like', '%' . $keyword . '%')
                 ->orWhere('task_detail', 'like', '%' . $keyword . '%');
         });
+        $query->when($filters['job_title_id'] ?? null, function ($query, $job_title_id) {
+            $query->where('job_title_id', $job_title_id);
+        });
         $query->when($filters['priority_level'] ?? null, function ($query, $priority_level) {
             if ($priority_level !== 'all') {
                 $query->where('priority_level', $priority_level);
