@@ -18,6 +18,19 @@ class Overtime extends Model
         'approved',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->whereHas('employee', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                });
+            });
+        });
+
+        return $query;
+    }
+
     public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');

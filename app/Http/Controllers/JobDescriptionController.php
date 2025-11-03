@@ -41,7 +41,6 @@ class JobDescriptionController extends Controller
         } else {
             return ApiResponseHelper::success('Job descriptions list', $transformedJobDescs);
         }
-        return ApiResponseHelper::success('Job descriptions list', $jobDescs);
     }
 
     public function store(JobDescriptionStoreRequest $request)
