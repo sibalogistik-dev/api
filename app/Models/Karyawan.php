@@ -39,7 +39,6 @@ class Karyawan extends Model
                     });
             });
         });
-
         $query->when($filters['branch'] ?? null, function ($query, $branch) {
             if ($branch !== 'all') {
                 $query->where('branch_id', $branch);

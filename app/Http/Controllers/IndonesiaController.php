@@ -9,125 +9,174 @@ use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Province;
 use Laravolt\Indonesia\Models\Village;
 
-class IndonesiaController extends Controller {
+class IndonesiaController extends Controller
+{
     #region Province
-    /**
-     * Get all provinces or a specific province by its code.
-     *
-     * @param string|null $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getProvince($code = null) {
-        if (is_null($code)) {
-            $province = Province::all();
-        } else {
-            $province = Province::with('cities')
-                ->where('code', $code)
-                ->first();
-            if (!$province) {
-                return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', null, 404);
-            }
+
+    public function getAllProvince(Request $request)
+    {
+        $search     = $request->q;
+        $paginate   = $request->paginate ?? false;
+        $perPage    = $request->perPage ?? 10;
+        $provinces  = Province::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when(
+                $paginate,
+                fn($query) => $query->paginate($perPage),
+                fn($query) => $query->get()
+            );
+        if ($provinces->isEmpty()) {
+            return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', [], 404);
+        }
+        return ApiResponseHelper::success('Data Provinsi berhasil diambil.', $provinces);
+    }
+
+    public function getProvince($code)
+    {
+        $province = Province::where('code', $code)->first();
+        if (!$province) {
+            return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Provinsi berhasil diambil.', $province);
     }
 
-    /**
-     * Get cities in a specific province.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getProvinceCity($code) {
+    public function getProvinceCity($code)
+    {
         $cities = Province::with('cities')
             ->where('code', $code)
             ->first()->cities;
         if (!$cities) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
+
     #endregion
+
     #region City
-    /**
-     * Get a specific city by its code.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getCity($code) {
-        $city = City::with('districts')
-            ->where('code', $code)
-            ->first();
+
+    public function getAllCity(Request $request)
+    {
+        $search     = $request->q;
+        $paginate   = $request->paginate ?? false;
+        $perPage    = $request->perPage ?? 10;
+        $cities     = City::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when(
+                $paginate,
+                fn($query) => $query->paginate($perPage),
+                fn($query) => $query->get()
+            );
+        if ($cities->isEmpty()) {
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
+        }
+        return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
+    }
+
+    public function getCity($code)
+    {
+        $city = City::where('code', $code)->first();
         if (!$city) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kota berhasil diambil.', $city);
     }
 
-    /**
-     * Get districts in a specific city.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getCityDistrict($code) {
+    public function getCityDistrict($code)
+    {
         $districts = City::with('districts')
             ->where('code', $code)
             ->first()
             ->districts;
         if (!$districts) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
+
     #endregion
+
     #region District
-    /**
-     * Get a specific district by its code.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getDistrict($code) {
+
+    public function getAllDistrict(Request $request)
+    {
+        $search     = $request->q;
+        $paginate   = $request->paginate ?? false;
+        $perPage    = $request->perPage ?? 10;
+        $districts  = District::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when(
+                $paginate,
+                fn($query) => $query->paginate($perPage),
+                fn($query) => $query->get()
+            );
+        if ($districts->isEmpty()) {
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
+        }
+        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
+    }
+
+    public function getDistrict($code)
+    {
         $district = District::with('villages')
             ->where('code', $code)
             ->first();
         if (!$district) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $district);
     }
 
-    /**
-     * Get villages in a specific district.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getDistrictVillage($code) {
+    public function getDistrictVillage($code)
+    {
         $villages = District::with('villages')
             ->where('code', $code)
             ->first()->villages;
         if (!$villages) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
+
     #endregion
+
     #region Village
-    /**
-     * Get a specific village by its code.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getVillage($code) {
+
+    public function getAllVillage(Request $request)
+    {
+        $search     = $request->q;
+        $paginate   = $request->paginate ?? false;
+        $perPage    = $request->perPage ?? 10;
+        $villages   = Village::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->when(
+                $paginate,
+                fn($query) => $query->paginate($perPage),
+                fn($query) => $query->get()
+            );
+        if ($villages->isEmpty()) {
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
+        }
+        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
+    }
+
+    public function getVillage($code)
+    {
         $village = Village::where('code', $code)
             ->first();
         if (!$village) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', null, 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
         }
         return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $village);
     }
+
     #endregion
 }

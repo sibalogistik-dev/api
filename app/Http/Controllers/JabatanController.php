@@ -9,7 +9,6 @@ use App\Http\Requests\JobTitleUpdateRequest;
 use App\Models\Jabatan;
 use App\Services\JobTitleService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class JabatanController extends Controller

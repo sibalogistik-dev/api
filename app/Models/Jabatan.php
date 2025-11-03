@@ -28,4 +28,9 @@ class Jabatan extends Model
     {
         return $this->hasMany(Karyawan::class, 'job_title_id');
     }
+
+    public function jobDescriptions()
+    {
+        return $this->hasMany(JobDescription::class, 'job_title_id');
+    }
 }
