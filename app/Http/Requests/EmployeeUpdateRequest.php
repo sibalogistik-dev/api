@@ -24,6 +24,7 @@ class EmployeeUpdateRequest extends FormRequest
             'npk'                   => ['nullable', 'string', 'max:50', Rule::unique('karyawans', 'npk')->ignore($karyawanId)],
 
             'job_title_id'          => ['nullable', 'integer', 'exists:jabatans,id'],
+            'manager_id'            => ['nullable', 'integer', 'exists:karyawans,id'],
             'branch_id'             => ['nullable', 'integer', 'exists:cabangs,id'],
             'start_date'            => ['nullable', 'date'],
             'end_date'              => ['nullable', 'date'],
