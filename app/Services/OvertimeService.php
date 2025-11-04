@@ -25,6 +25,7 @@ class OvertimeService
     {
         DB::beginTransaction();
         try {
+            $overtime->update($data);
             DB::commit();
             return $overtime;
         } catch (Exception $e) {

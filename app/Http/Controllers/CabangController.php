@@ -61,7 +61,7 @@ class CabangController extends Controller
         if (!$cabang) {
             return ApiResponseHelper::error("Branch not found", [], 404);
         }
-        return ApiResponseHelper::success("Branch's detail", $branch);
+        return ApiResponseHelper::success("Branch's detail", $cabang);
     }
 
     public function update(Cabang $branch, BranchUpdateRequest $request)

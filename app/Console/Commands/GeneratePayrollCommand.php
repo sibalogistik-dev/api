@@ -20,7 +20,7 @@ class GeneratePayrollCommand extends Command
         $month          = $this->argument('month') ?? now()->format('Y-m');
         $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
         $periodEnd      = Carbon::parse("$month-27")->endOfDay();
-        $totalDays = $this->countDaysInPeriod($month, true);
+        $totalDays      = $this->countDaysInPeriod($month, true);
 
         $period = [
             'start' => $periodStart->format('Y-m-d'),

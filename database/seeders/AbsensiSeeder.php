@@ -13,35 +13,38 @@ class AbsensiSeeder extends Seeder
 {
     public function run(): void
     {
-        // $dataAbsen = Karyawan::pluck('id')->toArray();
-        // unset($dataAbsen[29]);
         $dataAbsen = [1, 2, 3, 4, 5];
 
         for ($j = 0; $j < count($dataAbsen); $j++) {
             $kry = Karyawan::find($dataAbsen[$j]);
             $cabang = Cabang::find($kry->branch_id);
-            for ($i = 0; $i < 30; $i++) {
-                $date = now()->subMonth()->startOfMonth()->addDays(27 + $i);
-                if ($date->dayOfWeek == 0) {
+
+            $startDate = now()->subMonth()->day(28);
+            $endDate = now()->day(27);
+
+            $period = Carbon::parse($startDate)->daysUntil($endDate);
+
+            foreach ($period as $date) {
+                if ($date->isSunday()) {
                     continue;
                 }
-                $branchStartTime    = now()->parse($cabang->start_time);
+
+                $branchStartTime    = Carbon::parse($cabang->start_time);
                 $startTime          = '08:' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT);
-                $employeeStartTime  = now()->parse($startTime);
+                $employeeStartTime  = Carbon::parse($startTime);
                 $endTime            = '17:' . str_pad(rand(30, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT);
 
-                $st             = Carbon::parse($employeeStartTime);
-                $brst           = Carbon::parse($branchStartTime);
-                $lateArrival    = $st->isAfter($brst) ? abs((int) $st->diffInMinutes($brst)) : 0;
+                $lateArrival = $employeeStartTime->isAfter($branchStartTime)
+                    ? abs((int) $employeeStartTime->diffInMinutes($branchStartTime))
+                    : 0;
 
                 $attendance_status  = rand(0, 100) <= 95 ? 1 : rand(2, 6);
                 $half_day           = $attendance_status === 1 ? rand(1, 100) > 95 : false;
-                $sick_note          = $attendance_status === 3 ? rand(1, 100) > 95 : false;;
+                $sick_note          = $attendance_status === 3 ? rand(1, 100) > 95 : false;
 
                 Absensi::create([
                     'employee_id'           => $kry->id,
                     'attendance_status_id'  => $attendance_status,
-                    // 'attendance_status_id'  => 1,
                     'date'                  => $date->format('Y-m-d'),
                     'start_time'            => $startTime,
                     'end_time'              => $endTime,

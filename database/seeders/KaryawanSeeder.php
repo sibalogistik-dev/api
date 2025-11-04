@@ -106,7 +106,7 @@ class KaryawanSeeder extends Seeder
                         'meal_allowance'        => $faker->randomElement([15000, 20000, 25000]),
                         'bonus'                 => $faker->randomElement([0, 50000, 100000]),
                         'allowance'             => $faker->randomElement([20000, 40000, 60000, 80000, 100000]),
-                        'overtime'              => 160,
+                        'overtime'              => 166,
                     ]
                 ],
             ];

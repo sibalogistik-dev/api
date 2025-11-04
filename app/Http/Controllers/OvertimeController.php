@@ -55,27 +55,41 @@ class OvertimeController extends Controller
 
     public function show($overtime)
     {
-        $overtime = Overtime::find($overtime);
-        if (!$overtime) {
-            return ApiResponseHelper::error('Overtime not found', [], 404);
+        $ot = Overtime::find($overtime);
+        if (!$ot) {
+            return ApiResponseHelper::error('Overtime data not found', [], 404);
         }
         $data = [
-            'id'                => $overtime->id,
-            'employee_id'       => $overtime->employee_id,
-            'start_time'        => $overtime->start_time,
-            'end_time'          => $overtime->end_time,
-            'approved'          => $overtime->approved,
+            'id'                => $ot->id,
+            'employee_id'       => $ot->employee_id,
+            'start_time'        => $ot->start_time,
+            'end_time'          => $ot->end_time,
+            'approved'          => $ot->approved,
         ];
         return ApiResponseHelper::success("Overtime's detail", $data);
     }
 
-    public function update(OvertimeUpdateRequest $request, $overtime)
+    public function update(OvertimeUpdateRequest $request, Overtime $overtime)
     {
-        //
+        try {
+            $this->overtimeService->update($overtime, $request->validated());
+            return ApiResponseHelper::success('Overtime data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating overtime data', $e->getMessage(), 500);
+        }
     }
 
     public function destroy($overtime)
     {
-        //
+        $overtime = Overtime::find($overtime);
+        if (!$overtime) {
+            return ApiResponseHelper::error('Overtime data not found', [], 404);
+        }
+        $delete = $overtime->delete();
+        if ($delete) {
+            return ApiResponseHelper::success('Overtime data has been deleted successfully');
+        } else {
+            return ApiResponseHelper::error('Overtime data failed to delete', [], 500);
+        }
     }
 }
