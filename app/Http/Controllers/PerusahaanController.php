@@ -41,11 +41,6 @@ class PerusahaanController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(CompanyStoreRequest $request)
     {
         try {

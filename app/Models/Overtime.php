@@ -21,14 +21,24 @@ class Overtime extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query->whereHas('employee', function ($query) use ($keyword) {
-                    $query->where('name', 'like', "%{$keyword}%");
-                });
+            $query->whereHas('employee', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%");
             });
         });
-
-        return $query;
+        $query->when($filters['start_date'] ?? null, function ($query, $startDate) {
+            $query->whereDate('start_time', '>=', $startDate);
+        });
+        $query->when($filters['end_date'] ?? null, function ($query, $endDate) {
+            $query->whereDate('end_time', '<=', $endDate);
+        });
+        $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
+            $query->where('employee_id', $employeeId);
+        });
+        $query->when($filters['approved'] ?? null, function ($query, $approved) {
+            if ($approved !== 'all') {
+                $query->where('approved', $approved);
+            }
+        });
     }
 
     public function employee()

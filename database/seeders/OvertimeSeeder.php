@@ -20,7 +20,7 @@ class OvertimeSeeder extends Seeder
         for ($j = 0; $j < 30; $j++) {
             for ($i = 0; $i < count($kry); $i++) {
                 $overtime = rand(0, 1);
-                $date = now()->subMonth()->startOfMonth()->addDays(27 + $i);
+                $date = now()->subMonth()->startOfMonth()->addDays(27 + $j);
                 if ($date->dayOfWeek == 0) {
                     continue;
                 }
