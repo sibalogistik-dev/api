@@ -28,8 +28,9 @@ class JabatanController extends Controller
         $itemsToTransform   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
         $transformedJabatan = $itemsToTransform->map(function ($item) {
             return [
-                'id'    => $item->id,
-                'name'  => $item->name,
+                'id'            => $item->id,
+                'name'          => $item->name,
+                'description'   => $item->description,
             ];
         });
         if ($jabatan instanceof LengthAwarePaginator) {
