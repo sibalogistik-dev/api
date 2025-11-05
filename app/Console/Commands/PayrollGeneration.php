@@ -36,6 +36,7 @@ class PayrollGeneration extends Command
             foreach ($employees as $employee) {
                 $attendances    = Absensi::where('employee_id', $employee->id)
                     ->whereBetween('date', [$period['start'], $period['end']])
+                    ->orderBy('late_arrival_time', 'desc')
                     ->get();
                 $overtime       = Overtime::where('employee_id', $employee->id)
                     ->whereBetween('start_time', [$period['start'], $period['end']])
@@ -126,7 +127,9 @@ class PayrollGeneration extends Command
             $allowance = $this->calculateAllowance($base_salary, $periodDays);
         }
 
-        $netSalary = $base_salary['monthly'] + $allowance + $overtimePay - $deduction;
+        $lateCompensation = $this->calculateCompensation($employee, $attendances);
+
+        $netSalary = $base_salary['monthly'] + $allowance + $overtimePay - $deduction + $lateCompensation;
 
         $payroll = [
             'employee_id'               => $employee->id,
@@ -148,6 +151,7 @@ class PayrollGeneration extends Command
             'deductions'                => $deduction,
             'allowances'                => $allowance,
             'overtime'                  => $overtimePay,
+            'compensation'              => $lateCompensation,
             'net_salary'                => $netSalary,
             'generated_at'              => now(),
         ];
@@ -166,7 +170,6 @@ class PayrollGeneration extends Command
             'overtime'          => $employee->salaryDetails->overtime,
         ];
 
-        $maxDays                = 26;
         $totalAttendanceData    = $attendances->count();
 
         $baseSalary             = 0;
@@ -223,7 +226,9 @@ class PayrollGeneration extends Command
 
         $baseSalary = $this->calculateDailyBaseSalary($base_salary, $totalAttendanceData);
 
-        $netSalary  = $baseSalary + $allowance + $overtimePay - $deduction;
+        $lateCompensation = $this->calculateCompensation($employee, $attendances);
+
+        $netSalary  = $baseSalary + $allowance + $overtimePay - $deduction + $lateCompensation;
 
         $payroll = [
             'employee_id'               => $employee->id,
@@ -245,6 +250,7 @@ class PayrollGeneration extends Command
             'deductions'                => $deduction,
             'allowances'                => $allowance,
             'overtime'                  => $overtimePay,
+            'compensation'              => $lateCompensation,
             'net_salary'                => $netSalary,
             'generated_at'              => now(),
         ];
@@ -317,5 +323,22 @@ class PayrollGeneration extends Command
     private function calculateAllowance($base_salary, $totalDays)
     {
         return ($base_salary['allowance'] + $base_salary['meal_allowance'] + $base_salary['bonus']) * $totalDays;
+    }
+
+    private function calculateCompensation($employee, $attendances)
+    {
+        $totalLateMinutes = 0;
+
+        if ($employee->is_manager) {
+            $topLates = $attendances->take(3);
+            $totalLateMinutes = $topLates->sum('late_arrival_time');
+        } else {
+            $topLate = $attendances->first();
+            if ($topLate) {
+                $totalLateMinutes = $topLate->late_arrival_time;
+            }
+        }
+
+        return $this->calculateLate($totalLateMinutes);
     }
 }

@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('deductions')->default(0);
             $table->integer('allowances')->default(0);
             $table->integer('overtime')->default(0);
+            $table->integer('compensation')->default(0);
             $table->integer('net_salary')->default(0);
             $table->timestamp('generated_at')->nullable();
             $table->timestamps();

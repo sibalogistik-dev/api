@@ -16,6 +16,7 @@ class Karyawan extends Model
         'name',
         'npk',
         'job_title_id',
+        'is_manager',
         'manager_id',
         'branch_id',
         'start_date',

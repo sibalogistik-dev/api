@@ -31,6 +31,7 @@ class Payroll extends Model
         'deductions',
         'allowances',
         'overtime',
+        'compensation',
         'net_salary',
         'generated_at',
     ];

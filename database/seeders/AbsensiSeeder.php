@@ -38,9 +38,9 @@ class AbsensiSeeder extends Seeder
                     ? abs((int) $employeeStartTime->diffInMinutes($branchStartTime))
                     : 0;
 
-                $attendance_status  = rand(0, 100) <= 95 ? 1 : rand(2, 6);
+                $attendance_status  = rand(0, 100) <= 80 ? 1 : (rand(0, 100) <= 50 ? 3 : rand(2, 6));
                 $half_day           = $attendance_status === 1 ? rand(1, 100) > 95 : false;
-                $sick_note          = $attendance_status === 3 ? rand(1, 100) > 95 : false;
+                $sick_note          = $attendance_status === 3 ? rand(1, 100) > 98 : false;
 
                 Absensi::create([
                     'employee_id'           => $kry->id,

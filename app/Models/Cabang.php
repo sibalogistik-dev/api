@@ -36,7 +36,7 @@ class Cabang extends Model
             });
         });
 
-        $query->when($filters['company'] ?? null, function ($query, $company) {
+        $query->when($filters['company_id'] ?? null, function ($query, $company) {
             if ($company !== 'all') {
                 $query->whereHas('company', function ($query) use ($company) {
                     $query->where('id', $company);

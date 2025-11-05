@@ -4,11 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EducationStoreRequest extends FormRequest
+class PayrollIndexRequest extends FormRequest
 {
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     public function rules()

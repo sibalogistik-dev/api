@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('perusahaans', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('codename')->unique();
+            $table->string('name');
+            $table->string('codename');
             $table->timestamps();
             $table->softDeletes();
         });

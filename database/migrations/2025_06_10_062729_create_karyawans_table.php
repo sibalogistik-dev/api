@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('npk');
             $table->integer('job_title_id');
+            $table->boolean('is_manager')->nullable()->default(false);
             $table->integer('manager_id')->nullable();
             $table->integer('branch_id');
             $table->date('start_date');

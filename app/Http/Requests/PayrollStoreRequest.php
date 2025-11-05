@@ -4,17 +4,17 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EducationStoreRequest extends FormRequest
+class PayrollStoreRequest extends FormRequest
 {
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     public function rules()
     {
         return [
-            //
+            'month' => ['required', 'string', 'max:20'],
         ];
     }
 }

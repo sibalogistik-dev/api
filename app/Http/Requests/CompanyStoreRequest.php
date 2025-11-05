@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CompanyStoreRequest extends FormRequest
 {
@@ -14,8 +15,8 @@ class CompanyStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => ['required', 'string', 'max:255', 'unique:perusahaans,name'],
-            'codename'  => ['required', 'string', 'max:255', 'unique:perusahaans,codename']
+            'name'      => ['required', 'string', 'max:255', Rule::unique('perusahaans', 'name')->whereNull('deleted_at'),],
+            'codename'  => ['required', 'string', 'max:255', Rule::unique('perusahaans', 'codename')->whereNull('deleted_at'),]
         ];
     }
 }
