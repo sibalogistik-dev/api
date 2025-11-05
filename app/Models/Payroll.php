@@ -36,6 +36,23 @@ class Payroll extends Model
         'generated_at',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->whereHas('employee', function ($query) use ($keyword) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->whereHas('jobTitle', function ($query) use ($keyword) {
+                        $query->where('name', 'like', "%{$keyword}%");
+                    })->orWhere('name', 'like', "%{$keyword}%");
+                });
+            });
+        });
+
+        $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
+            $query->where('employee_id', $employeeId);
+        });
+    }
+
     public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');

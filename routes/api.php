@@ -14,8 +14,6 @@ Route::middleware('api')->group(function () {
                 'religion'          => App\Http\Controllers\AgamaController::class,
                 'education'         => App\Http\Controllers\PendidikanController::class,
                 'marriage-status'   => App\Http\Controllers\MarriageStatusController::class,
-                'job-title'         => App\Http\Controllers\JabatanController::class,
-                'job-description'   => App\Http\Controllers\JobDescriptionController::class,
 
                 // Indonesia Regional
                 'village'           => App\Http\Controllers\KelurahanController::class,
@@ -25,10 +23,12 @@ Route::middleware('api')->group(function () {
 
                 // sensitive data
                 'company'           => App\Http\Controllers\PerusahaanController::class,
+                'employee'          => App\Http\Controllers\KaryawanController::class,
+                'job-title'         => App\Http\Controllers\JabatanController::class,
+                'job-description'   => App\Http\Controllers\JobDescriptionController::class,
                 'attendance'        => App\Http\Controllers\AbsensiController::class,
                 'branch'            => App\Http\Controllers\CabangController::class,
                 'overtime'          => App\Http\Controllers\OvertimeController::class,
-                'employee'          => App\Http\Controllers\KaryawanController::class,
                 'payroll'           => App\Http\Controllers\PayrollController::class,
             ]);
 

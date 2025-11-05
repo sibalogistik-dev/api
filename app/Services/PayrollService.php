@@ -181,15 +181,15 @@ class PayrollService
 
         $baseSalary = $base_salary['daily'] * $totalAttendanceDays;
 
-        $allowance      = $this->calculateAllowance($base_salary, $totalAttendanceDays);
+        $allowance  = $this->calculateAllowance($base_salary, $totalAttendanceDays);
 
-        $deduction      += $this->calculateHalfDays($base_salary, $totalHalfDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalPermissionDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalSickDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalAbsentDays);
-        $deduction      += $this->calculateAllowance($base_salary, $totalLeaveDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalOffDays);
-        $deduction      += $this->calculateLate($lateMinutes);
+        $deduction  += $this->calculateHalfDays($base_salary, $totalHalfDays);
+        $deduction  += $this->calculateFullDaySalary($base_salary, $totalPermissionDays);
+        $deduction  += $this->calculateFullDaySalary($base_salary, $totalSickDays);
+        $deduction  += $this->calculateFullDaySalary($base_salary, $totalAbsentDays);
+        $deduction  += $this->calculateAllowance($base_salary, $totalLeaveDays);
+        $deduction  += $this->calculateFullDaySalary($base_salary, $totalOffDays);
+        $deduction  += $this->calculateLate($lateMinutes);
 
         $overtimePay    = $this->calculateOvertimePay($base_salary, ceil($overtimeMinutes));
 

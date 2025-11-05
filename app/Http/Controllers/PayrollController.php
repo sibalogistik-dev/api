@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\PayrollIndexRequest;
 use App\Http\Requests\PayrollStoreRequest;
 use App\Models\Payroll;
 use App\Services\PayrollService;
@@ -18,9 +19,12 @@ class PayrollController extends Controller
         $this->payrollService = $payrollService;
     }
 
-    public function index()
+    public function index(PayrollIndexRequest $request)
     {
-        //
+        $validated      = $request->validated();
+        $payrollQuery   = Payroll::query()->filter($validated)->orderBy('id');
+        $payroll       = isset($validated['paginate']) && $validated['paginate'] ? $payrollQuery->paginate($validated['perPage'] ?? 10) : $payrollQuery->get();
+        return ApiResponseHelper::success('Payroll list', $payroll);
     }
 
     public function store(PayrollStoreRequest $request)
