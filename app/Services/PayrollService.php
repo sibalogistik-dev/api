@@ -13,8 +13,14 @@ class PayrollService
     public function create(array $data)
     {
         $month = $data['month'] ?? now()->format('Y-m');
-        $calculatedPayrolls = $this->calculatePayroll($month);
-        return $calculatedPayrolls;
+        try {
+            DB::transaction(function () use ($month) {
+                $calculatedPayrolls = $this->calculatePayroll($month);
+                return $calculatedPayrolls;
+            });
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     public function update(Payroll $payroll, array $data)
@@ -24,17 +30,25 @@ class PayrollService
 
     private function calculatePayroll($month)
     {
-        $periodStart = Carbon::parse("$month-28")->subMonth()->startOfDay();
-        $periodEnd = Carbon::parse("$month-27")->endOfDay();
+        $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
+        $periodEnd      = Carbon::parse("$month-27")->endOfDay();
         $monthsDays     = $this->countDaysInPeriod($month, true);
 
         $period = [
             'start' => $periodStart,
             'end'   => $periodEnd,
         ];
-        $periodName     = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+        $periodName         = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+        $employees          = Karyawan::all();
+        $totalEmployees     = $employees->count();
+        $payrollData        = Payroll::where('period_start', $period['start'])->get();
+        $totalPayrollData   = $payrollData->count();
 
-        $employees = Karyawan::all();
+        if ($totalEmployees == $totalPayrollData) {
+            throw new Exception('Payroll data for this month already exists');
+        }
+
+        Payroll::where('period_start', $period['start'])->delete();
         $dataPayroll = [];
 
         foreach ($employees as $employee) {
@@ -46,7 +60,6 @@ class PayrollService
         }
 
         Payroll::insert($dataPayroll);
-
         return $dataPayroll;
     }
 
@@ -102,7 +115,7 @@ class PayrollService
 
         $compensation   = $this->calculateCompensation($employee, $attendances);
 
-        $netSalary      = $base_salary['monthly'] + $allowance + $overtimePay - $deduction + $compensation;
+        $netSalary      = max(0, $base_salary['monthly'] + $allowance + $overtimePay - $deduction + $compensation);
 
         $payroll = [
             'employee_id'               => $employee->id,
@@ -127,6 +140,8 @@ class PayrollService
             'compensation'              => $compensation,
             'net_salary'                => $netSalary,
             'generated_at'              => now(),
+            'created_at'                => now(),
+            'updated_at'                => now(),
         ];
         return $payroll;
     }
@@ -180,7 +195,7 @@ class PayrollService
 
         $compensation   = $this->calculateCompensation($employee, $attendances);
 
-        $netSalary      = $base_salary['monthly'] + $allowance + $overtimePay - $deduction + $compensation;
+        $netSalary      = max(0, $baseSalary + $allowance + $overtimePay - $deduction + $compensation);
 
         $payroll = [
             'employee_id'               => $employee->id,
@@ -205,6 +220,8 @@ class PayrollService
             'compensation'              => $compensation,
             'net_salary'                => $netSalary,
             'generated_at'              => now(),
+            'created_at'                => now(),
+            'updated_at'                => now(),
         ];
         return $payroll;
     }

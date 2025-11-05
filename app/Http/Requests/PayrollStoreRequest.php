@@ -14,7 +14,7 @@ class PayrollStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'month' => ['required', 'string', 'max:20'],
+            'month' => ['nullable', 'string', 'max:20'],
         ];
     }
 }

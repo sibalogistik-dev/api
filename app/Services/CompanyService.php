@@ -27,7 +27,7 @@ class CompanyService
         try {
             $perusahaanData = [
                 'name'      => $data['name'],
-                'codemane'  => $data['codename'],
+                'codename'  => $data['codename'],
             ];
             $perusahaan->update($perusahaanData);
             DB::commit();
