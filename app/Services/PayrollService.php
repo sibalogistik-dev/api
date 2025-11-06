@@ -25,7 +25,14 @@ class PayrollService
 
     public function update(Payroll $payroll, array $data)
     {
-        // 
+        return DB::transaction(function () use ($payroll, $data) {
+            try {
+                $payroll->update($data);
+                return $payroll;
+            } catch (Exception $e) {
+                throw new Exception('Failed to update payroll data: ' . $e->getMessage());
+            }
+        });
     }
 
     private function calculatePayroll($month)
@@ -48,7 +55,7 @@ class PayrollService
             throw new Exception('Payroll data for this month already exists');
         }
 
-        Payroll::where('period_start', $period['start'])->delete();
+        Payroll::where('period_start', $period['start'])->forceDelete();
         $dataPayroll = [];
 
         foreach ($employees as $employee) {
@@ -103,12 +110,12 @@ class PayrollService
 
         $allowance      = $this->calculateAllowance($base_salary, $maxDays);
 
-        $deduction      += $this->calculateHalfDays($base_salary, $totalHalfDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalPermissionDays);
-        $deduction      += $this->calculateAllowance($base_salary, $totalSickDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalAbsentDays);
-        $deduction      += $this->calculateAllowance($base_salary, $totalLeaveDays);
-        $deduction      += $this->calculateFullDaySalary($base_salary, $totalOffDays);
+        $deduction      += $this->calculateHalfDays($base_salary, min($totalHalfDays, $maxDays));
+        $deduction      += $this->calculateFullDaySalary($base_salary,  min($totalPermissionDays, $maxDays));
+        $deduction      += $this->calculateAllowance($base_salary, min($totalSickDays, $maxDays));
+        $deduction      += $this->calculateFullDaySalary($base_salary, min($totalAbsentDays, $maxDays));
+        $deduction      += $this->calculateAllowance($base_salary, min($totalLeaveDays, $maxDays));
+        $deduction      += $this->calculateFullDaySalary($base_salary, min($totalOffDays, $maxDays));
         $deduction      += $this->calculateLate($lateMinutes);
 
         $overtimePay    = $this->calculateOvertimePay($base_salary, ceil($overtimeMinutes));

@@ -23,11 +23,11 @@ Route::middleware('api')->group(function () {
 
                 // sensitive data
                 'company'           => App\Http\Controllers\PerusahaanController::class,
+                'branch'            => App\Http\Controllers\CabangController::class,
                 'employee'          => App\Http\Controllers\KaryawanController::class,
                 'job-title'         => App\Http\Controllers\JabatanController::class,
                 'job-description'   => App\Http\Controllers\JobDescriptionController::class,
                 'attendance'        => App\Http\Controllers\AbsensiController::class,
-                'branch'            => App\Http\Controllers\CabangController::class,
                 'overtime'          => App\Http\Controllers\OvertimeController::class,
                 'payroll'           => App\Http\Controllers\PayrollController::class,
             ]);
