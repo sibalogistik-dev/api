@@ -22,7 +22,8 @@ class Cabang extends Model
         'start_time',
         'end_time',
         'latitude',
-        'longitude'
+        'longitude',
+        'attendance_radius',
     ];
 
     public function scopeFilter($query, array $filters)
