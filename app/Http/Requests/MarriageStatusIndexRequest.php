@@ -14,7 +14,9 @@ class MarriageStatusIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'q'             => ['nullable', 'string', 'max:100'],
+            'paginate'      => ['nullable', 'boolean'],
+            'perPage'       => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 }

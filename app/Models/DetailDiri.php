@@ -56,6 +56,6 @@ class DetailDiri extends Model
 
     public  function marriageStatus()
     {
-        return $this->belongsTo(MarriageStatus::class);
+        return $this->belongsTo(MarriageStatus::class)->withTrashed();
     }
 }

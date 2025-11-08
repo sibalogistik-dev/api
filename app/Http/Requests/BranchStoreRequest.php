@@ -14,15 +14,16 @@ class BranchStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'          => ['required', 'string', 'max:255'],
-            'address'       => ['required', 'string', 'max:255'],
-            'telephone'     => ['nullable', 'string', 'max:255'],
-            'village_id'    => ['required', 'integer', 'exists:indonesia_villages,code'],
-            'company_id'    => ['required', 'integer', 'exists:perusahaans,id'],
-            'start_time'    => ['required', 'date_format:H:i:s'],
-            'end_time'      => ['required', 'date_format:H:i:s', 'after:start_time'],
-            'latitude'      => ['required', 'numeric', 'min:-90', 'max:90'],
-            'longitude'     => ['required', 'numeric', 'min:-180', 'max:180'],
+            'name'              => ['required', 'string', 'max:255'],
+            'address'           => ['required', 'string', 'max:255'],
+            'telephone'         => ['nullable', 'string', 'max:255'],
+            'village_id'        => ['required', 'integer', 'exists:indonesia_villages,code'],
+            'company_id'        => ['required', 'integer', 'exists:perusahaans,id'],
+            'start_time'        => ['required', 'date_format:H:i:s'],
+            'end_time'          => ['required', 'date_format:H:i:s', 'after:start_time'],
+            'latitude'          => ['required', 'numeric', 'min:-90', 'max:90'],
+            'longitude'         => ['required', 'numeric', 'min:-180', 'max:180'],
+            'attendance_radius' => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

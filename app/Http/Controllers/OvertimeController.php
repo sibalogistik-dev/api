@@ -22,24 +22,28 @@ class OvertimeController extends Controller
 
     public function index(OvertimeIndexRequest $request)
     {
-        $validated              = $request->validated();
-        $otQuery                = Overtime::query()->filter($validated);
-        $overtimes              = isset($validated['paginate']) && $validated['paginate'] ? $otQuery->paginate($validated['perPage'] ?? 10) : $otQuery->get();
-        $itemsToTransform       = $overtimes instanceof LengthAwarePaginator ? $overtimes->getCollection() : $overtimes;
-        $transformedOvertimes   = $itemsToTransform->map(function ($item) {
-            return [
-                'id'            => $item->id,
-                'employee_id'   => $item->employee_id,
-                'name'          => $item->employee->name,
-                'start_time'    => $item->start_time,
-                'end_time'      => $item->end_time,
-                'approved'      => $item->approved,
-            ];
-        });
-        if ($overtimes instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Overtime list', $overtimes->setCollection($transformedOvertimes));
-        } else {
-            return ApiResponseHelper::success('Overtime list', $transformedOvertimes);
+        try {
+            $validated              = $request->validated();
+            $otQuery                = Overtime::query()->filter($validated);
+            $overtimes              = isset($validated['paginate']) && $validated['paginate'] ? $otQuery->paginate($validated['perPage'] ?? 10) : $otQuery->get();
+            $itemsToTransform       = $overtimes instanceof LengthAwarePaginator ? $overtimes->getCollection() : $overtimes;
+            $transformedOvertimes   = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'employee_id'   => $item->employee_id,
+                    'name'          => $item->employee->name,
+                    'start_time'    => $item->start_time,
+                    'end_time'      => $item->end_time,
+                    'approved'      => $item->approved,
+                ];
+            });
+            if ($overtimes instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Overtime list', $overtimes->setCollection($transformedOvertimes));
+            } else {
+                return ApiResponseHelper::success('Overtime list', $transformedOvertimes);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::success('Failed to get overtime data', $e->getMessage());
         }
     }
 
