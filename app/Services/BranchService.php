@@ -25,18 +25,7 @@ class BranchService
     {
         DB::beginTransaction();
         try {
-            $cabangData = [
-                'name'          => $data['name'],
-                'address'       => $data['address'],
-                'telephone'     => $data['telephone'],
-                'village_id'    => $data['village_id'],
-                'company_id'    => $data['company_id'],
-                'start_time'    => $data['start_time'],
-                'end_time'      => $data['end_time'],
-                'latitude'      => $data['latitude'],
-                'longitude'     => $data['longitude'],
-            ];
-            $cabang->update($cabangData);
+            $cabang->update($data);
             DB::commit();
             return $cabang;
         } catch (Exception $e) {
