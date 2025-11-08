@@ -25,13 +25,8 @@ class JobDescriptionService
     {
         DB::beginTransaction();
         try {
-            $jobDescriptionData = [
-                'job_title_id'      => $data['job_title_id'],
-                'task_name'         => $data['task_name'],
-                'task_detail'       => $data['task_detail'],
-                'priority_level'    => $data['priority_level'],
-            ];
-            $jobDescription->update($jobDescriptionData);
+            
+            $jobDescription->update($data);
             DB::commit();
             return $jobDescription;
         } catch (Exception $e) {

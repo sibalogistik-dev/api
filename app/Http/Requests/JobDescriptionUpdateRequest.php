@@ -14,10 +14,10 @@ class JobDescriptionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'job_title_id'      => ['required', 'integer'],
-            'task_name'         => ['required', 'string', 'max:255'],
-            'task_detail'       => ['required', 'string', 'max:255'],
-            'priority_level'    => ['required', 'string'],
+            'job_title_id'      => ['nullable', 'integer'],
+            'task_name'         => ['nullable', 'string', 'max:255'],
+            'task_detail'       => ['nullable', 'string', 'max:255'],
+            'priority_level'    => ['nullable', 'string'],
         ];
     }
 }

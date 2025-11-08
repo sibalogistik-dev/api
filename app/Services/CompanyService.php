@@ -25,11 +25,7 @@ class CompanyService
     {
         DB::beginTransaction();
         try {
-            $perusahaanData = [
-                'name'      => $data['name'],
-                'codename'  => $data['codename'],
-            ];
-            $perusahaan->update($perusahaanData);
+            $perusahaan->update($data);
             DB::commit();
             return $perusahaan;
         } catch (Exception $e) {
