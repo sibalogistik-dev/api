@@ -7,12 +7,19 @@ use App\Http\Requests\MarriageStatusIndexRequest;
 use App\Http\Requests\MarriageStatusStoreRequest;
 use App\Http\Requests\MarriageStatusUpdateRequest;
 use App\Models\MarriageStatus;
+use App\Services\MarriageStatusService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class MarriageStatusController extends Controller
 {
+    protected $marriageStatusService;
+
+    public function __construct(MarriageStatusService $marriageStatusService)
+    {
+        $this->marriageStatusService = $marriageStatusService;
+    }
+
     public function index(MarriageStatusIndexRequest $request)
     {
         try {
@@ -38,7 +45,12 @@ class MarriageStatusController extends Controller
 
     public function store(MarriageStatusStoreRequest $request)
     {
-        //
+        try {
+            $marriageStatus = $this->marriageStatusService->create($request->validated());
+            return ApiResponseHelper::success('Marriage status data has been added successfully', $marriageStatus);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving marriage status data', $e->getMessage(), 500);
+        }
     }
 
     public function show($marriageStatus)
@@ -47,20 +59,35 @@ class MarriageStatusController extends Controller
         if (!$marriageStatus) {
             return ApiResponseHelper::error('Marriage status not found', [], 404);
         }
-        $data = [
-            'id'    => $marriageStatus->id,
-            'name'  => $marriageStatus->name,
-        ];
-        return ApiResponseHelper::success('Marriage status data', $data);
+        return ApiResponseHelper::success('Marriage status data', $marriageStatus);
     }
 
     public function update(MarriageStatusUpdateRequest $request, $marriageStatus)
     {
-        //
+        try {
+            $marriageStatus = MarriageStatus::find($marriageStatus);
+            if (!$marriageStatus) {
+                throw new Exception('Marriage status not found');
+            }
+            $this->marriageStatusService->update($marriageStatus, $request->validated());
+            return ApiResponseHelper::success('Marriage status data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating marriage status data', $e->getMessage(), 500);
+        }
     }
 
     public function destroy($marriageStatus)
     {
-        //
+        $marriageStatus = MarriageStatus::find($marriageStatus);
+        if (!$marriageStatus) {
+            return ApiResponseHelper::error('Marriage status not found', [], 404);
+        }
+
+        $delete = $marriageStatus->delete();
+        if ($delete) {
+            return ApiResponseHelper::success('Marriage status data has been deleted successfully');
+        } else {
+            return ApiResponseHelper::error('Marriage status data failed to delete', null, 500);
+        }
     }
 }

@@ -6,7 +6,7 @@ use App\Models\MarriageStatus;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class BranchService
+class MarriageStatusService
 {
     public function create(array $data)
     {
