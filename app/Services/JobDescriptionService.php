@@ -25,7 +25,6 @@ class JobDescriptionService
     {
         DB::beginTransaction();
         try {
-            
             $jobDescription->update($data);
             DB::commit();
             return $jobDescription;
