@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Village extends Model
 {
-    protected $table = 'villages';
+    protected $table = 'indonesia_villages';
 
     protected $casts = [
         'code'          => 'integer',

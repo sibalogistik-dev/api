@@ -13,7 +13,7 @@ class District extends Model
         'city_code' => 'integer',
     ];
 
-    protected $table = 'districts';
+    protected $table = 'indonesia_districts';
 
     public function city()
     {
