@@ -9,7 +9,6 @@ use App\Http\Requests\JobDescriptionUpdateRequest;
 use App\Models\JobDescription;
 use App\Services\JobDescriptionService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class JobDescriptionController extends Controller

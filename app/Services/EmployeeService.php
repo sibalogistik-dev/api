@@ -36,7 +36,7 @@ class EmployeeService
                 'manager_id'          => $data['manager_id'] ?? null,
                 'branch_id'           => $data['branch_id'],
                 'start_date'          => $data['start_date'],
-                'end_date'            => $data['end_date'],
+                'end_date'            => $data['end_date'] ?? null,
             ];
             if (!empty($data['contract'])) {
                 $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
@@ -142,19 +142,9 @@ class EmployeeService
             }
 
             DB::commit();
-            foreach ($oldFilePaths as $path) {
-                if ($path) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
             return $karyawan;
         } catch (Exception $e) {
             DB::rollback();
-            foreach ($newFilePaths as $path) {
-                if ($path) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
             throw new Exception('Failed to update employee data: ' . $e->getMessage());
         }
     }

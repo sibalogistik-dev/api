@@ -30,6 +30,8 @@ Route::middleware('api')->group(function () {
                 'attendance'        => App\Http\Controllers\AbsensiController::class,
                 'overtime'          => App\Http\Controllers\OvertimeController::class,
                 'payroll'           => App\Http\Controllers\PayrollController::class,
+                'daily-report'      => App\Http\Controllers\EmployeeDailyReportController::class,
+
             ]);
 
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class,  'employeeDetails']);
