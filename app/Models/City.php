@@ -6,14 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
-    protected $table = 'indonesia_cities';
+    protected $table = 'cities';
+
+    protected $fillable = [
+        'name',
+        'code',
+        'province_code',
+        'meta'
+    ];
 
     protected $casts = [
         'code'          => 'integer',
         'province_code' => 'integer',
     ];
 
-    protected $searchableColumns = ['code', 'name', 'province.name'];
+    protected $hidden = ['updated_at', 'created_at'];
 
     public function province()
     {
@@ -23,35 +30,5 @@ class City extends Model
     public function districts()
     {
         return $this->hasMany(District::class, 'city_code', 'code');
-    }
-
-    public function villages()
-    {
-        return $this->hasManyThrough(
-            Village::class,
-            District::class,
-            'city_code',
-            'district_code',
-            'code',
-            'code'
-        );
-    }
-
-    public function getProvinceNameAttribute()
-    {
-        return $this->province->name;
-    }
-
-    public function getLogoPathAttribute()
-    {
-        $folder = 'indonesia-logo/';
-        $id = $this->getAttributeValue('id');
-        $arr_glob = glob(public_path() . '/' . $folder . $id . '.*');
-
-        if (count($arr_glob) == 1) {
-            $logo_name = basename($arr_glob[0]);
-
-            return url($folder . $logo_name);
-        }
     }
 }

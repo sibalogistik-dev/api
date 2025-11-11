@@ -22,26 +22,38 @@ class CabangController extends Controller
 
     public function index(BranchIndexRequest $request)
     {
-        $validated          = $request->validated();
-        $branchQuery        = Cabang::query()->filter($validated)->orderBy('id', 'desc');
-        $branch             = isset($validated['paginate']) && $validated['paginate'] ? $branchQuery->paginate($validated['perPage'] ?? 10) : $branchQuery->get();
-        $itemsToTransform   = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
-        $transformedBranch  = $itemsToTransform->map(function ($item) {
+        $validated = $request->validated();
+
+        // 1. Tambahkan eager loading dengan ->with()
+        $branchQuery = Cabang::query()
+            ->with(['company', 'village.district.city.province'])
+            ->filter($validated)
+            ->orderBy('id', 'desc');
+
+        $branch = isset($validated['paginate']) && $validated['paginate']
+            ? $branchQuery->paginate($validated['perPage'] ?? 10)
+            : $branchQuery->get();
+
+        $itemsToTransform = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
+
+        $transformedBranch = $itemsToTransform->map(function ($item) {
             return [
                 'id'        => $item->id,
                 'name'      => $item->name,
                 'address'   => $item->address,
                 'telephone' => $item->telephone ?? null,
-                // 'province'  => $item->village->district->city->province->name,
-                // 'city'      => $item->village->district->city->name,
-                // 'district'  => $item->village->district->name,
-                'village'   => $item->village->name,
+                'village_id'   => $item->village_id,
+                'province'  => $item->village?->district?->city?->province?->name,
+                'city'      => $item->village?->district?->city?->name,
+                'district'  => $item->village?->district?->name,
+                'village'   => $item->village?->name,
             ];
         });
+
         if ($branch instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Branches list', $branch->setCollection($transformedBranch));
+            return ApiResponseHelper::success('Branches list A', $branch->setCollection($transformedBranch));
         } else {
-            return ApiResponseHelper::success('Branches list', $transformedBranch);
+            return ApiResponseHelper::success('Branches list B', $transformedBranch);
         }
     }
 

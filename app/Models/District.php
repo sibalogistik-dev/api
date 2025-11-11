@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
-    protected $searchableColumns = ['code', 'name', 'city.name'];
+    protected $table = 'districts';
+
+    protected $fillable = [
+        'name',
+        'code',
+        'city_code',
+        'meta'
+    ];
 
     protected $casts = [
         'code'          => 'integer',
-        'city_code' => 'integer',
+        'city_code'     => 'integer',
     ];
-
-    protected $table = 'indonesia_districts';
+    protected $hidden = ['updated_at', 'created_at'];
 
     public function city()
     {
@@ -23,15 +29,5 @@ class District extends Model
     public function villages()
     {
         return $this->hasMany(Village::class, 'district_code', 'code');
-    }
-
-    public function getCityNameAttribute()
-    {
-        return $this->city->name;
-    }
-
-    public function getProvinceNameAttribute()
-    {
-        return $this->city->province->name;
     }
 }
