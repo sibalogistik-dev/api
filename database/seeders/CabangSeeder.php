@@ -15,15 +15,15 @@ class CabangSeeder extends Seeder
     {
         $cabangs = [
             [
-                'name' => 'SIBA Cargo Pusat',
-                'address' => 'Jl. Raya No.1, Tanjungpinang',
-                'telephone' => '0771-12345678',
-                'village_id' => 2172021001,
-                'company_id' => 1,
-                'start_time' => '08:30:00',
-                'end_time' => '17:30:00',
-                'latitude' => 0.9200032040168892,
-                'longitude' => 104.48686412750135,
+                'name'          => 'SIBA Cargo Pusat',
+                'address'       => 'Jl. Raya No.1, Tanjungpinang',
+                'telephone'     => '0771-12345678',
+                'village_id'    => 2172021001,
+                'company_id'    => 1,
+                'start_time'    => '08:30:00',
+                'end_time'      => '17:30:00',
+                'latitude'      => 0.9200032040168892,
+                'longitude'     => 104.48686412750135,
             ],
             [
                 'name' => 'SIBA Cargo Tanjungpinang',

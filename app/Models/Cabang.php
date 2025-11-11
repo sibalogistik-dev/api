@@ -12,8 +12,8 @@ class Cabang extends Model
     protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
     protected $casts = [
-        // 'village_id' => 'integer',
-        // 'company_id' => 'integer',
+        'village_id' => 'integer',
+        'company_id' => 'integer',
     ];
 
     protected $fillable = [
