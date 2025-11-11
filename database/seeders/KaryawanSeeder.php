@@ -39,7 +39,6 @@ class KaryawanSeeder extends Seeder
                 'branch_id'             => 1,
                 'job_title_id'          => 4,
                 'manager_id'            => null,
-                'is_manager'            => true,
                 'start_date'            => '2020-06-15',
                 'bank_account_number'   => '017401089343507',
                 'detail_diri'           => [
@@ -125,6 +124,10 @@ class KaryawanSeeder extends Seeder
                 'user_type'         => 'employee',
             ]);
 
+            if ($user->id == 2) {
+                $user->assignRole('Manager');
+            }
+
             $user->assignRole('Karyawan');
 
             $karyawan = Karyawan::create([
@@ -133,7 +136,6 @@ class KaryawanSeeder extends Seeder
                 'npk'                   => $karyawanData['npk'],
                 'job_title_id'          => $karyawanData['job_title_id'],
                 'manager_id'            => $karyawanData['manager_id'],
-                'is_manager'            => $karyawanData['is_manager'] ?? false,
                 'branch_id'             => $karyawanData['branch_id'],
                 'start_date'            => $karyawanData['start_date'],
                 'bank_account_number'   => $karyawanData['bank_account_number'],

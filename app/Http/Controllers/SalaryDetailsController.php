@@ -40,11 +40,13 @@ class SalaryDetailsController extends Controller
             return ApiResponseHelper::error('Employee not found', [], 404);
         }
         $data = [
+            'salary_type'           => $employee->salaryDetails->salary_type ?? null,
             'monthly_base_salary'   => $employee->salaryDetails->monthly_base_salary ?? 0,
             'daily_base_salary'     => $employee->salaryDetails->daily_base_salary ?? 0,
             'meal_allowance'        => $employee->salaryDetails->meal_allowance ?? 0,
             'bonus'                 => $employee->salaryDetails->bonus ?? 0,
             'allowance'             => $employee->salaryDetails->allowance ?? 0,
+            'overtime'              => $employee->salaryDetails->overtime ?? 0,
         ];
         return ApiResponseHelper::success("Employee's salary data", $data);
     }
@@ -58,11 +60,13 @@ class SalaryDetailsController extends Controller
         $data = $employee->salaryHistory->map(function ($item) {
             return [
                 'id'                    => $item->id,
+                'salary_type'           => $item->salary_type           ?? 0,
                 'monthly_base_salary'   => $item->monthly_base_salary   ?? 0,
                 'daily_base_salary'     => $item->daily_base_salary     ?? 0,
                 'meal_allowance'        => $item->meal_allowance        ?? 0,
                 'bonus'                 => $item->bonus                 ?? 0,
                 'allowance'             => $item->allowance             ?? 0,
+                'overtime'              => $item->overtime              ?? 0,
             ];
         });
         return ApiResponseHelper::success("Employee's salary history", $data);

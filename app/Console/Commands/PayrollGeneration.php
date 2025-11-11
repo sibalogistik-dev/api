@@ -329,7 +329,10 @@ class PayrollGeneration extends Command
     {
         $totalLateMinutes = 0;
 
-        if ($employee->is_manager) {
+        // pastikan relasi user tersedia
+        $user = $employee->user;
+
+        if ($user && $user->hasRole('Manager')) {
             $topLates = $attendances->take(3);
             $totalLateMinutes = $topLates->sum('late_arrival_time');
         } else {

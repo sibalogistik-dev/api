@@ -48,7 +48,7 @@ class Cabang extends Model
 
     public function village()
     {
-        return $this->belongsTo(Village::class, 'village_id', 'code')->orderBy('name');
+        return $this->belongsTo(Village::class, 'village_id', 'code');
     }
 
     public function company()

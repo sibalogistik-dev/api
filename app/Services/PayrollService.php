@@ -295,8 +295,8 @@ class PayrollService
     private function calculateCompensation($employee, $attendances)
     {
         $totalLateMinutes = 0;
-
-        if ($employee->is_manager) {
+        $user = $employee->user;
+        if ($user && $user->hasRole('Manager')) {
             $topLates = $attendances->take(3);
             $totalLateMinutes = $topLates->sum('late_arrival_time');
         } else {

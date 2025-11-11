@@ -11,12 +11,20 @@ class Karyawan extends Model
 
     protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
+    protected $casts = [
+        'user_id'       => 'integer',
+        'job_title_id'  => 'integer',
+        'manager_id'    => 'integer',
+        'branch_id'     => 'integer',
+        'is_manager'    => 'boolean',
+    ];
+
     protected $fillable = [
         'user_id',
         'name',
         'npk',
         'job_title_id',
-        'is_manager',
+
         'manager_id',
         'branch_id',
         'start_date',
