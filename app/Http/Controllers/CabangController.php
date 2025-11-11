@@ -32,9 +32,9 @@ class CabangController extends Controller
                 'name'      => $item->name,
                 'address'   => $item->address,
                 'telephone' => $item->telephone ?? null,
-                'province'  => $item->village->district->city->province->name,
-                'city'      => $item->village->district->city->name,
-                'district'  => $item->village->district->name,
+                // 'province'  => $item->village->district->city->province->name,
+                // 'city'      => $item->village->district->city->name,
+                // 'district'  => $item->village->district->name,
                 'village'   => $item->village->name,
             ];
         });

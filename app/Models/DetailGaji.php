@@ -11,6 +11,16 @@ class DetailGaji extends Model
 
     protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
+    protected $casts = [
+        'employee_id'           => 'integer',
+        'monthly_base_salary'   => 'integer',
+        'daily_base_salary'     => 'integer',
+        'meal_allowance'        => 'integer',
+        'bonus'                 => 'integer',
+        'allowance'             => 'integer',
+        'overtime'              => 'integer',
+    ];
+
     protected $fillable = [
         'employee_id',
         'salary_type',

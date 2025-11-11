@@ -12,6 +12,15 @@ class DetailDiri extends Model
 
     protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
+    protected $casts = [
+        'employee_id'           => 'integer',
+        'religion_id'           => 'integer',
+        'place_of_birth_id'     => 'integer',
+        'education_id'          => 'integer',
+        'marriage_status_id'    => 'integer',
+        'residential_area_id'   => 'integer',
+    ];
+
     protected $fillable = [
         'employee_id',
         'gender',
