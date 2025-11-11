@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\District;
 use App\Models\Kecamatan;
 use Illuminate\Http\Request;
-use Laravolt\Indonesia\Models\District;
 
 class KecamatanController extends Controller
 {

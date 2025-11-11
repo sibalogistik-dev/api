@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Models\City;
 use App\Models\KotaKab;
 use Illuminate\Http\Request;
-use Laravolt\Indonesia\Models\City;
 
 class KotaKabController extends Controller
 {

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Models\City;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\Village;
 use Illuminate\Http\Request;
-use Laravolt\Indonesia\Models\City;
-use Laravolt\Indonesia\Models\District;
-use Laravolt\Indonesia\Models\Province;
-use Laravolt\Indonesia\Models\Village;
 
 class IndonesiaController extends Controller
 {
