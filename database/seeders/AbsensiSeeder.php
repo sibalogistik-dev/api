@@ -32,13 +32,14 @@ class AbsensiSeeder extends Seeder
                 $branchStartTime    = Carbon::parse($cabang->start_time);
                 $startTime          = '08:' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT);
                 $employeeStartTime  = Carbon::parse($startTime);
-                $endTime            = '17:' . str_pad(rand(30, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT);
 
                 $lateArrival = $employeeStartTime->isAfter($branchStartTime)
                     ? abs((int) $employeeStartTime->diffInMinutes($branchStartTime))
                     : 0;
 
                 $attendance_status  = rand(0, 100) <= 80 ? 1 : (rand(0, 100) <= 50 ? 3 : rand(2, 6));
+                $endTime            = $attendance_status === 1 ? '17:' . str_pad(rand(30, 59), 2, '0', STR_PAD_LEFT) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT) : null;
+
                 $half_day           = $attendance_status === 1 ? rand(1, 100) > 95 : false;
                 $sick_note          = $attendance_status === 3 ? rand(1, 100) > 98 : false;
 

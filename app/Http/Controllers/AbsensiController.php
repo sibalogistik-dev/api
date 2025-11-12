@@ -31,7 +31,8 @@ class AbsensiController extends Controller
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
             return [
                 'id'                    => $item->id,
-                'employee_id'           => $item->employee_id,
+                'employee_name'         => $item->employee->name,
+                'branch_name'           => $item->employee->branch->name,
                 'attendance_status_id'  => $item->attendance_status_id,
                 'date'                  => $item->date,
                 'checked_in'            => $item->start_time,
