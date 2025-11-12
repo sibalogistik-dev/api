@@ -11,6 +11,14 @@ class Absensi extends Model
 
     protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
 
+    protected $casts = [
+        'employee_id'           => 'integer',
+        'attendance_status_id'  => 'integer',
+        'half_day'              => 'boolean',
+        'sick_note'             => 'boolean',
+        'late_arrival_time'     => 'integer',
+    ];
+
     protected $fillable = [
         'employee_id',
         'attendance_status_id',
@@ -50,7 +58,7 @@ class Absensi extends Model
         });
 
         $query->when($filters['status'] ?? null, function ($query, $status) {
-            if ($status !== 'all') {
+            if ($status !== 'all' || $status !== '') {
                 $query->where('attendance_status_id', $status);
             }
         });

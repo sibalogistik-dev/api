@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Perusahaan;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\CompanyIndexRequest;
 use App\Http\Requests\CompanyStoreRequest;
 use App\Http\Requests\CompanyUpdateRequest;
+use App\Models\Perusahaan;
 use App\Services\CompanyService;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -36,9 +36,8 @@ class PerusahaanController extends Controller
         });
         if ($company instanceof LengthAwarePaginator) {
             return ApiResponseHelper::success('Companies list', $company->setCollection($transformedCompany));
-        } else {
-            return ApiResponseHelper::success('Companies list', $transformedCompany);
         }
+        return ApiResponseHelper::success('Companies list', $transformedCompany);
     }
 
     public function store(CompanyStoreRequest $request)

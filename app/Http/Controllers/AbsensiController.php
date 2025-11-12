@@ -12,7 +12,6 @@ use App\Services\AttendanceService;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AbsensiController extends Controller
 {
@@ -25,16 +24,8 @@ class AbsensiController extends Controller
 
     public function index(AttendanceIndexRequest $request)
     {
-        $validated      = $request->validated();
-        $user           = Auth::user();
-        $absensiQuery   = Absensi::query()->filter($validated);
-        if (!($validated['getAll'] ?? false)) {
-            $employee   = $user->employee;
-            if ($employee) {
-                $absensiQuery->where('employee_id', $employee->id);
-            }
-        }
-        $absensiQuery->orderBy('id', 'desc');
+        $validated          = $request->validated();
+        $absensiQuery       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
         $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
         $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
@@ -50,9 +41,8 @@ class AbsensiController extends Controller
         });
 
         if ($absensi instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Attendance list', $absensi, $transformedAbsensi);
+            return ApiResponseHelper::success('Attendance list', $absensi->setCollection($transformedAbsensi));
         }
-
         return ApiResponseHelper::success('Attendance list', $transformedAbsensi);
     }
 

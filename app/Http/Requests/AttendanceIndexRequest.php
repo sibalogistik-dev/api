@@ -20,7 +20,6 @@ class AttendanceIndexRequest extends FormRequest
             'status'    => ['nullable', 'string'],
             'paginate'  => ['nullable', 'boolean'],
             'perPage'   => ['nullable', 'integer', 'min:1', 'max:100'],
-            'getAll'    => ['nullable', 'boolean'],
         ];
     }
 }
