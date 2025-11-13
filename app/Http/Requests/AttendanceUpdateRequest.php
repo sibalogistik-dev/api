@@ -16,6 +16,8 @@ class AttendanceUpdateRequest extends FormRequest
         return [
             'attendance_status_id'  => ['nullable', 'integer', 'exists:status_absensis,id'],
             'description'           => ['nullable', 'string', 'max:255'],
+            // 'check_out_image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            // 'check_in_image'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'start_time'            => ['nullable', 'date_format:H:i:s'],
             'end_time'              => ['nullable', 'date_format:H:i:s', 'after:start_time'],
         ];

@@ -18,12 +18,14 @@ return new class extends Migration
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time')->nullable();
-            $table->string('attendance_image')->nullable()->default('uploads/attendance_image/default.webp');
+            $table->string('check_in_image')->nullable()->default('uploads/attendance_image/default.webp');
+            $table->string('check_out_image')->nullable()->default(null);
             $table->string('description')->nullable();
             $table->float('longitude', 10)->nullable()->default('0.00000000');
             $table->float('latitude', 10)->nullable()->default('0.00000000');
             $table->boolean('half_day')->nullable()->default(false);
             $table->boolean('sick_note')->nullable()->default(false);
+            $table->string('sick_note_image')->nullable()->default('uploads/attendance_image/default.webp');
             $table->integer('late_arrival_time')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();

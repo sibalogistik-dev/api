@@ -74,7 +74,7 @@ class AttendanceService
                     ->exists();
 
                 if (!$isRemoteActive) {
-                    $jarak  = $this->hitungJarak($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
+                    $jarak  = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
                     $rad    = $kantor->attendance_radius;
 
                     if ($jarak > $rad) {
@@ -82,16 +82,18 @@ class AttendanceService
                     }
                 }
 
-                $filePaths['attendance_image']          = $this->storeFile($data['attendance_image'], 'uploads/attendance_image', $karyawan->name);
+                if (!empty($data['check_in_image'])) {
+                    $filePaths['check_in_image']        = $this->storeFile($data['check_in_image'], 'uploads/check_in_image', $karyawan->name);
+                }
                 $attendanceData['date']                 = $today;
                 $attendanceData['start_time']           = $data['start_time'] ?? date('H:i:s');
-                $attendanceData['attendance_image']     = $filePaths['attendance_image'];
+                $attendanceData['check_in_image']       = $filePaths['check_in_image'];
                 $late                                   = $this->countLate($attendanceData['start_time'], $kantor->start_time);
                 $attendanceData['late_arrival_time']    = $late;
             } else {
                 $attendanceData['date']                 = $today;
                 $attendanceData['start_time']           = '00:00:00';
-                $attendanceData['attendance_image']     = 'uploads/attendance_image/default.webp';
+                $attendanceData['check_in_image']       = 'uploads/check_in_image/default.webp';
             }
 
             $attendance = Absensi::create($attendanceData);
@@ -109,6 +111,7 @@ class AttendanceService
 
     private function handleClockOut(array $data, Karyawan $karyawan, Absensi $attendance, string $today)
     {
+        $filePaths = [];
         try {
             $kantor = $karyawan->branch;
 
@@ -118,12 +121,19 @@ class AttendanceService
                 ->exists();
 
             if (!$isRemoteActive) {
-                $jarak = $this->hitungJarak($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
+                $jarak = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
                 $rad = $kantor->attendance_radius;
 
                 if ($jarak > $rad) {
                     throw new Exception('Clock-out distance is too far from office. Your distance is ' . number_format($jarak, 0, ',', '.') . ' meters.');
                 }
+            }
+
+            if (!empty($data['check_out_image'])) {
+                $filePaths['check_out_image']   = $this->storeFile($data['check_out_image'], 'uploads/check_out_image', $karyawan->name);
+                $attendance->check_out_image    = $filePaths['check_out_image'];
+            } else {
+                $attendance->check_out_image    = 'uploads/check_out_image/default.webp';
             }
 
             $attendance->end_time = $data['end_time'] ?? date('H:i:s');
@@ -172,7 +182,7 @@ class AttendanceService
         return $fullPath;
     }
 
-    private function hitungJarak($lat_kantor, $long_kantor, $lat_pengguna, $long_pengguna)
+    private function distanceCount($lat_kantor, $long_kantor, $lat_pengguna, $long_pengguna)
     {
         $earthRadius    = 6371000;
         $lat1Rad        = deg2rad($lat_kantor);

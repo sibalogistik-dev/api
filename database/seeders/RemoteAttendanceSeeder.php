@@ -15,8 +15,8 @@ class RemoteAttendanceSeeder extends Seeder
     {
         $data = [
             'employee_id'   => 1,
-            'start_date'    => '2025-10-25',
-            'end_date'      => '2025-10-25',
+            'start_date'    => date('Y-m-d'),
+            'end_date'      => date('Y-m-d'),
         ];
 
         RemoteAttendance::create($data);

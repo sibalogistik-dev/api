@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('remote_attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id');
+            $table->integer('employee_id');
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();
