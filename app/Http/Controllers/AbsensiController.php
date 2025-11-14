@@ -66,11 +66,14 @@ class AbsensiController extends Controller
         }
         $data = [
             'id'                    => $query->id,
-            'name'                  => $query->employee->name,
+            'employee_id'           => $query->employee_id,
+            'employee_name'         => $query->employee->name,
             'attendance_status_id'  => $query->attendance_status_id,
             'status'                => $query->attendanceStatus->name,
             'description'           => $query->description,
             'date'                  => $query->date,
+            'half_day'              => $query->half_day,
+            'sick_note'             => $query->sick_note,
             'checked_in'            => $query->start_time,
             'checked_out'           => $query->end_time,
             'checked_in_latitude'   => $query->latitude,
