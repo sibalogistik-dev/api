@@ -16,6 +16,7 @@ class Overtime extends Model
         'start_time',
         'end_time',
         'approved',
+        'description',
     ];
 
     public function scopeFilter($query, array $filters)

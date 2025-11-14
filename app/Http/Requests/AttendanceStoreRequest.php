@@ -16,12 +16,13 @@ class AttendanceStoreRequest extends FormRequest
         return [
             'employee_id'           => ['required', 'integer', 'exists:karyawans,id'],
             'attendance_status_id'  => ['required', 'integer', 'exists:status_absensis,id'],
-            'description'           => ['required', 'string', 'max:255'],
-            'longitude'             => ['required', 'decimal:1,10', 'min:-180', 'max:180'],
-            'latitude'              => ['required', 'decimal:1,10', 'min:-90', 'max:90'],
+            'description'           => ['sometimes', 'required', 'string', 'max:255'],
+            'check_in_longitude'    => ['sometimes', 'required', 'decimal:1,10', 'min:-180', 'max:180'],
+            'check_in_latitude'     => ['sometimes', 'required', 'decimal:1,10', 'min:-90', 'max:90'],
+            'check_out_longitude'   => ['sometimes', 'required', 'decimal:1,10', 'min:-180', 'max:180'],
+            'check_out_latitude'    => ['sometimes', 'required', 'decimal:1,10', 'min:-90', 'max:90'],
             'check_in_image'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'check_out_image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
-            // 'attendance_image'      => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'half_day'              => ['nullable', 'boolean'],
             'sick_note'             => ['nullable', 'boolean'],
         ];

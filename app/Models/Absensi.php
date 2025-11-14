@@ -15,7 +15,6 @@ class Absensi extends Model
         'employee_id'           => 'integer',
         'attendance_status_id'  => 'integer',
         'half_day'              => 'boolean',
-        'sick_note'             => 'boolean',
         'late_arrival_time'     => 'integer',
     ];
 
@@ -27,10 +26,11 @@ class Absensi extends Model
         'end_time',
         'check_in_image',
         'check_out_image',
-        // 'attendance_image',
         'description',
-        'longitude',
-        'latitude',
+        'check_in_longitude',
+        'check_in_latitude',
+        'check_out_longitude',
+        'check_out_latitude',
         'half_day',
         'sick_note',
         'late_arrival_time',

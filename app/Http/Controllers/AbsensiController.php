@@ -78,7 +78,6 @@ class AbsensiController extends Controller
             'checked_out'           => $query->end_time,
             'checked_in_latitude'   => $query->latitude,
             'checked_in_longitude'  => $query->longitude,
-            'attendance_image'      => $query->attendance_image,
             'late_arrival_time'     => $query->late_arrival_time,
         ];
         return ApiResponseHelper::success('Attendance detail', $data);

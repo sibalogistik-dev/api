@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             RemoteAttendanceSeeder::class,
 
             StatusAbsensiSeeder::class,
-            // AbsensiSeeder::class,
+            AbsensiSeeder::class,
             OvertimeSeeder::class,
             JobDescriptionSeeder::class,
         ]);

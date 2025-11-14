@@ -55,8 +55,8 @@ class AttendanceService
                 'employee_id'           => $data['employee_id'],
                 'attendance_status_id'  => $data['attendance_status_id'],
                 'description'           => $data['description'],
-                'longitude'             => $data['longitude'],
-                'latitude'              => $data['latitude'],
+                'check_in_longitude'    => $data['check_in_longitude'],
+                'check_in_latitude'     => $data['check_in_latitude'],
             ];
 
             $existingAttendance = Absensi::where('employee_id', $karyawan->id)
@@ -74,7 +74,7 @@ class AttendanceService
                     ->exists();
 
                 if (!$isRemoteActive) {
-                    $jarak  = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
+                    $jarak  = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['check_in_latitude'], $data['check_in_longitude']);
                     $rad    = $kantor->attendance_radius;
 
                     if ($jarak > $rad) {
@@ -90,10 +90,14 @@ class AttendanceService
                 $attendanceData['check_in_image']       = $filePaths['check_in_image'];
                 $late                                   = $this->countLate($attendanceData['start_time'], $kantor->start_time);
                 $attendanceData['late_arrival_time']    = $late;
+                $attendanceData['sick_note']            = null;
             } else {
                 $attendanceData['date']                 = $today;
                 $attendanceData['start_time']           = '00:00:00';
                 $attendanceData['check_in_image']       = 'uploads/check_in_image/default.webp';
+                if (!empty($data['sick_note'])) {
+                    $filePaths['sick_note']             = $this->storeFile($data['sick_note'], 'uploads/sick_note', $karyawan->name);
+                }
             }
 
             $attendance = Absensi::create($attendanceData);
@@ -121,7 +125,7 @@ class AttendanceService
                 ->exists();
 
             if (!$isRemoteActive) {
-                $jarak = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['latitude'], $data['longitude']);
+                $jarak = $this->distanceCount($kantor->latitude, $kantor->longitude, $data['check_out_latitude'], $data['check_out_longitude']);
                 $rad = $kantor->attendance_radius;
 
                 if ($jarak > $rad) {
@@ -135,8 +139,9 @@ class AttendanceService
             } else {
                 $attendance->check_out_image    = 'uploads/check_out_image/default.webp';
             }
-
-            $attendance->end_time = $data['end_time'] ?? date('H:i:s');
+            $attendance->check_out_longitude    = $data['check_out_longitude'];
+            $attendance->check_out_latitude     = $data['check_out_latitude'];
+            $attendance->end_time               = $data['end_time'] ?? date('H:i:s');
             $attendance->save();
 
             DB::commit();

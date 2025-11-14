@@ -43,6 +43,7 @@ class OvertimeSeeder extends Seeder
                         'start_time'    => $date->format('Y-m-d') . ' ' . $start->format('H:i:s'),
                         'end_time'      => $date->format('Y-m-d') . ' ' . $end->format('H:i:s'),
                         'approved'      => rand(0, 1),
+                        'description'   => 'Overtime'
                     ]);
                 }
             }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('employee_id');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
+            $table->longText('description');
             $table->boolean('approved')->nullable()->default(false);
             $table->timestamps();
             $table->softDeletes();
