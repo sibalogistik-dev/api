@@ -27,7 +27,7 @@ class AbsensiController extends Controller
         $validated          = $request->validated();
         $absensiQuery       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
         $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
-        $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->items() : $absensi;
+        $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
             return [
                 'id'                    => $item->id,
@@ -37,8 +37,8 @@ class AbsensiController extends Controller
                 'attendance_status_id'  => $item->attendance_status_id,
                 'status'                => $item->attendanceStatus->name,
                 'date'                  => $item->date,
-                'checked_in'            => $item->start_time,
-                'checked_out'           => $item->end_time,
+                'start_time'            => $item->start_time,
+                'end_time'              => $item->end_time,
             ];
         });
 
