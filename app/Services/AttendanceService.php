@@ -84,6 +84,8 @@ class AttendanceService
 
                 if (!empty($data['check_in_image'])) {
                     $filePaths['check_in_image']        = $this->storeFile($data['check_in_image'], 'uploads/check_in_image', $karyawan->name);
+                } else {
+                    $filePaths['check_in_image']        = 'uploads/check_in_image/default.webp';
                 }
                 $attendanceData['date']                 = $today;
                 $attendanceData['start_time']           = $data['start_time'] ?? date('H:i:s');
@@ -155,18 +157,12 @@ class AttendanceService
     {
         DB::beginTransaction();
         try {
-            $update = [
-                'attendance_status_id'  => $data['attendance_status_id'],
-                'description'           => $data['description'],
-                'start_time'            => $data['start_time']
-            ];
-            if (isset($data['end_time'])) {
-                $update['end_time'] = $data['end_time'];
+            if (isset($data['start_time']) && $absensi->start_time != $data['start_time']) {
+                $late                       = $this->countLate($data['start_time'], $absensi->employee->branch->start_time);
+                $data['late_arrival_time']  = $late;
             }
-            $late   = $this->countLate($update['start_time'], $absensi->employee->branch->start_time);
-            $update['late_arrival_time']    = $late;
 
-            $absensi->update($update);
+            $absensi->update($data);
             DB::commit();
             return $absensi;
         } catch (Exception $e) {

@@ -9,6 +9,7 @@ use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Absensi;
 use App\Models\Karyawan;
 use App\Services\AttendanceService;
+use App\Services\AttendanceServiceHRD;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -16,10 +17,12 @@ use Illuminate\Http\Request;
 class AbsensiController extends Controller
 {
     protected $attendanceService;
+    protected $attendanceServiceHRD;
 
-    public function __construct(AttendanceService $attendanceService)
+    public function __construct(AttendanceService $attendanceService, AttendanceServiceHRD $attendanceServiceHRD)
     {
-        $this->attendanceService = $attendanceService;
+        $this->attendanceService    = $attendanceService;
+        $this->attendanceServiceHRD = $attendanceServiceHRD;
     }
 
     public function index(AttendanceIndexRequest $request)
@@ -89,11 +92,11 @@ class AbsensiController extends Controller
     public function update(AttendanceUpdateRequest $request, $attendance)
     {
         try {
-            $abs = Absensi::find($attendance);
+            $abs        = Absensi::find($attendance);
             if (!$abs) {
                 throw new Exception('Attendance not found');
             }
-            $absensi = $this->attendanceService->update($abs, $request->validated());
+            $absensi    = $this->attendanceService->update($abs, $request->validated());
             return ApiResponseHelper::success("Attendance successfully recorded.", $absensi);
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
@@ -146,5 +149,15 @@ class AbsensiController extends Controller
             ];
         });
         return ApiResponseHelper::success("Employee's attendance", $data);
+    }
+
+    public function hrdAttendanceAddition(AttendanceStoreRequest $request)
+    {
+        try {
+            $attendance = $this->attendanceServiceHRD->create($request->validated());
+            return ApiResponseHelper::success("Attendance successfully recorded.", $attendance);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
+        }
     }
 }

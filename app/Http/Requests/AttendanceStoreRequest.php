@@ -24,7 +24,7 @@ class AttendanceStoreRequest extends FormRequest
             'check_in_image'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'check_out_image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'half_day'              => ['nullable', 'boolean'],
-            'sick_note'             => ['nullable', 'boolean'],
+            'sick_note'             => ['nullable', 'file', 'mimetypes:pdf,jpeg,jpg,png,webp', 'max:5120'],
         ];
     }
 }
