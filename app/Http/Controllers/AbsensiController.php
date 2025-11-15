@@ -80,6 +80,7 @@ class AbsensiController extends Controller
             'check_in_image'        => $query->check_in_image,
             'check_out_image'       => $query->check_out_image,
             'half_day'              => $query->half_day,
+            'sick_note'             => $query->sick_note,
             'late_arrival_time'     => $query->late_arrival_time,
         ];
         return ApiResponseHelper::success('Attendance detail', $data);
