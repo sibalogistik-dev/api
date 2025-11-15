@@ -27,7 +27,7 @@ class AbsensiController extends Controller
         $validated          = $request->validated();
         $absensiQuery       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
         $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
-        $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
+        $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->items() : $absensi;
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
             return [
                 'id'                    => $item->id,
@@ -67,17 +67,19 @@ class AbsensiController extends Controller
         $data = [
             'id'                    => $query->id,
             'employee_id'           => $query->employee_id,
-            'employee_name'         => $query->employee->name,
             'attendance_status_id'  => $query->attendance_status_id,
             'status'                => $query->attendanceStatus->name,
             'description'           => $query->description,
             'date'                  => $query->date,
+            'start_time'            => $query->start_time,
+            'end_time'              => $query->end_time,
+            'check_in_latitude'     => $query->check_in_latitude,
+            'check_in_longitude'    => $query->check_in_longitude,
+            'check_out_latitude'    => $query->check_out_latitude,
+            'check_out_longitude'   => $query->check_out_longitude,
+            'check_in_image'        => $query->check_in_image,
+            'check_out_image'       => $query->check_out_image,
             'half_day'              => $query->half_day,
-            'sick_note'             => $query->sick_note,
-            'checked_in'            => $query->start_time,
-            'checked_out'           => $query->end_time,
-            'checked_in_latitude'   => $query->latitude,
-            'checked_in_longitude'  => $query->longitude,
             'late_arrival_time'     => $query->late_arrival_time,
         ];
         return ApiResponseHelper::success('Attendance detail', $data);
