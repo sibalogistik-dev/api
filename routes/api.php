@@ -35,11 +35,13 @@ Route::middleware('api')->group(function () {
 
             ]);
 
-            Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class,  'employeeDetails']);
-            Route::get('employee/{employee}/salary',            [App\Http\Controllers\SalaryDetailsController::class,    'employeeSalary']);
-            Route::get('employee/{employee}/salary-histories',  [App\Http\Controllers\SalaryDetailsController::class,    'employeeSalaryHistory']);
-            Route::get('employee/{employee}/attendances',       [App\Http\Controllers\AbsensiController::class,          'employeeAttendance']);
-            Route::get('company/{company}/branches',            [App\Http\Controllers\PerusahaanController::class,       'companyBranches']);
+            Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
+            Route::get('employee/{employee}/salary',            [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalary'])->name('employee.salary');
+            Route::get('employee/{employee}/salary-histories',  [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalaryHistory'])->name('employee.salaryHistory');
+            Route::get('employee/{employee}/attendances',       [App\Http\Controllers\AbsensiController::class,         'employeeAttendance'])->name('employee.attendances');
+            Route::get('company/{company}/branches',            [App\Http\Controllers\PerusahaanController::class,      'companyBranches'])->name('company.branches');
+
+            Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class,         'hrdAttendanceAdd'])->name('attendance.storeByHRD');
         });
 
     // getter public routes

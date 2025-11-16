@@ -21,10 +21,12 @@ class AttendanceStoreRequest extends FormRequest
             'check_in_latitude'     => ['sometimes', 'required', 'decimal:1,10', 'min:-90', 'max:90'],
             'check_out_longitude'   => ['sometimes', 'required', 'decimal:1,10', 'min:-180', 'max:180'],
             'check_out_latitude'    => ['sometimes', 'required', 'decimal:1,10', 'min:-90', 'max:90'],
+            'start_time'            => ['sometimes', 'nullable', 'date_format:H:i:s'],
+            'end_time'              => ['sometimes', 'nullable', 'date_format:H:i:s', 'after:start_time'],
             'check_in_image'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'check_out_image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'half_day'              => ['nullable', 'boolean'],
-            'sick_note'             => ['nullable', 'file', 'mimetypes:pdf,jpeg,jpg,png,webp', 'max:5120'],
+            'sick_note'             => ['nullable', 'file', 'mimes:pdf,jpeg,jpg,png,webp', 'max:5120'],
         ];
     }
 }

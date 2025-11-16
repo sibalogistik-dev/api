@@ -149,7 +149,7 @@ class EmployeeService
         }
     }
 
-    private function storeFile(UploadedFile $file, string $path): string
+    private function storeFile(UploadedFile $file, string $path)
     {
         return $file->store($path, 'public');
     }

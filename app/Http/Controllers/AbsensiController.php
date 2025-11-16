@@ -151,7 +151,7 @@ class AbsensiController extends Controller
         return ApiResponseHelper::success("Employee's attendance", $data);
     }
 
-    public function hrdAttendanceAddition(AttendanceStoreRequest $request)
+    public function hrdAttendanceAdd(AttendanceStoreRequest $request)
     {
         try {
             $attendance = $this->attendanceServiceHRD->create($request->validated());
