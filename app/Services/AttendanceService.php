@@ -155,11 +155,18 @@ class AttendanceService
 
     public function update(Absensi $absensi, array $data)
     {
+        $filePaths      = [];
         DB::beginTransaction();
         try {
+            $karyawan   = Karyawan::find($absensi->employee_id);
             if (isset($data['start_time']) && $absensi->start_time != $data['start_time']) {
                 $late                       = $this->countLate($data['start_time'], $absensi->employee->branch->start_time);
                 $data['late_arrival_time']  = $late;
+            }
+
+            if (!empty($data['sick_note'])) {
+                $filePaths['sick_note']             = $this->storeFile($data['sick_note'], 'uploads/sick_note', $karyawan->name);
+                $data['sick_note']                  = $filePaths['sick_note'];
             }
 
             $absensi->update($data);
@@ -167,6 +174,11 @@ class AttendanceService
             return $absensi;
         } catch (Exception $e) {
             DB::rollBack();
+            foreach ($filePaths as $path) {
+                if ($path) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
             throw new Exception('Failed to update attendance data: ' . $e->getMessage());
         }
     }

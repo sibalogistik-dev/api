@@ -14,7 +14,6 @@ class Absensi extends Model
     protected $casts = [
         'employee_id'           => 'integer',
         'attendance_status_id'  => 'integer',
-        'half_day'              => 'boolean',
         'late_arrival_time'     => 'integer',
     ];
 
