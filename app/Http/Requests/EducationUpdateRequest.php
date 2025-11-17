@@ -8,13 +8,13 @@ class EducationUpdateRequest extends FormRequest
 {
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     public function rules()
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

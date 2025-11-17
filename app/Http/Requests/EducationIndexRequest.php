@@ -8,13 +8,15 @@ class EducationIndexRequest extends FormRequest
 {
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     public function rules()
     {
         return [
-            //
+            'q'        => ['nullable', 'string', 'max:100'],
+            'paginate' => ['nullable', 'boolean'],
+            'perPage'  => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 }

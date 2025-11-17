@@ -11,7 +11,7 @@ use App\Models\Karyawan;
 use App\Services\AttendanceService;
 use App\Services\AttendanceServiceHRD;
 use Exception;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class AbsensiController extends Controller

@@ -155,8 +155,8 @@ class AttendanceService
 
     public function update(Absensi $absensi, array $data)
     {
-        $filePaths      = [];
         DB::beginTransaction();
+        $filePaths  = [];
         try {
             $karyawan   = Karyawan::find($absensi->employee_id);
             if (isset($data['start_time']) && $absensi->start_time != $data['start_time']) {
@@ -165,8 +165,8 @@ class AttendanceService
             }
 
             if (!empty($data['sick_note'])) {
-                $filePaths['sick_note']             = $this->storeFile($data['sick_note'], 'uploads/sick_note', $karyawan->name);
-                $data['sick_note']                  = $filePaths['sick_note'];
+                $filePaths['sick_note'] = $this->storeFile($data['sick_note'], 'uploads/sick_note', $karyawan->name);
+                $data['sick_note']      = $filePaths['sick_note'];
             }
 
             $absensi->update($data);

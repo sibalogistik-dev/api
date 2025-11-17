@@ -3,33 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\EducationIndexRequest;
+use App\Http\Requests\EducationStoreRequest;
+use App\Http\Requests\EducationUpdateRequest;
 use App\Models\Pendidikan;
+use App\Services\EducationService;
+use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class PendidikanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $educationService;
+
+    public function __construct(EducationService $educationService)
     {
-        $pendidikan = Pendidikan::orderBy('id', 'ASC')->get();
-        return ApiResponseHelper::success('Education list', $pendidikan);
+        $this->educationService = $educationService;
     }
 
-    public function store(Request $request)
+    public function index(EducationIndexRequest $request)
     {
-        //
+        $validated              = $request->validated();
+        $educationQuery         = Pendidikan::query()->filter($validated);
+        $education              = isset($validated['paginate']) && $validated['paginate'] ? $educationQuery->paginate($validated['perPage'] ?? 10) : $educationQuery->get();
+        $itemsToTransform       = $education instanceof LengthAwarePaginator ? $education->getCollection() : $education;
+        $transformedEducation   = $itemsToTransform->map(function ($item) {
+            return [
+                'id'    => $item->id,
+                'name'  => $item->name,
+            ];
+        });
+        if ($education instanceof LengthAwarePaginator) {
+            return ApiResponseHelper::success('Pendidikan list', $education->setCollection($transformedEducation));
+        }
+        return ApiResponseHelper::success('Pendidikan list', $transformedEducation);
     }
 
-    public function show(Pendidikan $pendidikan)
+    public function store(EducationStoreRequest $request)
     {
-        //
+        try {
+            $education = $this->educationService->create($request->validated());
+            return ApiResponseHelper::success('Education data has been added successfully', $education);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving education data', $e->getMessage(), 500);
+        }
     }
 
-    public function update(Request $request, Pendidikan $pendidikan)
+    public function show($education)
     {
-        //
+        $education = Pendidikan::find($education);
+        if (!$education) {
+            return ApiResponseHelper::error('Education data not found', [], 404);
+        }
+        $data = [
+            'id'    => $education->id,
+            'name'  => $education->name,
+        ];
+        return ApiResponseHelper::success("Education's detail", $data);
+    }
+
+    public function update(EducationUpdateRequest $request, Pendidikan $education)
+    {
+        try {
+            $this->educationService->update($education, $request->validated());
+            return ApiResponseHelper::success('Education data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating education data', $e->getMessage(), 500);
+        }
     }
 
     public function destroy(Pendidikan $pendidikan)
