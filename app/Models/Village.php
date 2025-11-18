@@ -22,6 +22,11 @@ class Village extends Model
 
     protected $hidden = ['updated_at', 'created_at'];
 
+    public function scopeFilter($query, array $filters)
+    {
+        // 
+    }
+
     public function district()
     {
         return $this->belongsTo(District::class, 'district_code', 'code');

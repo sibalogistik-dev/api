@@ -19,7 +19,13 @@ class District extends Model
         'code'          => 'integer',
         'city_code'     => 'integer',
     ];
+
     protected $hidden = ['updated_at', 'created_at'];
+
+    public function scopeFilter($query, array $filters)
+    {
+        // 
+    }
 
     public function city()
     {

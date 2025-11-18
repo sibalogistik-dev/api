@@ -14,13 +14,13 @@ class OvertimeIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'             => ['nullable', 'string', 'max:100'],
+            'q'             => ['nullable', 'string'],
             'start_date'    => ['nullable', 'date'],
             'end_date'      => ['nullable', 'date'],
             'employee_id'   => ['nullable', 'integer'],
             'approved'      => ['nullable', 'boolean'],
             'paginate'      => ['nullable', 'boolean'],
-            'perPage'       => ['nullable', 'integer', 'min:1', 'max:100'],
+            'perPage'       => ['nullable', 'integer'],
         ];
     }
 }

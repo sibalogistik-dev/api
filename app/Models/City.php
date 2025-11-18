@@ -22,6 +22,11 @@ class City extends Model
 
     protected $hidden = ['updated_at', 'created_at'];
 
+    public function scopeFilter($query, array $filters)
+    {
+        // 
+    }
+
     public function province()
     {
         return $this->belongsTo(Province::class, 'province_code', 'code');

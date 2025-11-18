@@ -14,10 +14,10 @@ class EmployeeIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'        => ['nullable', 'string', 'max:100'],
+            'q'        => ['nullable', 'string'],
             'branch'   => ['nullable', 'string'],
             'paginate' => ['nullable', 'boolean'],
-            'perPage'  => ['nullable', 'integer', 'min:1', 'max:100'],
+            'perPage'  => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

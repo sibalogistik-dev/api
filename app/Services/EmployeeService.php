@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Exception;
+use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 
 class EmployeeService
 {
@@ -39,18 +41,18 @@ class EmployeeService
                 'end_date'            => $data['end_date'] ?? null,
             ];
             if (!empty($data['contract'])) {
-                $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak');
+                $filePaths['contract'] = $this->storeFile($data['contract'], 'uploads/kontrak', $data['name']);
                 $karyawanData['contract'] = $filePaths['contract'];
             }
             $karyawan = Karyawan::create($karyawanData);
             if (!empty($data['id_card_photo'])) {
-                $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto');
+                $filePaths['id_card_photo'] = $this->storeFile($data['id_card_photo'], 'uploads/ktp_foto', $data['name']);
             }
             if (!empty($data['passport_photo'])) {
-                $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto');
+                $filePaths['passport_photo'] = $this->storeFile($data['passport_photo'], 'uploads/pas_foto', $data['name']);
             }
             if (!empty($data['drivers_license_photo'])) {
-                $filePaths['drivers_license_photo'] = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto');
+                $filePaths['drivers_license_photo'] = $this->storeFile($data['drivers_license_photo'], 'uploads/sim_foto', $data['name']);
             }
             DetailDiri::create([
                 'employee_id'           => $karyawan->id,
@@ -100,7 +102,7 @@ class EmployeeService
                 $dataKaryawan = $data['karyawan'];
                 if (isset($dataKaryawan['contract']) && !empty($dataKaryawan['contract'])) {
                     $oldFilePaths[]             = $karyawan->contract;
-                    $newFilePaths['contract']   = $this->storeFile($dataKaryawan['contract'], 'uploads/kontrak');
+                    $newFilePaths['contract']   = $this->storeFile($dataKaryawan['contract'], 'uploads/kontrak', $karyawan->name);
                     $dataKaryawan['contract']   = $newFilePaths['contract'];
                 }
                 $karyawan->update($dataKaryawan);
@@ -110,17 +112,17 @@ class EmployeeService
                 $dataDetailDiri = $data['detail_diri'];
                 if (!empty($dataDetailDiri['passport_photo']) && isset($dataDetailDiri['passport_photo']) && $details) {
                     $oldFilePaths[]                             = $details->passport_photo;
-                    $newFilePaths['passport_photo']             = $this->storeFile($dataDetailDiri['passport_photo'], 'uploads/pas_foto');
+                    $newFilePaths['passport_photo']             = $this->storeFile($dataDetailDiri['passport_photo'], 'uploads/pas_foto', $karyawan->name);
                     $dataDetailDiri['passport_photo']           = $newFilePaths['passport_photo'];
                 }
                 if (!empty($dataDetailDiri['id_card_photo']) && isset($dataDetailDiri['id_card_photo']) && $details) {
                     $oldFilePaths[]                             = $details->id_card_photo;
-                    $newFilePaths['id_card_photo']              = $this->storeFile($dataDetailDiri['id_card_photo'], 'uploads/ktp_foto');
+                    $newFilePaths['id_card_photo']              = $this->storeFile($dataDetailDiri['id_card_photo'], 'uploads/ktp_foto', $karyawan->name);
                     $dataDetailDiri['id_card_photo']            = $newFilePaths['id_card_photo'];
                 }
                 if (!empty($dataDetailDiri['drivers_license_photo']) && isset($dataDetailDiri['drivers_license_photo']) && $details) {
                     $oldFilePaths[]                             = $details->drivers_license_photo;
-                    $newFilePaths['drivers_license_photo']      = $this->storeFile($dataDetailDiri['drivers_license_photo'], 'uploads/sim_foto');
+                    $newFilePaths['drivers_license_photo']      = $this->storeFile($dataDetailDiri['drivers_license_photo'], 'uploads/sim_foto', $karyawan->name);
                     $dataDetailDiri['drivers_license_photo']    = $newFilePaths['drivers_license_photo'];
                 }
                 if ($details) {
@@ -149,8 +151,27 @@ class EmployeeService
         }
     }
 
-    private function storeFile(UploadedFile $file, string $path)
+    private function storeFile(UploadedFile $file, string $path, string $employeeName, int $quality = 90)
     {
-        return $file->store($path, 'public');
+        $saneName = Str::slug($employeeName);
+        $isImage = Str::startsWith($file->getMimeType(), 'image/');
+
+        if ($isImage) {
+            $filename = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
+            $fullPath = $path . '/' . $filename;
+
+            $imageContent = Image::read($file->getRealPath())->toWebp($quality);
+            Storage::disk('public')->put($fullPath, (string) $imageContent);
+
+            return $fullPath;
+        } else {
+            $extension = $file->getClientOriginalExtension();
+            $filename  = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.' . $extension;
+            $fullPath  = $path . '/' . $filename;
+
+            Storage::disk('public')->putFileAs($path, $file, $filename);
+
+            return $fullPath;
+        }
     }
 }

@@ -10,6 +10,11 @@ class Province extends Model
 
     protected $hidden = ['updated_at', 'created_at'];
 
+    public function scopeFilter($query, array $filters)
+    {
+        // 
+    }
+
     public function cities()
     {
         return $this->hasMany(City::class, 'province_code', 'code');
