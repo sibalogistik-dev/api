@@ -78,16 +78,19 @@ class MarriageStatusController extends Controller
 
     public function destroy($marriageStatus)
     {
-        $marriageStatus = MarriageStatus::find($marriageStatus);
-        if (!$marriageStatus) {
-            return ApiResponseHelper::error('Marriage status not found', [], 404);
-        }
+        try {
+            $marriageStatus = MarriageStatus::find($marriageStatus);
+            if (!$marriageStatus) {
+                throw new Exception('Marriage status not found', 404);
+            }
 
-        $delete = $marriageStatus->delete();
-        if ($delete) {
+            $delete = $marriageStatus->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete marriage status data', 404);
+            }
             return ApiResponseHelper::success('Marriage status data has been deleted successfully');
-        } else {
-            return ApiResponseHelper::error('Marriage status data failed to delete', null, 500);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Marriage status data failed to delete', $e->getMessage(), $e->getCode());
         }
     }
 }

@@ -105,15 +105,19 @@ class AbsensiController extends Controller
 
     public function destroy($attendance)
     {
-        $absensi = Absensi::find($attendance);
-        if (!$absensi) {
-            return ApiResponseHelper::error('Attendance data not found', [], 404);
+        try {
+            $absensi = Absensi::find($attendance);
+            if (!$absensi) {
+                throw new Exception('Attendance data not found', 404);
+            }
+            $delete = $absensi->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete attendance data', 500);
+            }
+            return ApiResponseHelper::success('Attendance data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Attendance data failed to delete', $e->getMessage(), $e->getCode());
         }
-        $delete = $absensi->delete();
-        if (!$delete) {
-            return ApiResponseHelper::error('Attendance data failed to delete', null, 500);
-        }
-        return ApiResponseHelper::success('Attendance data has been deleted successfully');
     }
 
     public function employeeAttendance($employee, Request $request)

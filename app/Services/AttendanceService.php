@@ -185,14 +185,26 @@ class AttendanceService
 
     private function storeFile(UploadedFile $file, string $path, string $employeeName, int $quality = 90)
     {
-        $saneName       = Str::slug($employeeName);
-        $filename       = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
-        $fullPath       = $path . '/' . $filename;
-        $imageContent   = Image::read($file->getRealPath())->toWebp($quality);
+        $saneName = Str::slug($employeeName);
+        $isImage = Str::startsWith($file->getMimeType(), 'image/');
 
-        Storage::disk('public')->put($fullPath, (string) $imageContent);
+        if ($isImage) {
+            $filename = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
+            $fullPath = $path . '/' . $filename;
 
-        return $fullPath;
+            $imageContent = Image::read($file->getRealPath())->toWebp($quality);
+            Storage::disk('public')->put($fullPath, (string) $imageContent);
+
+            return $fullPath;
+        } else {
+            $extension = $file->getClientOriginalExtension();
+            $filename  = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.' . $extension;
+            $fullPath  = $path . '/' . $filename;
+
+            Storage::disk('public')->putFileAs($path, $file, $filename);
+
+            return $fullPath;
+        }
     }
 
     private function distanceCount($lat_kantor, $long_kantor, $lat_pengguna, $long_pengguna)

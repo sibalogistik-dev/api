@@ -72,8 +72,21 @@ class PendidikanController extends Controller
         }
     }
 
-    public function destroy(Pendidikan $pendidikan)
+    public function destroy($education)
     {
-        //
+
+        try {
+            $education  = Pendidikan::find($education);
+            if (!$education) {
+                throw new Exception('Education data not found', 404);
+            }
+            $delete     = $education->delete();
+            if (!$delete) {
+                throw new Exception('Education data failed to delete', 500);
+            }
+            return ApiResponseHelper::success('Education data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Education data failed to delete', $e->getMessage(), $e->getCode());
+        }
     }
 }

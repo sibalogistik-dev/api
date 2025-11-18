@@ -79,12 +79,12 @@ class PerusahaanController extends Controller
         try {
             $company = Perusahaan::find($company);
             if (!$company) {
-                return ApiResponseHelper::error('Company data not found', null, 404);
+                throw new Exception('Company data not found', 404);
             }
             $company->branches()->delete();
             $delete = $company->delete();
             if (!$delete) {
-                return ApiResponseHelper::error('Company data failed to delete', null, 500);
+                throw new Exception('Company data failed to delete', 500);
             }
             return ApiResponseHelper::success('Company data has been deleted successfully');
         } catch (Exception $e) {
@@ -94,22 +94,26 @@ class PerusahaanController extends Controller
 
     public function companyBranches($company)
     {
-        $company = Perusahaan::find($company);
-        if (!$company) {
-            return ApiResponseHelper::error('Company data not found', null, 404);
+        try {
+            $company = Perusahaan::find($company);
+            if (!$company) {
+                throw new Exception('Company data not found', 404);
+            }
+            $branches = $company->branches->map(function ($item) {
+                return [
+                    'id'                => $item->id,
+                    'name'              => $item->name,
+                    'address'           => $item->address,
+                    'telephone'         => $item->telephone ?? null,
+                    'province'          => $item->village->district->city->province->name,
+                    'city'              => $item->village->district->city->name,
+                    'district'          => $item->village->district->name,
+                    'village'           => $item->village->name,
+                ];
+            });
+            return ApiResponseHelper::success("Company's branches", $branches);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Failed to fetch company branches", $e->getMessage(), $e->getCode());
         }
-        $branches = $company->branches->map(function ($item) {
-            return [
-                'id'                => $item->id,
-                'name'              => $item->name,
-                'address'           => $item->address,
-                'telephone'         => $item->telephone ?? null,
-                'province'          => $item->village->district->city->province->name,
-                'city'              => $item->village->district->city->name,
-                'district'          => $item->village->district->name,
-                'village'           => $item->village->name,
-            ];
-        });
-        return ApiResponseHelper::success("Company's branches", $branches);
     }
 }
