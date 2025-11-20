@@ -17,7 +17,7 @@ class VillageStoreRequest extends FormRequest
             'name'          => ['required', 'string', 'max:255'],
             'code'          => ['required', 'integer'],
             'district_code' => ['required', 'integer'],
-            'meta'          => ['nullable', '']
+            'meta'          => ['nullable', 'json']
         ];
     }
 }

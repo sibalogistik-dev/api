@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Cabang;
 use App\Models\Village;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class Villageervice
+class VillageService
 {
     public function create(array $data)
     {
