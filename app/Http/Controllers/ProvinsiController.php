@@ -32,7 +32,7 @@ class ProvinsiController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:indonesia_provinces,code',
+            'code' => 'required|string|max:10|unique:provinces,code',
             'lat' => 'nullable|numeric',
             'long' => 'nullable|numeric',
         ]);
@@ -71,7 +71,7 @@ class ProvinsiController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:indonesia_provinces,code,' . $provinsi->id,
+            'code' => 'required|string|max:10|unique:provinces,code,' . $provinsi->id,
             'lat' => 'nullable|numeric',
             'long' => 'nullable|numeric',
         ]);

@@ -17,7 +17,7 @@ class BranchStoreRequest extends FormRequest
             'name'              => ['required', 'string', 'max:255'],
             'address'           => ['required', 'string', 'max:255'],
             'telephone'         => ['nullable', 'string', 'max:255'],
-            'village_id'        => ['required', 'integer', 'exists:indonesia_villages,code'],
+            'village_id'        => ['required', 'integer', 'exists:villages,code'],
             'company_id'        => ['required', 'integer', 'exists:perusahaans,id'],
             'start_time'        => ['required', 'date_format:H:i:s'],
             'end_time'          => ['required', 'date_format:H:i:s', 'after:start_time'],
