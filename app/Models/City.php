@@ -24,7 +24,10 @@ class City extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        // 
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where('name', 'like', "%{$keyword}%")
+                ->orWhere('code', 'like', "%{$keyword}%");
+        });
     }
 
     public function province()

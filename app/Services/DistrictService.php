@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Cabang;
 use App\Models\District;
-use App\Models\Village;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +17,7 @@ class DistrictService
             return $district;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to save branch data: ' . $e->getMessage());
+            throw new Exception('Failed to save district data: ' . $e->getMessage());
         }
     }
 
@@ -32,7 +30,7 @@ class DistrictService
             return $district;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to update branch data: ' . $e->getMessage());
+            throw new Exception('Failed to update district data: ' . $e->getMessage());
         }
     }
 }

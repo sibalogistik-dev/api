@@ -17,7 +17,7 @@ class VillageService
             return $village;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to save branch data: ' . $e->getMessage());
+            throw new Exception('Failed to save village data: ' . $e->getMessage());
         }
     }
 
@@ -30,7 +30,7 @@ class VillageService
             return $village;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to update branch data: ' . $e->getMessage());
+            throw new Exception('Failed to update village data: ' . $e->getMessage());
         }
     }
 }
