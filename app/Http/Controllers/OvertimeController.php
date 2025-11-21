@@ -59,18 +59,23 @@ class OvertimeController extends Controller
 
     public function show($overtime)
     {
-        $ot = Overtime::find($overtime);
-        if (!$ot) {
-            return ApiResponseHelper::error('Overtime data not found', [], 404);
+        try {
+            $ot = Overtime::find($overtime);
+            if (!$ot) {
+                throw new Exception('Overtime not found');
+            }
+            $data = [
+                'id'            => $ot->id,
+                'employee_id'   => $ot->employee_id,
+                'name'          => $ot->employee->name,
+                'start_time'    => $ot->start_time,
+                'end_time'      => $ot->end_time,
+                'approved'      => $ot->approved,
+            ];
+            return ApiResponseHelper::success("Overtime's detail", $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get overtime data', $e->getMessage(), $e->getCode());
         }
-        $data = [
-            'id'                => $ot->id,
-            'employee_id'       => $ot->employee_id,
-            'start_time'        => $ot->start_time,
-            'end_time'          => $ot->end_time,
-            'approved'          => $ot->approved,
-        ];
-        return ApiResponseHelper::success("Overtime's detail", $data);
     }
 
     public function update(OvertimeUpdateRequest $request, Overtime $overtime)
@@ -87,7 +92,7 @@ class OvertimeController extends Controller
     {
         $overtime = Overtime::find($overtime);
         if (!$overtime) {
-            return ApiResponseHelper::error('Overtime data not found', [], 404);
+            return ApiResponseHelper::error('Overtime data not found', []);
         }
         $delete = $overtime->delete();
         if ($delete) {

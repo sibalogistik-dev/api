@@ -55,11 +55,15 @@ class MarriageStatusController extends Controller
 
     public function show($marriageStatus)
     {
-        $marriageStatus = MarriageStatus::find($marriageStatus);
-        if (!$marriageStatus) {
-            return ApiResponseHelper::error('Marriage status not found', [], 404);
+        try {
+            $marriageStatus = MarriageStatus::find($marriageStatus);
+            if (!$marriageStatus) {
+                throw new Exception('Marriage status not found');
+            }
+            return ApiResponseHelper::success('Marriage status data', $marriageStatus);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get marriage status data', $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success('Marriage status data', $marriageStatus);
     }
 
     public function update(MarriageStatusUpdateRequest $request, $marriageStatus)
@@ -81,12 +85,12 @@ class MarriageStatusController extends Controller
         try {
             $marriageStatus = MarriageStatus::find($marriageStatus);
             if (!$marriageStatus) {
-                throw new Exception('Marriage status not found', 404);
+                throw new Exception('Marriage status not found');
             }
 
             $delete = $marriageStatus->delete();
             if (!$delete) {
-                throw new Exception('Failed to delete marriage status data', 404);
+                throw new Exception('Failed to delete marriage status data');
             }
             return ApiResponseHelper::success('Marriage status data has been deleted successfully');
         } catch (Exception $e) {

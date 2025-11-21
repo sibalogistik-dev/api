@@ -65,7 +65,7 @@ class AbsensiController extends Controller
     {
         $query = Absensi::find($attendance);
         if (!$query) {
-            return ApiResponseHelper::error('Attendance not found', [], 404);
+            return ApiResponseHelper::error('Attendance not found', []);
         }
         $data = [
             'id'                    => $query->id,
@@ -108,7 +108,7 @@ class AbsensiController extends Controller
         try {
             $absensi = Absensi::find($attendance);
             if (!$absensi) {
-                throw new Exception('Attendance data not found', 404);
+                throw new Exception('Attendance data not found');
             }
             $delete = $absensi->delete();
             if (!$delete) {
@@ -124,7 +124,7 @@ class AbsensiController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', [], 404);
+            return ApiResponseHelper::error('Employee not found', []);
         }
         $attendanceQuery = Absensi::query()
             ->where('employee_id', $employee->id)

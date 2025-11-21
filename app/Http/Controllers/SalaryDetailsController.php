@@ -37,7 +37,7 @@ class SalaryDetailsController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', [], 404);
+            return ApiResponseHelper::error('Employee not found', []);
         }
         $data = [
             'salary_type'           => $employee->salaryDetails->salary_type ?? null,
@@ -55,7 +55,7 @@ class SalaryDetailsController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', [], 404);
+            return ApiResponseHelper::error('Employee not found', []);
         }
         $data = $employee->salaryHistory->map(function ($item) {
             return [

@@ -53,7 +53,7 @@ class PendidikanController extends Controller
     {
         $education = Pendidikan::find($education);
         if (!$education) {
-            return ApiResponseHelper::error('Education data not found', [], 404);
+            return ApiResponseHelper::error('Education data not found', []);
         }
         $data = [
             'id'    => $education->id,
@@ -78,7 +78,7 @@ class PendidikanController extends Controller
         try {
             $education  = Pendidikan::find($education);
             if (!$education) {
-                throw new Exception('Education data not found', 404);
+                throw new Exception('Education data not found');
             }
             $delete     = $education->delete();
             if (!$delete) {

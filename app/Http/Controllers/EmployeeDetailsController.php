@@ -46,7 +46,7 @@ class EmployeeDetailsController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', [], 404);
+            return ApiResponseHelper::error('Employee not found', []);
         }
         $data = [
             'gender'                => $employee->employeeDetails->gender ?? null,

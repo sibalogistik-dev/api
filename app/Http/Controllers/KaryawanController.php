@@ -80,7 +80,7 @@ class KaryawanController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', [], 404);
+            return ApiResponseHelper::error('Employee not found', []);
         }
         $employee->user->delete();
         $delete = $employee->delete();

@@ -62,7 +62,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote attendance not found', 404);
+                throw new Exception('Remote attendance not found');
             }
             return ApiResponseHelper::success('Remote attendance data', $remoteAttendance);
         } catch (Exception $e) {
@@ -75,7 +75,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote Attendance not found', 404);
+                throw new Exception('Remote Attendance not found');
             }
             $this->remoteAttendanceService->update($remoteAttendance, $request->validated());
             return ApiResponseHelper::success('Remote Attendance data has been updated successfully');
@@ -89,7 +89,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote attendance not found', 404);
+                throw new Exception('Remote attendance not found');
             }
 
             $delete = $remoteAttendance->delete();

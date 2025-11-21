@@ -54,7 +54,7 @@ class PerusahaanController extends Controller
     {
         $company = Perusahaan::find($company);
         if (!$company) {
-            return ApiResponseHelper::error('Company not found', [], 404);
+            return ApiResponseHelper::error('Company not found', []);
         }
         $data = [
             'id'                => $company->id,
@@ -79,7 +79,7 @@ class PerusahaanController extends Controller
         try {
             $company = Perusahaan::find($company);
             if (!$company) {
-                throw new Exception('Company data not found', 404);
+                throw new Exception('Company data not found');
             }
             $company->branches()->delete();
             $delete = $company->delete();
@@ -97,7 +97,7 @@ class PerusahaanController extends Controller
         try {
             $company = Perusahaan::find($company);
             if (!$company) {
-                throw new Exception('Company data not found', 404);
+                throw new Exception('Company data not found');
             }
             $branches = $company->branches->map(function ($item) {
                 return [

@@ -6,7 +6,7 @@ use App\Models\City;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class DistrictService
+class CityService
 {
     public function create(array $data)
     {

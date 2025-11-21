@@ -41,7 +41,7 @@ class AgamaController extends Controller
     {
         $agama = Agama::find($religion);
         if (!$agama) {
-            return ApiResponseHelper::error('Religion not found', [], 404);
+            return ApiResponseHelper::error('Religion not found', []);
         }
         return ApiResponseHelper::success('Religion detail', $agama);
     }
@@ -65,7 +65,7 @@ class AgamaController extends Controller
         try {
             $agama = Agama::find($religion);
             if (!$agama) {
-                throw new Exception('Religion not found', 404);
+                throw new Exception('Religion not found');
             }
             $delete = $agama->delete();
             if (!$delete) {

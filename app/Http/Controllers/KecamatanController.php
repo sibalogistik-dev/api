@@ -29,8 +29,9 @@ class KecamatanController extends Controller
             $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
             $transformedDistrict    = $itemsToTransform->map(function ($item) {
                 return [
-                    'id'            => $item->id,
-                    'name'          => $item->name,
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                    'code'  => $item->code,
                 ];
             });
             if ($district instanceof LengthAwarePaginator) {
@@ -39,7 +40,7 @@ class KecamatanController extends Controller
                 return ApiResponseHelper::success('District list', $transformedDistrict);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get district data', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get district data');
         }
     }
 
@@ -58,7 +59,7 @@ class KecamatanController extends Controller
         try {
             $district = District::find($district);
             if (!$district) {
-                throw new Exception('District not found', 404);
+                throw new Exception('District not found');
             }
             return ApiResponseHelper::success('District data', $district);
         } catch (Exception $e) {
@@ -85,12 +86,12 @@ class KecamatanController extends Controller
         try {
             $district = District::find($district);
             if (!$district) {
-                throw new Exception('District not found', 404);
+                throw new Exception('District not found');
             }
 
             $delete = $district->delete();
             if (!$delete) {
-                throw new Exception('Failed to delete district data', 404);
+                throw new Exception('Failed to delete district data', 500);
             }
             return ApiResponseHelper::success('District data has been deleted successfully');
         } catch (Exception $e) {

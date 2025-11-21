@@ -22,38 +22,32 @@ class CabangController extends Controller
 
     public function index(BranchIndexRequest $request)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
+            $branchQuery = Cabang::query()->with(['company', 'village.district.city.province'])->filter($validated);
+            $branch = isset($validated['paginate']) && $validated['paginate'] ? $branchQuery->paginate($validated['perPage'] ?? 10) : $branchQuery->get();
+            $itemsToTransform = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
+            $transformedBranch = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'name'          => $item->name,
+                    'address'       => $item->address,
+                    'telephone'     => $item->telephone ?? null,
+                    'village_id'    => $item->village_id,
+                    'province'      => $item->village?->district?->city?->province?->name,
+                    'city'          => $item->village?->district?->city?->name,
+                    'district'      => $item->village?->district?->name,
+                    'village'       => $item->village?->name,
+                ];
+            });
 
-        // 1. Tambahkan eager loading dengan ->with()
-        $branchQuery = Cabang::query()
-            ->with(['company', 'village.district.city.province'])
-            ->filter($validated)
-            ->orderBy('id', 'desc');
-
-        $branch = isset($validated['paginate']) && $validated['paginate']
-            ? $branchQuery->paginate($validated['perPage'] ?? 10)
-            : $branchQuery->get();
-
-        $itemsToTransform = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
-
-        $transformedBranch = $itemsToTransform->map(function ($item) {
-            return [
-                'id'        => $item->id,
-                'name'      => $item->name,
-                'address'   => $item->address,
-                'telephone' => $item->telephone ?? null,
-                'village_id'   => $item->village_id,
-                'province'  => $item->village?->district?->city?->province?->name,
-                'city'      => $item->village?->district?->city?->name,
-                'district'  => $item->village?->district?->name,
-                'village'   => $item->village?->name,
-            ];
-        });
-
-        if ($branch instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Branches list A', $branch->setCollection($transformedBranch));
-        } else {
-            return ApiResponseHelper::success('Branches list B', $transformedBranch);
+            if ($branch instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Branches list', $branch->setCollection($transformedBranch));
+            } else {
+                return ApiResponseHelper::success('Branches list', $transformedBranch);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::success('Failed to get branch data', $e->getMessage());
         }
     }
 
@@ -69,11 +63,15 @@ class CabangController extends Controller
 
     public function show($branch)
     {
-        $cabang = Cabang::find($branch);
-        if (!$cabang) {
-            return ApiResponseHelper::error("Branch not found", [], 404);
+        try {
+            $cabang = Cabang::find($branch);
+            if (!$cabang) {
+                throw new Exception('Branch not found');
+            }
+            return ApiResponseHelper::success("Branch's detail", $cabang);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Failed to get branch data", $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success("Branch's detail", $cabang);
     }
 
     public function update(Cabang $branch, BranchUpdateRequest $request)
@@ -88,16 +86,18 @@ class CabangController extends Controller
 
     public function destroy($branch)
     {
-        $branch = Cabang::find($branch);
-        if (!$branch) {
-            return ApiResponseHelper::error('Branch not found', [], 404);
-        }
-
-        $delete = $branch->delete();
-        if ($delete) {
+        try {
+            $branch = Cabang::find($branch);
+            if (!$branch) {
+                throw new Exception('Branch not found');
+            }
+            $delete = $branch->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete branch data');
+            }
             return ApiResponseHelper::success('Branch data has been deleted successfully');
-        } else {
-            return ApiResponseHelper::error('Branch data failed to delete', null, 500);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Branch data failed to delete', $e->getMessage(), $e->getCode());
         }
     }
 }

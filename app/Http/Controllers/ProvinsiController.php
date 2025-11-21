@@ -10,7 +10,6 @@ use App\Services\ProvinceService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Laravolt\Indonesia\Models\Provinsi;
 
 
 class ProvinsiController extends Controller
@@ -26,15 +25,14 @@ class ProvinsiController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $provinceQuery          = Provinsi::query()->filter($validated);
+            $provinceQuery          = Province::query()->filter($validated);
             $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQuery->paginate($validated['perPage'] ?? 10) : $provinceQuery->get();
             $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
             $transformedProvince    = $itemsToTransform->map(function ($item) {
                 return [
-                    'id'            => $item->id,
-                    'name'          => $item->name,
-                    'code'          => $item->code,
-                    'meta'          => $item->meta,
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                    'code'  => $item->code,
                 ];
             });
             if ($province instanceof LengthAwarePaginator) {
@@ -43,7 +41,7 @@ class ProvinsiController extends Controller
                 return ApiResponseHelper::success('Province list', $transformedProvince);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get province data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
         }
     }
 
@@ -62,7 +60,7 @@ class ProvinsiController extends Controller
         try {
             $province = Province::find($province);
             if (!$province) {
-                throw new Exception('Province not found', 404);
+                throw new Exception('Province not found');
             }
             return ApiResponseHelper::success('Province data', $province);
         } catch (Exception $e) {
@@ -75,7 +73,7 @@ class ProvinsiController extends Controller
         try {
             $province = Province::find($province);
             if (!$province) {
-                throw new Exception('Province not found', 404);
+                throw new Exception('Province not found');
             }
             $this->provinceService->update($province, $request->validated());
             return ApiResponseHelper::success('Province data has been updated successfully');
@@ -89,7 +87,7 @@ class ProvinsiController extends Controller
         try {
             $province = Province::find($province);
             if (!$province) {
-                throw new Exception('Province not found', 404);
+                throw new Exception('Province not found');
             }
             $delete = $province->delete();
             if (!$delete) {

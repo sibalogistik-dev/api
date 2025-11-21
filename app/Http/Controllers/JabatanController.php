@@ -54,7 +54,7 @@ class JabatanController extends Controller
     {
         $job_title = Jabatan::find($job_title);
         if (!$job_title) {
-            return ApiResponseHelper::error('Job title not found', [], 404);
+            return ApiResponseHelper::error('Job title not found', []);
         }
         return ApiResponseHelper::success('Job title detail', $job_title);
     }
@@ -77,7 +77,7 @@ class JabatanController extends Controller
     {
         $job_title = Jabatan::find($job_title);
         if (!$job_title) {
-            return ApiResponseHelper::error('Job title not found', [], 404);
+            return ApiResponseHelper::error('Job title not found', []);
         }
         $delete = $job_title->delete();
         if ($delete) {

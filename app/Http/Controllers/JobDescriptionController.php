@@ -55,7 +55,7 @@ class JobDescriptionController extends Controller
     {
         $job_desc = JobDescription::find($jobDescription->id);
         if (!$job_desc) {
-            return ApiResponseHelper::error('Job description not found', [], 404);
+            return ApiResponseHelper::error('Job description not found', []);
         }
         return ApiResponseHelper::success('Job description detail', $job_desc);
     }
@@ -78,7 +78,7 @@ class JobDescriptionController extends Controller
     {
         $job_desc = JobDescription::find($jobDescription);
         if (!$job_desc) {
-            return ApiResponseHelper::error('Job description not found', [], 404);
+            return ApiResponseHelper::error('Job description not found', []);
         }
         $delete = $job_desc->delete();
         if ($delete) {

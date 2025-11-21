@@ -42,7 +42,7 @@ class PayrollController extends Controller
     {
         $payroll = Payroll::find($payroll);
         if (!$payroll) {
-            return ApiResponseHelper::error('Company not found', [], 404);
+            return ApiResponseHelper::error('Company not found', []);
         }
         $data = [
             'id'                => $payroll->id,
@@ -87,7 +87,7 @@ class PayrollController extends Controller
         try {
             $payroll = Payroll::find($payroll);
             if (!$payroll) {
-                return ApiResponseHelper::error('Payroll data not found', null, 404);
+                return ApiResponseHelper::error('Payroll data not found', null);
             }
             $delete = $payroll->delete();
             if (!$delete) {

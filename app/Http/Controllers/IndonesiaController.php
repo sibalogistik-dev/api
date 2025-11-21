@@ -3,43 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\ProvinceIndexRequest;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Province;
 use App\Models\Village;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class IndonesiaController extends Controller
 {
     #region Province
 
-    public function getAllProvince(Request $request)
+    public function getAllProvince(ProvinceIndexRequest $request)
     {
-        $search     = $request->q;
-        $paginate   = $request->paginate ?? false;
-        $perPage    = $request->perPage ?? 10;
-        $provinces  = Province::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate($perPage),
-                fn($query) => $query->get()
-            );
-        if ($provinces->isEmpty()) {
-            return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', [], 404);
+        try {
+            $validated              = $request->validated();
+            $provinceQuery          = Province::query()->filter($validated);
+            $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQuery->paginate($validated['perPage'] ?? 10) : $provinceQuery->get();
+            $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
+            $transformedProvince    = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'    => $item->id,
+                    'code'  => $item->code,
+                    'name'  => $item->name,
+                    'meta'  => $item->meta,
+                ];
+            });
+            if ($province instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Province list', $province->setCollection($transformedProvince));
+            } else {
+                return ApiResponseHelper::success('Province list', $transformedProvince);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Provinsi berhasil diambil.', $provinces);
     }
 
     public function getProvince($code)
     {
-        $province = Province::where('code', $code)->first();
-        if (!$province) {
-            return ApiResponseHelper::error('Data Provinsi tidak ditemukan.', [], 404);
+        try {
+            $province = Province::where('code', $code)->first();
+            if (!$province) {
+                throw new Exception('Province not found');
+            }
+            return ApiResponseHelper::success('Province data', $province);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Provinsi berhasil diambil.', $province);
     }
 
     public function getProvinceCity($code)
@@ -48,7 +60,7 @@ class IndonesiaController extends Controller
             ->where('code', $code)
             ->first()->cities;
         if (!$cities) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
@@ -72,7 +84,7 @@ class IndonesiaController extends Controller
                 fn($query) => $query->get()
             );
         if ($cities->isEmpty()) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
@@ -81,7 +93,7 @@ class IndonesiaController extends Controller
     {
         $city = City::where('code', $code)->first();
         if (!$city) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kota berhasil diambil.', $city);
     }
@@ -93,7 +105,7 @@ class IndonesiaController extends Controller
             ->first()
             ->districts;
         if (!$districts) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
@@ -117,7 +129,7 @@ class IndonesiaController extends Controller
                 fn($query) => $query->get()
             );
         if ($districts->isEmpty()) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
@@ -128,7 +140,7 @@ class IndonesiaController extends Controller
             ->where('code', $code)
             ->first();
         if (!$district) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $district);
     }
@@ -139,7 +151,7 @@ class IndonesiaController extends Controller
             ->where('code', $code)
             ->first()->villages;
         if (!$villages) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
@@ -163,7 +175,7 @@ class IndonesiaController extends Controller
                 fn($query) => $query->get()
             );
         if ($villages->isEmpty()) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
@@ -173,7 +185,7 @@ class IndonesiaController extends Controller
         $village = Village::where('code', $code)
             ->first();
         if (!$village) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', [], 404);
+            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
         }
         return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $village);
     }

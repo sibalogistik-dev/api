@@ -29,8 +29,9 @@ class KelurahanController extends Controller
             $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
             $transformedVillage = $itemsToTransform->map(function ($item) {
                 return [
-                    'id'            => $item->id,
-                    'name'          => $item->name,
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                    'code'  => $item->code,
                 ];
             });
             if ($village instanceof LengthAwarePaginator) {
@@ -58,7 +59,7 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found', 404);
+                throw new Exception('Village not found');
             }
             return ApiResponseHelper::success('Village data', $village);
         } catch (Exception $e) {
@@ -71,7 +72,7 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found', 404);
+                throw new Exception('Village not found');
             }
             $this->villageService->update($village, $request->validated());
             return ApiResponseHelper::success('Village data has been updated successfully');
@@ -85,7 +86,7 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found', 404);
+                throw new Exception('Village not found');
             }
 
             $delete = $village->delete();
