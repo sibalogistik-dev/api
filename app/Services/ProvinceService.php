@@ -6,7 +6,7 @@ use App\Models\Province;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class DistrictService
+class ProvinceService
 {
     public function create(array $data)
     {

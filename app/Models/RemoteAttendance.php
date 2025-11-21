@@ -17,6 +17,16 @@ class RemoteAttendance extends Model
         'end_date',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->whereHas('employee', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('npk', 'like', "%{$keyword}%");
+            });
+        });
+    }
+
     public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');

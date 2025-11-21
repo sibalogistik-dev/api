@@ -3,100 +3,101 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\ProvinceIndexRequest;
+use App\Http\Requests\ProvinceStoreRequest;
+use App\Models\Province;
+use App\Services\ProvinceService;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Laravolt\Indonesia\Models\Provinsi;
+
 
 class ProvinsiController extends Controller
 {
-    public function index(Request $request)
+    protected $provinceService;
+
+    public function __construct(ProvinceService $provinceService)
     {
-        $provinsis = Provinsi::query()
-            ->when($request->search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->when(
-                $request->paginate,
-                fn($query) => $query->paginate($request->perPage ?? 10),
-                fn($query) => $query->get()
-            );
-
-        if ($provinsis->isEmpty()) {
-            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
-        }
-
-        return ApiResponseHelper::success('Provinsi berhasil diambil.', $provinsis);
+        $this->provinceService = $provinceService;
     }
 
-    public function store(Request $request)
+    public function index(ProvinceIndexRequest $request)
     {
-        $validate = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:provinces,code',
-            'lat' => 'nullable|numeric',
-            'long' => 'nullable|numeric',
-        ]);
-        if ($validate->fails()) {
-            return ApiResponseHelper::error('Validasi gagal.', $validate->errors(), 422);
-        } else {
-            $provinsi = Provinsi::create([
-                'name' => $request->name,
-                'code' => $request->code,
-                'meta' => [
-                    'lat' => $request->lat,
-                    'long' => $request->long
-                ],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            if (!$provinsi) {
-                return ApiResponseHelper::error('Gagal membuat provinsi.', null, 500);
+        try {
+            $validated              = $request->validated();
+            $provinceQuery          = Provinsi::query()->filter($validated);
+            $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQuery->paginate($validated['perPage'] ?? 10) : $provinceQuery->get();
+            $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
+            $transformedProvince    = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'name'          => $item->name,
+                    'code'          => $item->code,
+                    'meta'          => $item->meta,
+                ];
+            });
+            if ($province instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Province list', $province->setCollection($transformedProvince));
+            } else {
+                return ApiResponseHelper::success('Province list', $transformedProvince);
             }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success('Provinsi berhasil dibuat.', $provinsi, 201);
     }
 
-    public function show($provinsi)
+    public function store(ProvinceStoreRequest $request)
     {
-        $province = Provinsi::with('cities')
-            ->where('code', $provinsi)
-            ->first();
-        if (!$provinsi) {
-            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
+        try {
+            $province = $this->provinceService->create($request->validated());
+            return ApiResponseHelper::success('Province data has been added successfully', $province);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving province data', $e->getMessage(), 500);
         }
-        return ApiResponseHelper::success('Provinsi berhasil diambil.', $province);
     }
 
-    public function update(Request $request, Provinsi $provinsi)
+    public function show($province)
     {
-        $validate = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:provinces,code,' . $provinsi->id,
-            'lat' => 'nullable|numeric',
-            'long' => 'nullable|numeric',
-        ]);
-        if ($validate->fails()) {
-            return ApiResponseHelper::error('Validasi gagal.', $validate->errors(), 422);
-        } else {
-            $provinsi->update([
-                'name' => $request->name,
-                'code' => $request->code,
-                'meta' => [
-                    'lat' => $request->lat,
-                    'long' => $request->long
-                ],
-                'updated_at' => now(),
-            ]);
+        try {
+            $province = Province::find($province);
+            if (!$province) {
+                throw new Exception('Province not found', 404);
+            }
+            return ApiResponseHelper::success('Province data', $province);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success('Provinsi berhasil diperbarui.', $provinsi);
     }
 
-    public function destroy(Provinsi $provinsi)
+    public function update(Request $request, $province)
     {
-        if (!$provinsi) {
-            return ApiResponseHelper::error('Provinsi tidak ditemukan.', null, 404);
+        try {
+            $province = Province::find($province);
+            if (!$province) {
+                throw new Exception('Province not found', 404);
+            }
+            $this->provinceService->update($province, $request->validated());
+            return ApiResponseHelper::success('Province data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating province data', $e->getMessage(), $e->getCode());
         }
-        $provinsi->delete();
-        return ApiResponseHelper::success('Provinsi berhasil dihapus.', null, 204);
+    }
+
+    public function destroy($province)
+    {
+        try {
+            $province = Province::find($province);
+            if (!$province) {
+                throw new Exception('Province not found', 404);
+            }
+            $delete = $province->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete province data', 500);
+            }
+            return ApiResponseHelper::success('Province data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Province data failed to delete', $e->getMessage(), $e->getCode());
+        }
     }
 }

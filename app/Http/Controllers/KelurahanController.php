@@ -39,7 +39,7 @@ class KelurahanController extends Controller
                 return ApiResponseHelper::success('Village list', $transformedVillage);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get village data', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get village data', $e->getMessage(), $e->getCode());
         }
     }
 
@@ -55,11 +55,15 @@ class KelurahanController extends Controller
 
     public function show($village)
     {
-        $village = Village::find($village);
-        if (!$village) {
-            return ApiResponseHelper::error('Village not found', [], 404);
+        try {
+            $village = Village::find($village);
+            if (!$village) {
+                throw new Exception('Village not found', 404);
+            }
+            return ApiResponseHelper::success('Village data', $village);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get village data', $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success('Village data', $village);
     }
 
     public function update(VillageUpdateRequest $request, $village)
@@ -67,12 +71,12 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found');
+                throw new Exception('Village not found', 404);
             }
             $this->villageService->update($village, $request->validated());
             return ApiResponseHelper::success('Village data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating village data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating village data', $e->getMessage(), $e->getCode());
         }
     }
 
@@ -86,7 +90,7 @@ class KelurahanController extends Controller
 
             $delete = $village->delete();
             if (!$delete) {
-                throw new Exception('Failed to delete village data', 404);
+                throw new Exception('Failed to delete village data', 500);
             }
             return ApiResponseHelper::success('Village data has been deleted successfully');
         } catch (Exception $e) {

@@ -29,9 +29,11 @@ Route::middleware('api')->group(function () {
                 'job-title'         => App\Http\Controllers\JabatanController::class,
                 'job-description'   => App\Http\Controllers\JobDescriptionController::class,
                 'attendance'        => App\Http\Controllers\AbsensiController::class,
+                'remote-attendance' => App\Http\Controllers\RemoteAttendanceController::class,
+                'daily-report'      => App\Http\Controllers\EmployeeDailyReportController::class,
                 'overtime'          => App\Http\Controllers\OvertimeController::class,
                 'payroll'           => App\Http\Controllers\PayrollController::class,
-                'daily-report'      => App\Http\Controllers\EmployeeDailyReportController::class,
+                'resign'            => App\Http\Controllers\ResignController::class,
 
             ]);
 

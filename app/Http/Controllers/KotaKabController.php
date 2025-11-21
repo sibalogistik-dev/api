@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class KotaKabController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
         $keyword = $request->input('q');

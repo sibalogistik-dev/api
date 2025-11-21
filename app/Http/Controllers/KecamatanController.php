@@ -55,11 +55,15 @@ class KecamatanController extends Controller
 
     public function show($district)
     {
-        $district = District::find($district);
-        if (!$district) {
-            return ApiResponseHelper::error('District not found', [], 404);
+        try {
+            $district = District::find($district);
+            if (!$district) {
+                throw new Exception('District not found', 404);
+            }
+            return ApiResponseHelper::success('District data', $district);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get district data', $e->getMessage(), $e->getCode());
         }
-        return ApiResponseHelper::success('District data', $district);
     }
 
     public function update(Request $request,  $district)
