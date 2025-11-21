@@ -49,7 +49,7 @@ class MarriageStatusController extends Controller
             $marriageStatus = $this->marriageStatusService->create($request->validated());
             return ApiResponseHelper::success('Marriage status data has been added successfully', $marriageStatus);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving marriage status data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving marriage status data', $e->getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ class MarriageStatusController extends Controller
             $this->marriageStatusService->update($marriageStatus, $request->validated());
             return ApiResponseHelper::success('Marriage status data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating marriage status data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating marriage status data', $e->getMessage());
         }
     }
 

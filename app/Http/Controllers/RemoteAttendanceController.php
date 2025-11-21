@@ -53,7 +53,7 @@ class RemoteAttendanceController extends Controller
             $remoteAttendance = $this->remoteAttendanceService->create($request->validated());
             return ApiResponseHelper::success('Remote Attendance data has been added successfully', $remoteAttendance);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving remote attendance data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving remote attendance data', $e->getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ class RemoteAttendanceController extends Controller
             $this->remoteAttendanceService->update($remoteAttendance, $request->validated());
             return ApiResponseHelper::success('Remote Attendance data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating remote attendance data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating remote attendance data', $e->getMessage());
         }
     }
 

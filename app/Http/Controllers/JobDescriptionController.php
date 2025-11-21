@@ -48,7 +48,7 @@ class JobDescriptionController extends Controller
             $job_desc = $this->jobDescriptionService->create($request->validated());
             return ApiResponseHelper::success('Job description data has been added successfully', $job_desc);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving job description data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving job description data', $e->getMessage());
         }
     }
     public function show(JobDescription $jobDescription)
@@ -70,7 +70,7 @@ class JobDescriptionController extends Controller
             $this->jobDescriptionService->update($job_desc, $request->validated());
             return ApiResponseHelper::success('Job description data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating job description data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating job description data', $e->getMessage());
         }
     }
 

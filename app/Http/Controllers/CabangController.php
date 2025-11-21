@@ -57,7 +57,7 @@ class CabangController extends Controller
             $cabang = $this->branchService->create($request->validated());
             return ApiResponseHelper::success('Branch data has been added successfully', $cabang);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving branch data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving branch data', $e->getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ class CabangController extends Controller
             $this->branchService->update($branch, $request->validated());
             return ApiResponseHelper::success('Branch data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating branch data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating branch data', $e->getMessage());
         }
     }
 

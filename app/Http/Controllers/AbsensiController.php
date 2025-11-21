@@ -57,7 +57,7 @@ class AbsensiController extends Controller
             $attendance = $this->attendanceService->create($request->validated());
             return ApiResponseHelper::success("Attendance successfully recorded.", $attendance);
         } catch (Exception $e) {
-            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ class AbsensiController extends Controller
             $absensi    = $this->attendanceService->update($abs, $request->validated());
             return ApiResponseHelper::success("Attendance successfully recorded.", $absensi);
         } catch (Exception $e) {
-            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage());
         }
     }
 
@@ -161,7 +161,7 @@ class AbsensiController extends Controller
             $attendance = $this->attendanceServiceHRD->create($request->validated());
             return ApiResponseHelper::success("Attendance successfully recorded.", $attendance);
         } catch (Exception $e) {
-            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage(), 500);
+            return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage());
         }
     }
 }

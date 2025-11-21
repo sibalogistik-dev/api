@@ -51,7 +51,7 @@ class ProvinsiController extends Controller
             $province = $this->provinceService->create($request->validated());
             return ApiResponseHelper::success('Province data has been added successfully', $province);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving province data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving province data', $e->getMessage());
         }
     }
 

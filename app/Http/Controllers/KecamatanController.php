@@ -50,7 +50,7 @@ class KecamatanController extends Controller
             $district = $this->districtService->create($request->validated());
             return ApiResponseHelper::success('District data has been added successfully', $district);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving district data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving district data', $e->getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ class KecamatanController extends Controller
             $this->districtService->update($district, $request->validated());
             return ApiResponseHelper::success('District data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating district data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating district data', $e->getMessage());
         }
     }
 

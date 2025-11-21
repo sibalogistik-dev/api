@@ -14,7 +14,7 @@ class ReligionService
             try {
                 return Agama::create($data);
             } catch (Exception $e) {
-                throw new Exception('Failed to save religion data: ' . $e->getMessage(), 500);
+                throw new Exception('Failed to save religion data: ' . $e->getMessage());
             }
         });
     }
@@ -26,7 +26,7 @@ class ReligionService
                 $religion->update($data);
                 return $religion;
             } catch (Exception $e) {
-                throw new Exception('Failed to update religion data: ' . $e->getMessage(), 500);
+                throw new Exception('Failed to update religion data: ' . $e->getMessage());
             }
         });
     }

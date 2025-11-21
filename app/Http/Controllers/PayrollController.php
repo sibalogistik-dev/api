@@ -34,7 +34,7 @@ class PayrollController extends Controller
             $payroll = $this->payrollService->create($request->validated());
             return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving payroll data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving payroll data', $e->getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ class PayrollController extends Controller
             $this->payrollService->update($payroll, $request->validated());
             return ApiResponseHelper::success('Payroll data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating payroll data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating payroll data', $e->getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ class PayrollController extends Controller
             }
             return ApiResponseHelper::success('Payroll data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Payroll data failed to delete', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Payroll data failed to delete', $e->getMessage());
         }
     }
 }

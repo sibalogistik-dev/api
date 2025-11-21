@@ -46,7 +46,7 @@ class PerusahaanController extends Controller
             $company = $this->companyService->create($request->validated());
             return ApiResponseHelper::success('Company data has been added successfully', $company);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving company data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving company data', $e->getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ class PerusahaanController extends Controller
             $this->companyService->update($company, $request->validated());
             return ApiResponseHelper::success('Company data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating company data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating company data', $e->getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ class PerusahaanController extends Controller
             }
             return ApiResponseHelper::success('Company data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Company data failed to delete', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Company data failed to delete', $e->getMessage());
         }
     }
 

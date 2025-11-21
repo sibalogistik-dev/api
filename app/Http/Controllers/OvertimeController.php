@@ -53,7 +53,7 @@ class OvertimeController extends Controller
             $overtime = $this->overtimeService->create($request->validated());
             return ApiResponseHelper::success('Overtime data has been added successfully', $overtime);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving overtime data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving overtime data', $e->getMessage());
         }
     }
 
@@ -84,7 +84,7 @@ class OvertimeController extends Controller
             $this->overtimeService->update($overtime, $request->validated());
             return ApiResponseHelper::success('Overtime data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating overtime data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating overtime data', $e->getMessage());
         }
     }
 

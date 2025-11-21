@@ -49,7 +49,7 @@ class KaryawanController extends Controller
             $karyawan = $this->employeeService->create($request->validated());
             return ApiResponseHelper::success('Employee data has been added successfully', $karyawan);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving employee data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving employee data', $e->getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ class KaryawanController extends Controller
             $this->employeeService->update($employee, $request->validated());
             return ApiResponseHelper::success('Employee data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating employee data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating employee data', $e->getMessage());
         }
     }
 

@@ -46,7 +46,7 @@ class JabatanController extends Controller
             $job_title = $this->jobTitleService->create($request->validated());
             return ApiResponseHelper::success('Job title data has been added successfully', $job_title);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving job title data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving job title data', $e->getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ class JabatanController extends Controller
             $this->jobTitleService->update($job_title, $request->validated());
             return ApiResponseHelper::success('Job title data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating job titke data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating job titke data', $e->getMessage());
         }
     }
 

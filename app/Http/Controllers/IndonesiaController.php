@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\CityIndexRequest;
 use App\Http\Requests\ProvinceIndexRequest;
 use App\Models\City;
 use App\Models\District;
@@ -32,12 +33,12 @@ class IndonesiaController extends Controller
                 ];
             });
             if ($province instanceof LengthAwarePaginator) {
-                return ApiResponseHelper::success('Province list', $province->setCollection($transformedProvince));
+                return ApiResponseHelper::success('Provinces data', $province->setCollection($transformedProvince));
             } else {
-                return ApiResponseHelper::success('Province list', $transformedProvince);
+                return ApiResponseHelper::success('Provinces data', $transformedProvince);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get all province data', $e->getMessage());
         }
     }
 
@@ -56,57 +57,68 @@ class IndonesiaController extends Controller
 
     public function getProvinceCity($code)
     {
-        $cities = Province::with('cities')
-            ->where('code', $code)
-            ->first()->cities;
-        if (!$cities) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
+        try {
+            $province = Province::where('code', $code)->first();
+            if (!$province) {
+                throw new Exception('Province not found');
+            }
+            $cities = $province->cities;
+            return ApiResponseHelper::success('Cities data of ' . $province->name . ' province', $cities);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get this province\'s city data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
 
     #endregion
 
     #region City
 
-    public function getAllCity(Request $request)
+    public function getAllCity(CityIndexRequest $request)
     {
-        $search     = $request->q;
-        $paginate   = $request->paginate ?? false;
-        $perPage    = $request->perPage ?? 10;
-        $cities     = City::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate($perPage),
-                fn($query) => $query->get()
-            );
-        if ($cities->isEmpty()) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
+        try {
+            $validated          = $request->validated();
+            $cityQuery          = City::query()->filter($validated);
+            $city               = isset($validated['paginate']) && $validated['paginate'] ? $cityQuery->paginate($validated['paginate'] ?? 10) : $cityQuery->get();
+            $itemToTransform    = $city instanceof LengthAwarePaginator ? $city->getCollection() : $city;
+            $tranformedCity     = $itemToTransform->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'code'          => $item->code,
+                    'province_code' => $item->province_code,
+                    'name'          => $item->name,
+                    'meta'          => $item->meta,
+                ];
+            });
+            if ($city instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Cities data', $city->setCollection($tranformedCity));
+            } else {
+                return ApiResponseHelper::success('Cities data', $tranformedCity);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get city data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kota berhasil diambil.', $cities);
     }
 
     public function getCity($code)
     {
-        $city = City::where('code', $code)->first();
-        if (!$city) {
-            return ApiResponseHelper::error('Data Kota tidak ditemukan.', []);
+        try {
+            $city = City::where('code', $code)->first();
+            if (!$city) {
+                throw new Exception('City not found');
+            }
+            return ApiResponseHelper::success('City data', $city);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get city data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kota berhasil diambil.', $city);
     }
 
     public function getCityDistrict($code)
     {
-        $districts = City::with('districts')
-            ->where('code', $code)
-            ->first()
-            ->districts;
-        if (!$districts) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
+        $city = City::where('code', $code)->first();
+        if (!$city) {
+            return ApiResponseHelper::error('Data Kota/Kabupaten tidak ditemukan.', []);
         }
+        $districts = $city->districts;
         return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
 

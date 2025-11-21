@@ -50,7 +50,7 @@ class KelurahanController extends Controller
             $village = $this->villageService->create($request->validated());
             return ApiResponseHelper::success('Village data has been added successfully', $village);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving village data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving village data', $e->getMessage());
         }
     }
 

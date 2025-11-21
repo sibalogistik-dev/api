@@ -33,7 +33,7 @@ class AgamaController extends Controller
             $religion = $this->religionService->create($request->validated());
             return ApiResponseHelper::success('Religion data has been added successfully', $religion);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving religion data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving religion data', $e->getMessage());
         }
     }
 

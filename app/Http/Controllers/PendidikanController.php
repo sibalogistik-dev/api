@@ -45,7 +45,7 @@ class PendidikanController extends Controller
             $education = $this->educationService->create($request->validated());
             return ApiResponseHelper::success('Education data has been added successfully', $education);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving education data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving education data', $e->getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ class PendidikanController extends Controller
             $this->educationService->update($education, $request->validated());
             return ApiResponseHelper::success('Education data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating education data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when updating education data', $e->getMessage());
         }
     }
 

@@ -49,7 +49,7 @@ class KotaKabController extends Controller
             $city = $this->cityService->create($request->validated());
             return ApiResponseHelper::success('City data has been added successfully', $city);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving city data', $e->getMessage(), 500);
+            return ApiResponseHelper::error('Error when saving city data', $e->getMessage());
         }
     }
 
