@@ -70,7 +70,7 @@ class CabangController extends Controller
             }
             return ApiResponseHelper::success("Branch's detail", $cabang);
         } catch (Exception $e) {
-            return ApiResponseHelper::error("Failed to get branch data", $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error("Failed to get branch data", $e->getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ class CabangController extends Controller
             }
             return ApiResponseHelper::success('Branch data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Branch data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Branch data failed to delete', $e->getMessage());
         }
     }
 }

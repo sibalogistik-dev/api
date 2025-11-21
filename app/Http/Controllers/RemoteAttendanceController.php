@@ -43,7 +43,7 @@ class RemoteAttendanceController extends Controller
                 return ApiResponseHelper::success('Remote Attendance list', $transformedRemoteAttendance);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::success('Failed to get remote attendance data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::success('Failed to get remote attendance data', $e->getMessage());
         }
     }
 
@@ -66,7 +66,7 @@ class RemoteAttendanceController extends Controller
             }
             return ApiResponseHelper::success('Remote attendance data', $remoteAttendance);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get remote attendance data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get remote attendance data', $e->getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ class RemoteAttendanceController extends Controller
             }
             return ApiResponseHelper::success('Remote attendance data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Remote attendance data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Remote attendance data failed to delete', $e->getMessage());
         }
     }
 }

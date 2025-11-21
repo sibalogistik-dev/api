@@ -56,7 +56,7 @@ class AgamaController extends Controller
             $this->religionService->update($agama, $request->validated());
             return ApiResponseHelper::success('Religion data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating religion data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Error when updating religion data', $e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class AgamaController extends Controller
             }
             return ApiResponseHelper::success('Religion data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Religion data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Religion data failed to delete', $e->getMessage());
         }
     }
 }

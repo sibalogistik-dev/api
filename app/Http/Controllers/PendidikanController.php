@@ -86,7 +86,7 @@ class PendidikanController extends Controller
             }
             return ApiResponseHelper::success('Education data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Education data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Education data failed to delete', $e->getMessage());
         }
     }
 }

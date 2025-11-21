@@ -113,7 +113,7 @@ class PerusahaanController extends Controller
             });
             return ApiResponseHelper::success("Company's branches", $branches);
         } catch (Exception $e) {
-            return ApiResponseHelper::error("Failed to fetch company branches", $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error("Failed to fetch company branches", $e->getMessage());
         }
     }
 }

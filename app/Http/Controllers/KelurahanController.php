@@ -40,7 +40,7 @@ class KelurahanController extends Controller
                 return ApiResponseHelper::success('Village list', $transformedVillage);
             }
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get village data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get village data', $e->getMessage());
         }
     }
 
@@ -63,7 +63,7 @@ class KelurahanController extends Controller
             }
             return ApiResponseHelper::success('Village data', $village);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get village data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get village data', $e->getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ class KelurahanController extends Controller
             $this->villageService->update($village, $request->validated());
             return ApiResponseHelper::success('Village data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating village data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Error when updating village data', $e->getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ class KelurahanController extends Controller
             }
             return ApiResponseHelper::success('Village data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Village data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Village data failed to delete', $e->getMessage());
         }
     }
 }

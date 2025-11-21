@@ -63,7 +63,7 @@ class KecamatanController extends Controller
             }
             return ApiResponseHelper::success('District data', $district);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get district data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get district data', $e->getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ class KecamatanController extends Controller
             }
             return ApiResponseHelper::success('District data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('District data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('District data failed to delete', $e->getMessage());
         }
     }
 }

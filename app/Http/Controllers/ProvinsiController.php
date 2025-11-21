@@ -64,7 +64,7 @@ class ProvinsiController extends Controller
             }
             return ApiResponseHelper::success('Province data', $province);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get province data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ class ProvinsiController extends Controller
             $this->provinceService->update($province, $request->validated());
             return ApiResponseHelper::success('Province data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating province data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Error when updating province data', $e->getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ class ProvinsiController extends Controller
             }
             return ApiResponseHelper::success('Province data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Province data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Province data failed to delete', $e->getMessage());
         }
     }
 }

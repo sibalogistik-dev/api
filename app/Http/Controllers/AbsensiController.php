@@ -116,7 +116,7 @@ class AbsensiController extends Controller
             }
             return ApiResponseHelper::success('Attendance data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Attendance data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Attendance data failed to delete', $e->getMessage());
         }
     }
 

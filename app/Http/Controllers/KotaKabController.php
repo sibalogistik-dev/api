@@ -62,7 +62,7 @@ class KotaKabController extends Controller
             }
             return ApiResponseHelper::success('City data', $city);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get city data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get city data', $e->getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ class KotaKabController extends Controller
             $this->cityService->update($city, $request->validated());
             return ApiResponseHelper::success('City data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating city data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Error when updating city data', $e->getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ class KotaKabController extends Controller
             }
             return ApiResponseHelper::success('City data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('City data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('City data failed to delete', $e->getMessage());
         }
     }
 }

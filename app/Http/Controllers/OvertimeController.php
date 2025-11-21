@@ -74,7 +74,7 @@ class OvertimeController extends Controller
             ];
             return ApiResponseHelper::success("Overtime's detail", $data);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get overtime data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get overtime data', $e->getMessage());
         }
     }
 

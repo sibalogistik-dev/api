@@ -62,7 +62,7 @@ class MarriageStatusController extends Controller
             }
             return ApiResponseHelper::success('Marriage status data', $marriageStatus);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get marriage status data', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Failed to get marriage status data', $e->getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ class MarriageStatusController extends Controller
             }
             return ApiResponseHelper::success('Marriage status data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Marriage status data failed to delete', $e->getMessage(), $e->getCode());
+            return ApiResponseHelper::error('Marriage status data failed to delete', $e->getMessage());
         }
     }
 }
