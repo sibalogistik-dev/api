@@ -22,24 +22,28 @@ class KaryawanController extends Controller
 
     public function index(EmployeeIndexRequest $request)
     {
-        $validated              = $request->validated();
-        $karyawanQuery          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
-        $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
-        $itemsToTransform       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
-        $transformedKaryawan    = $itemsToTransform->map(function ($item) {
-            return [
-                'id'                => $item->id,
-                'name'              => $item->name,
-                'npk'               => $item->npk,
-                'job_title_id'      => $item->job_title_id,
-                'branch_id'         => $item->branch_id,
-                'passport_photo'    => $item->employeeDetails->passport_photo ?? null,
-            ];
-        });
-        if ($karyawan instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Employees list', $karyawan->setCollection($transformedKaryawan));
-        } else {
-            return ApiResponseHelper::success('Employees list', $transformedKaryawan);
+        try {
+            $validated              = $request->validated();
+            $karyawanQuery          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
+            $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
+            $itemsToTransform       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
+            $transformedKaryawan    = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'                => $item->id,
+                    'name'              => $item->name,
+                    'npk'               => $item->npk,
+                    'job_title_id'      => $item->job_title_id,
+                    'branch_id'         => $item->branch_id,
+                    'passport_photo'    => $item->employeeDetails->passport_photo ?? null,
+                ];
+            });
+            if ($karyawan instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Employees data', $karyawan->setCollection($transformedKaryawan));
+            } else {
+                return ApiResponseHelper::success('Employees data', $transformedKaryawan);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get employees data', $e->getMessage());
         }
     }
 
@@ -55,11 +59,15 @@ class KaryawanController extends Controller
 
     public function show($employee)
     {
-        $employee = Karyawan::find($employee);
-        if (!$employee) {
-            return ApiResponseHelper::success("Employee's Detail", []);
+        try {
+            $employee = Karyawan::find($employee);
+            if (!$employee) {
+                throw new Exception('Employee not found');
+            }
+            return ApiResponseHelper::success("Employee data", $employee);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Failed to get employee data", $e->getMessage());
         }
-        return ApiResponseHelper::success("Employee's Detail", $employee);
     }
 
     public function update(EmployeeUpdateRequest $request, $employee)
@@ -78,16 +86,19 @@ class KaryawanController extends Controller
 
     public function destroy($employee)
     {
-        $employee = Karyawan::find($employee);
-        if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', []);
-        }
-        $employee->user->delete();
-        $delete = $employee->delete();
-        if ($delete) {
+        try {
+            $employee = Karyawan::find($employee);
+            if (!$employee) {
+                throw new Exception('Employee not found');
+            }
+            $employee->user->delete();
+            $delete = $employee->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete employee data');
+            }
             return ApiResponseHelper::success('Employee data has been deleted successfully');
-        } else {
-            return ApiResponseHelper::error('Employee data failed to delete', null, 500);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
         }
     }
 }

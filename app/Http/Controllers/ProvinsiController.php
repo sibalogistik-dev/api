@@ -36,9 +36,9 @@ class ProvinsiController extends Controller
                 ];
             });
             if ($province instanceof LengthAwarePaginator) {
-                return ApiResponseHelper::success('Province list', $province->setCollection($transformedProvince));
+                return ApiResponseHelper::success('Province data', $province->setCollection($transformedProvince));
             } else {
-                return ApiResponseHelper::success('Province list', $transformedProvince);
+                return ApiResponseHelper::success('Province data', $transformedProvince);
             }
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get province data', $e->getMessage());
@@ -95,7 +95,8 @@ class ProvinsiController extends Controller
             }
             return ApiResponseHelper::success('Province data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Province data failed to delete', $e->getMessage());
+            // return ApiResponseHelper::error('Province data failed to delete', $e->getMessage());
+            return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
         }
     }
 }
