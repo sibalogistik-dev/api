@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\CityIndexRequest;
+use App\Http\Requests\DistrictIndexRequest;
 use App\Http\Requests\ProvinceIndexRequest;
+use App\Http\Requests\VillageIndexRequest;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Province;
@@ -114,92 +116,121 @@ class IndonesiaController extends Controller
 
     public function getCityDistrict($code)
     {
-        $city = City::where('code', $code)->first();
-        if (!$city) {
-            return ApiResponseHelper::error('Data Kota/Kabupaten tidak ditemukan.', []);
+        try {
+            $city = City::where('code', $code)->first();
+            if (!$city) {
+                throw new Exception('City not found');
+            }
+            $districts = $city->districts;
+            return ApiResponseHelper::success('Districts data of ' . $city->name, $districts);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get this city\'s districts data', $e->getMessage());
         }
-        $districts = $city->districts;
-        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
 
     #endregion
 
     #region District
 
-    public function getAllDistrict(Request $request)
+    public function getAllDistrict(DistrictIndexRequest $request)
     {
-        $search     = $request->q;
-        $paginate   = $request->paginate ?? false;
-        $perPage    = $request->perPage ?? 10;
-        $districts  = District::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate($perPage),
-                fn($query) => $query->get()
-            );
-        if ($districts->isEmpty()) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
+        try {
+            $validated              = $request->validated();
+            $districtQuery          = District::query()->filter($validated);
+            $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQuery->paginate($validated['perPage'] ?? 10) : $districtQuery->get();
+            $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
+            $transformedDistrict    = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'        => $item->id,
+                    'code'      => $item->code,
+                    'city_code' => $item->city_code,
+                    'name'      => $item->name,
+                    'meta'      => $item->meta,
+                ];
+            });
+            if ($district instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Districts data', $district->setCollection($transformedDistrict));
+            } else {
+                return ApiResponseHelper::success('Districts data', $transformedDistrict);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get district data');
         }
-        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $districts);
     }
 
     public function getDistrict($code)
     {
-        $district = District::with('villages')
-            ->where('code', $code)
-            ->first();
-        if (!$district) {
-            return ApiResponseHelper::error('Data Kecamatan tidak ditemukan.', []);
+        try {
+            $district = District::with('villages')
+                ->where('code', $code)
+                ->first();
+            if (!$district) {
+                throw new Exception('District not found');
+            }
+            return ApiResponseHelper::success('District data', $district);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get district data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kecamatan berhasil diambil.', $district);
     }
 
     public function getDistrictVillage($code)
     {
-        $villages = District::with('villages')
-            ->where('code', $code)
-            ->first()->villages;
-        if (!$villages) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
+        try {
+            $district = District::with('villages')
+                ->where('code', $code)
+                ->first();
+            if (!$district) {
+                throw new Exception('District not found');
+            }
+            $villages = $district->villages;
+            return ApiResponseHelper::success('Villages data of ' . $district->name, $villages);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get this district\'s village data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
 
     #endregion
 
     #region Village
 
-    public function getAllVillage(Request $request)
+    public function getAllVillage(VillageIndexRequest $request)
     {
-        $search     = $request->q;
-        $paginate   = $request->paginate ?? false;
-        $perPage    = $request->perPage ?? 10;
-        $villages   = Village::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->when(
-                $paginate,
-                fn($query) => $query->paginate($perPage),
-                fn($query) => $query->get()
-            );
-        if ($villages->isEmpty()) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
+        try {
+            $validated          = $request->validated();
+            $villageQuery       = Village::query()->filter($validated);
+            $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQuery->paginate($validated['perPage'] ?? 10) : $villageQuery->get();
+            $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
+            $transformedVillage = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'code'          => $item->code,
+                    'district_code' => $item->district_code,
+                    'name'          => $item->name,
+                    'meta'          => $item->meta,
+                ];
+            });
+            if ($village instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Villages data', $village->setCollection($transformedVillage));
+            } else {
+                return ApiResponseHelper::success('Villages data', $transformedVillage);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get village data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $villages);
     }
 
     public function getVillage($code)
     {
-        $village = Village::where('code', $code)
-            ->first();
-        if (!$village) {
-            return ApiResponseHelper::error('Data Kelurahan tidak ditemukan.', []);
+        try {
+            $village = Village::where('code', $code)
+                ->first();
+            if (!$village) {
+                throw new Exception('Village not found');
+            }
+            return ApiResponseHelper::success('Village data', $village);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get village data.', []);
         }
-        return ApiResponseHelper::success('Data Kelurahan berhasil diambil.', $village);
     }
 
     #endregion

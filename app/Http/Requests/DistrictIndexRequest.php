@@ -14,7 +14,7 @@ class DistrictIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => ['nullable', 'string'],
+            'q'         => ['nullable', 'string'],
             'paginate'  => ['nullable', 'boolean'],
             'perPage'   => ['nullable', 'integer', 'min:1'],
         ];
