@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         $teams = config('permission.teams');
@@ -123,15 +121,12 @@ return new class extends Migration
             ->forget(config('permission.cache.key'));
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         $tableNames = config('permission.table_names');
 
         if (empty($tableNames)) {
-            throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
+            throw new \Exception('Error: config/permission.php data not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
         Schema::drop($tableNames['role_has_permissions']);

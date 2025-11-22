@@ -24,8 +24,8 @@ class MarriageStatusController extends Controller
     {
         try {
             $validated                  = $request->validated();
-            $msQuery                    = MarriageStatus::query()->filter($validated);
-            $marriageStatus             = isset($validated['paginate']) && $validated['paginate'] ? $msQuery->paginate($validated['perPage'] ?? 10) : $msQuery->get();
+            $msQ                    = MarriageStatus::query()->filter($validated);
+            $marriageStatus             = isset($validated['paginate']) && $validated['paginate'] ? $msQ->paginate($validated['perPage'] ?? 10) : $msQ->get();
             $itemsToTransform           = $marriageStatus instanceof LengthAwarePaginator ? $marriageStatus->getCollection() : $marriageStatus;
             $transformedMarriageStatus  = $itemsToTransform->map(function ($item) {
                 return [
@@ -58,7 +58,7 @@ class MarriageStatusController extends Controller
         try {
             $marriageStatus = MarriageStatus::find($marriageStatus);
             if (!$marriageStatus) {
-                throw new Exception('Marriage status not found');
+                throw new Exception('Marriage status data not found');
             }
             return ApiResponseHelper::success('Marriage status data', $marriageStatus);
         } catch (Exception $e) {
@@ -71,7 +71,7 @@ class MarriageStatusController extends Controller
         try {
             $marriageStatus = MarriageStatus::find($marriageStatus);
             if (!$marriageStatus) {
-                throw new Exception('Marriage status not found');
+                throw new Exception('Marriage status data not found');
             }
             $this->marriageStatusService->update($marriageStatus, $request->validated());
             return ApiResponseHelper::success('Marriage status data has been updated successfully');
@@ -85,7 +85,7 @@ class MarriageStatusController extends Controller
         try {
             $marriageStatus = MarriageStatus::find($marriageStatus);
             if (!$marriageStatus) {
-                throw new Exception('Marriage status not found');
+                throw new Exception('Marriage status data not found');
             }
 
             $delete = $marriageStatus->delete();

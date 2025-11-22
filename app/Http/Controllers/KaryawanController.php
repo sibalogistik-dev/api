@@ -24,8 +24,8 @@ class KaryawanController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $karyawanQuery          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
-            $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQuery->paginate($validated['perPage'] ?? 10) : $karyawanQuery->get();
+            $karyawanQ          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
+            $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQ->paginate($validated['perPage'] ?? 10) : $karyawanQ->get();
             $itemsToTransform       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
             $transformedKaryawan    = $itemsToTransform->map(function ($item) {
                 return [
@@ -62,7 +62,7 @@ class KaryawanController extends Controller
         try {
             $employee = Karyawan::find($employee);
             if (!$employee) {
-                throw new Exception('Employee not found');
+                throw new Exception('Employee data not found');
             }
             return ApiResponseHelper::success("Employee data", $employee);
         } catch (Exception $e) {
@@ -75,7 +75,7 @@ class KaryawanController extends Controller
         try {
             $employee = Karyawan::find($employee);
             if (!$employee) {
-                throw new Exception('Employee not found');
+                throw new Exception('Employee data not found');
             }
             $this->employeeService->update($employee, $request->validated());
             return ApiResponseHelper::success('Employee data has been updated successfully');
@@ -89,7 +89,7 @@ class KaryawanController extends Controller
         try {
             $employee = Karyawan::find($employee);
             if (!$employee) {
-                throw new Exception('Employee not found');
+                throw new Exception('Employee data not found');
             }
             $employee->user->delete();
             $delete = $employee->delete();

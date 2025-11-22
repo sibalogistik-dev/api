@@ -23,20 +23,24 @@ class PendidikanController extends Controller
 
     public function index(EducationIndexRequest $request)
     {
-        $validated              = $request->validated();
-        $educationQuery         = Pendidikan::query()->filter($validated);
-        $education              = isset($validated['paginate']) && $validated['paginate'] ? $educationQuery->paginate($validated['perPage'] ?? 10) : $educationQuery->get();
-        $itemsToTransform       = $education instanceof LengthAwarePaginator ? $education->getCollection() : $education;
-        $transformedEducation   = $itemsToTransform->map(function ($item) {
-            return [
-                'id'    => $item->id,
-                'name'  => $item->name,
-            ];
-        });
-        if ($education instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Pendidikan list', $education->setCollection($transformedEducation));
+        try {
+            $validated              = $request->validated();
+            $educationQ             = Pendidikan::query()->filter($validated);
+            $education              = isset($validated['paginate']) && $validated['paginate'] ? $educationQ->paginate($validated['perPage'] ?? 10) : $educationQ->get();
+            $itemsToTransform       = $education instanceof LengthAwarePaginator ? $education->getCollection() : $education;
+            $transformedEducation   = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                ];
+            });
+            if ($education instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Pendidikan list', $education->setCollection($transformedEducation));
+            }
+            return ApiResponseHelper::success('Pendidikan list', $transformedEducation);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get education data', $e->getMessage());
         }
-        return ApiResponseHelper::success('Pendidikan list', $transformedEducation);
     }
 
     public function store(EducationStoreRequest $request)

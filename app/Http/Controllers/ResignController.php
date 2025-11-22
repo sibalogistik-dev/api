@@ -2,64 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\ResignIndexRequest;
+use App\Http\Requests\ResignStoreRequest;
 use App\Models\Resign;
+use App\Services\ResignService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ResignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $resignService;
+
+    public function __construct(ResignService $resignService)
     {
-        //
+        $this->resignService = $resignService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(ResignIndexRequest $request)
     {
-        //
+        try {
+            $validated          = $request->validated();
+            $resignQ            = Resign::query()->filter($validated);
+            $resign             = isset($validated['paginate']) && $validated['paginate'] ? $resignQ->paginate($validated['perPage'] ?? 10) : $resignQ->get();
+            $itemsToTransform   = $resign instanceof LengthAwarePaginator ? $resign->getCollection() : $resign;
+            $transformedResign  = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'    => $item->id,
+                    'name'  => $item->name,
+                    'code'  => $item->code,
+                ];
+            });
+            if ($resign instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Resigns data', $resign->setCollection($transformedResign));
+            } else {
+                return ApiResponseHelper::success('Resigns data', $transformedResign);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get resign data', $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(ResignStoreRequest $request)
     {
-        //
+        try {
+            $resign = $this->resignService->create($request->validated());
+            return ApiResponseHelper::success('Resign data has been added successfully', $resign);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving resign data', $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Resign $resign)
+    public function show($resign)
     {
-        //
+        try {
+            $resign = Resign::find($resign);
+            if (!$resign) {
+                throw new Exception('Resign data not found');
+            }
+            return ApiResponseHelper::success('Resign data', $resign);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get resign data', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Resign $resign)
+    public function update(Request $request, $resign)
     {
-        //
+        try {
+            //code...
+        } catch (Exception $e) {
+            //throw $e;
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Resign $resign)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Resign $resign)
     {
-        //
+        try {
+            //code...
+        } catch (Exception $e) {
+            //throw $e;
+        }
     }
 }

@@ -23,8 +23,8 @@ class PerusahaanController extends Controller
     public function index(CompanyIndexRequest $request)
     {
         $validated          = $request->validated();
-        $companyQuery       = Perusahaan::query()->filter($validated)->orderBy('id', 'desc');
-        $company            = isset($validated['paginate']) && $validated['paginate'] ? $companyQuery->paginate($validated['perPage'] ?? 10) : $companyQuery->get();
+        $companyQ       = Perusahaan::query()->filter($validated)->orderBy('id', 'desc');
+        $company            = isset($validated['paginate']) && $validated['paginate'] ? $companyQ->paginate($validated['perPage'] ?? 10) : $companyQ->get();
         $itemsToTransform   = $company instanceof LengthAwarePaginator ? $company->getCollection() : $company;
         $transformedCompany = $itemsToTransform->map(function ($item) {
             return [
@@ -54,7 +54,7 @@ class PerusahaanController extends Controller
     {
         $company = Perusahaan::find($company);
         if (!$company) {
-            return ApiResponseHelper::error('Company not found', []);
+            return ApiResponseHelper::error('Company data not found', []);
         }
         $data = [
             'id'                => $company->id,

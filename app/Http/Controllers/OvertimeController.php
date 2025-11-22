@@ -24,8 +24,8 @@ class OvertimeController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $otQuery                = Overtime::query()->filter($validated);
-            $overtimes              = isset($validated['paginate']) && $validated['paginate'] ? $otQuery->paginate($validated['perPage'] ?? 10) : $otQuery->get();
+            $otQ                = Overtime::query()->filter($validated);
+            $overtimes              = isset($validated['paginate']) && $validated['paginate'] ? $otQ->paginate($validated['perPage'] ?? 10) : $otQ->get();
             $itemsToTransform       = $overtimes instanceof LengthAwarePaginator ? $overtimes->getCollection() : $overtimes;
             $transformedOvertimes   = $itemsToTransform->map(function ($item) {
                 return [
@@ -62,7 +62,7 @@ class OvertimeController extends Controller
         try {
             $ot = Overtime::find($overtime);
             if (!$ot) {
-                throw new Exception('Overtime not found');
+                throw new Exception('Overtime data not found');
             }
             $data = [
                 'id'            => $ot->id,

@@ -25,8 +25,8 @@ class RemoteAttendanceController extends Controller
     {
         try {
             $validated                      = $request->validated();
-            $remoteAttendanceQuery          = RemoteAttendance::query()->filter($validated);
-            $remoteAttendance               = isset($validated['paginate']) && $validated['paginate'] ? $remoteAttendanceQuery->paginate($validated['perPage'] ?? 10) : $remoteAttendanceQuery->get();
+            $remoteAttendanceQ          = RemoteAttendance::query()->filter($validated);
+            $remoteAttendance               = isset($validated['paginate']) && $validated['paginate'] ? $remoteAttendanceQ->paginate($validated['perPage'] ?? 10) : $remoteAttendanceQ->get();
             $itemsToTransform               = $remoteAttendance instanceof LengthAwarePaginator ? $remoteAttendance->getCollection() : $remoteAttendance;
             $transformedRemoteAttendance    = $itemsToTransform->map(function ($item) {
                 return [
@@ -62,7 +62,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote attendance not found');
+                throw new Exception('Remote attendance data not found');
             }
             return ApiResponseHelper::success('Remote attendance data', $remoteAttendance);
         } catch (Exception $e) {
@@ -75,7 +75,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote Attendance not found');
+                throw new Exception('Remote Attendance data not found');
             }
             $this->remoteAttendanceService->update($remoteAttendance, $request->validated());
             return ApiResponseHelper::success('Remote Attendance data has been updated successfully');
@@ -89,7 +89,7 @@ class RemoteAttendanceController extends Controller
         try {
             $remoteAttendance = RemoteAttendance::find($remoteAttendance);
             if (!$remoteAttendance) {
-                throw new Exception('Remote attendance not found');
+                throw new Exception('Remote attendance data not found');
             }
 
             $delete = $remoteAttendance->delete();

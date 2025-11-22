@@ -22,8 +22,8 @@ class AgamaController extends Controller
     public function index(ReligionIndexRequest $request)
     {
         $validated = $request->validated();
-        $religionQuery = Agama::query()->filter($validated)->orderBy('id');
-        $religion = isset($validated['paginate']) && $validated['paginate'] ? $religionQuery->paginate($validated['perPage'] ?? 10) : $religionQuery->get();
+        $religionQ = Agama::query()->filter($validated)->orderBy('id');
+        $religion = isset($validated['paginate']) && $validated['paginate'] ? $religionQ->paginate($validated['perPage'] ?? 10) : $religionQ->get();
         return ApiResponseHelper::success('Religion list', $religion);
     }
 
@@ -41,7 +41,7 @@ class AgamaController extends Controller
     {
         $agama = Agama::find($religion);
         if (!$agama) {
-            return ApiResponseHelper::error('Religion not found', []);
+            return ApiResponseHelper::error('Religion data not found', []);
         }
         return ApiResponseHelper::success('Religion detail', $agama);
     }
@@ -51,7 +51,7 @@ class AgamaController extends Controller
         try {
             $agama = Agama::find($religion);
             if (!$agama) {
-                throw new Exception('Religion not found');
+                throw new Exception('Religion data not found');
             }
             $this->religionService->update($agama, $request->validated());
             return ApiResponseHelper::success('Religion data has been updated successfully');
@@ -65,7 +65,7 @@ class AgamaController extends Controller
         try {
             $agama = Agama::find($religion);
             if (!$agama) {
-                throw new Exception('Religion not found');
+                throw new Exception('Religion data not found');
             }
             $delete = $agama->delete();
             if (!$delete) {

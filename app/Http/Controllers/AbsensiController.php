@@ -28,8 +28,8 @@ class AbsensiController extends Controller
     public function index(AttendanceIndexRequest $request)
     {
         $validated          = $request->validated();
-        $absensiQuery       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
-        $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQuery->paginate($validated['perPage'] ?? 10) : $absensiQuery->get();
+        $absensiQ       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
+        $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQ->paginate($validated['perPage'] ?? 10) : $absensiQ->get();
         $itemsToTransform   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
         $transformedAbsensi = $itemsToTransform->map(function ($item) {
             return [
@@ -65,7 +65,7 @@ class AbsensiController extends Controller
     {
         $query = Absensi::find($attendance);
         if (!$query) {
-            return ApiResponseHelper::error('Attendance not found', []);
+            return ApiResponseHelper::error('Attendance data not found', []);
         }
         $data = [
             'id'                    => $query->id,
@@ -94,7 +94,7 @@ class AbsensiController extends Controller
         try {
             $abs        = Absensi::find($attendance);
             if (!$abs) {
-                throw new Exception('Attendance not found');
+                throw new Exception('Attendance data not found');
             }
             $absensi    = $this->attendanceService->update($abs, $request->validated());
             return ApiResponseHelper::success("Attendance successfully recorded.", $absensi);
@@ -124,17 +124,17 @@ class AbsensiController extends Controller
     {
         $employee = Karyawan::find($employee);
         if (!$employee) {
-            return ApiResponseHelper::error('Employee not found', []);
+            return ApiResponseHelper::error('Employee data not found', []);
         }
-        $attendanceQuery = Absensi::query()
+        $attendanceQ = Absensi::query()
             ->where('employee_id', $employee->id)
             ->orderBy('id', 'desc');
 
-        $attendanceQuery->when(
+        $attendanceQ->when(
             $request->has('date') && $request->input('date'),
             fn($query)  => $query->where('date', '=', $request->input('date'))
         );
-        $attendance = $attendanceQuery->when(
+        $attendance = $attendanceQ->when(
             $request->has('paginate') && $request->input('paginate'),
             fn($query)  => $query->paginate($request->input('perPage', 10)),
             fn($query)  => $query->get()

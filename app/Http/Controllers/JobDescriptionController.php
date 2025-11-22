@@ -23,8 +23,8 @@ class JobDescriptionController extends Controller
     public function index(JobDescriptionIndexRequest $request)
     {
         $validated              = $request->validated();
-        $jdQuery                = JobDescription::query()->filter($validated);
-        $jobDescs               = isset($validated['paginate']) && $validated['paginate'] ? $jdQuery->paginate($validated['perPage'] ?? 10) : $jdQuery->get();
+        $jdQ                = JobDescription::query()->filter($validated);
+        $jobDescs               = isset($validated['paginate']) && $validated['paginate'] ? $jdQ->paginate($validated['perPage'] ?? 10) : $jdQ->get();
         $itemsToTransform       = $jobDescs instanceof LengthAwarePaginator ? $jobDescs->getCollection() : $jobDescs;
         $transformedJobDescs    = $itemsToTransform->map(function ($item) {
             return [
@@ -55,7 +55,7 @@ class JobDescriptionController extends Controller
     {
         $job_desc = JobDescription::find($jobDescription->id);
         if (!$job_desc) {
-            return ApiResponseHelper::error('Job description not found', []);
+            return ApiResponseHelper::error('Job description data not found', []);
         }
         return ApiResponseHelper::success('Job description detail', $job_desc);
     }
@@ -65,7 +65,7 @@ class JobDescriptionController extends Controller
         try {
             $job_desc = JobDescription::find($jobDescription);
             if (!$job_desc) {
-                throw new Exception('Job description not found');
+                throw new Exception('Job description data not found');
             }
             $this->jobDescriptionService->update($job_desc, $request->validated());
             return ApiResponseHelper::success('Job description data has been updated successfully');
@@ -78,7 +78,7 @@ class JobDescriptionController extends Controller
     {
         $job_desc = JobDescription::find($jobDescription);
         if (!$job_desc) {
-            return ApiResponseHelper::error('Job description not found', []);
+            return ApiResponseHelper::error('Job description data not found', []);
         }
         $delete = $job_desc->delete();
         if ($delete) {

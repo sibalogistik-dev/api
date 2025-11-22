@@ -24,8 +24,8 @@ class CabangController extends Controller
     {
         try {
             $validated = $request->validated();
-            $branchQuery = Cabang::query()->with(['company', 'village.district.city.province'])->filter($validated);
-            $branch = isset($validated['paginate']) && $validated['paginate'] ? $branchQuery->paginate($validated['perPage'] ?? 10) : $branchQuery->get();
+            $branchQ = Cabang::query()->with(['company', 'village.district.city.province'])->filter($validated);
+            $branch = isset($validated['paginate']) && $validated['paginate'] ? $branchQ->paginate($validated['perPage'] ?? 10) : $branchQ->get();
             $itemsToTransform = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
             $transformedBranch = $itemsToTransform->map(function ($item) {
                 return [
@@ -66,7 +66,7 @@ class CabangController extends Controller
         try {
             $cabang = Cabang::find($branch);
             if (!$cabang) {
-                throw new Exception('Branch not found');
+                throw new Exception('Branch data not found');
             }
             return ApiResponseHelper::success("Branch's detail", $cabang);
         } catch (Exception $e) {
@@ -89,7 +89,7 @@ class CabangController extends Controller
         try {
             $branch = Cabang::find($branch);
             if (!$branch) {
-                throw new Exception('Branch not found');
+                throw new Exception('Branch data not found');
             }
             $delete = $branch->delete();
             if (!$delete) {

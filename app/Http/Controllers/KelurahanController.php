@@ -24,8 +24,8 @@ class KelurahanController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $villageQuery       = Village::query()->filter($validated);
-            $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQuery->paginate($validated['perPage'] ?? 10) : $villageQuery->get();
+            $villageQ           = Village::query()->filter($validated);
+            $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQ->paginate($validated['perPage'] ?? 10) : $villageQ->get();
             $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
             $transformedVillage = $itemsToTransform->map(function ($item) {
                 return [
@@ -59,7 +59,7 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found');
+                throw new Exception('Village data not found');
             }
             return ApiResponseHelper::success('Village data', $village);
         } catch (Exception $e) {
@@ -70,10 +70,6 @@ class KelurahanController extends Controller
     public function update(VillageUpdateRequest $request, $village)
     {
         try {
-            $village = Village::find($village);
-            if (!$village) {
-                throw new Exception('Village not found');
-            }
             $this->villageService->update($village, $request->validated());
             return ApiResponseHelper::success('Village data has been updated successfully');
         } catch (Exception $e) {
@@ -86,7 +82,7 @@ class KelurahanController extends Controller
         try {
             $village = Village::find($village);
             if (!$village) {
-                throw new Exception('Village not found');
+                throw new Exception('Village data not found');
             }
 
             $delete = $village->delete();

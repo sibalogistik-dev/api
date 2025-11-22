@@ -24,8 +24,8 @@ class KecamatanController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $districtQuery          = District::query()->filter($validated);
-            $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQuery->paginate($validated['perPage'] ?? 10) : $districtQuery->get();
+            $districtQ          = District::query()->filter($validated);
+            $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQ->paginate($validated['perPage'] ?? 10) : $districtQ->get();
             $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
             $transformedDistrict    = $itemsToTransform->map(function ($item) {
                 return [
@@ -59,7 +59,7 @@ class KecamatanController extends Controller
         try {
             $district = District::find($district);
             if (!$district) {
-                throw new Exception('District not found');
+                throw new Exception('District data not found');
             }
             return ApiResponseHelper::success('District data', $district);
         } catch (Exception $e) {
@@ -67,13 +67,9 @@ class KecamatanController extends Controller
         }
     }
 
-    public function update(Request $request,  $district)
+    public function update(Request $request, $district)
     {
         try {
-            $district = District::find($district);
-            if (!$district) {
-                throw new Exception('District not found');
-            }
             $this->districtService->update($district, $request->validated());
             return ApiResponseHelper::success('District data has been updated successfully');
         } catch (Exception $e) {
@@ -86,7 +82,7 @@ class KecamatanController extends Controller
         try {
             $district = District::find($district);
             if (!$district) {
-                throw new Exception('District not found');
+                throw new Exception('District data not found');
             }
 
             $delete = $district->delete();

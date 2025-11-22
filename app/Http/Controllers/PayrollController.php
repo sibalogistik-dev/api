@@ -23,8 +23,8 @@ class PayrollController extends Controller
     public function index(PayrollIndexRequest $request)
     {
         $validated      = $request->validated();
-        $payrollQuery   = Payroll::query()->filter($validated)->orderBy('id');
-        $payroll        = isset($validated['paginate']) && $validated['paginate'] ? $payrollQuery->paginate($validated['perPage'] ?? 10) : $payrollQuery->get();
+        $payrollQ   = Payroll::query()->filter($validated)->orderBy('id');
+        $payroll        = isset($validated['paginate']) && $validated['paginate'] ? $payrollQ->paginate($validated['perPage'] ?? 10) : $payrollQ->get();
         return ApiResponseHelper::success('Payroll list', $payroll);
     }
 
@@ -42,7 +42,7 @@ class PayrollController extends Controller
     {
         $payroll = Payroll::find($payroll);
         if (!$payroll) {
-            return ApiResponseHelper::error('Company not found', []);
+            return ApiResponseHelper::error('Company data not found', []);
         }
         $data = [
             'id'                => $payroll->id,

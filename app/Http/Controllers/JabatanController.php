@@ -24,8 +24,8 @@ class JabatanController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $jabatanQuery       = Jabatan::query()->filter($validated);
-            $jabatan            = isset($validated['paginate']) && $validated['paginate'] ? $jabatanQuery->paginate($validated['perPage'] ?? 10) : $jabatanQuery->get();
+            $jabatanQ       = Jabatan::query()->filter($validated);
+            $jabatan            = isset($validated['paginate']) && $validated['paginate'] ? $jabatanQ->paginate($validated['perPage'] ?? 10) : $jabatanQ->get();
             $itemsToTransform   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
             $transformedJabatan = $itemsToTransform->map(function ($item) {
                 return [
@@ -59,7 +59,7 @@ class JabatanController extends Controller
         try {
             $job_title = Jabatan::find($job_title);
             if (!$job_title) {
-                throw new Exception('Job title not found');
+                throw new Exception('Job title data not found');
             }
             return ApiResponseHelper::success('Job title detail', $job_title);
         } catch (Exception $e) {
@@ -72,7 +72,7 @@ class JabatanController extends Controller
         try {
             $job_title = Jabatan::find($job_title);
             if (!$job_title) {
-                throw new Exception('Job title not found');
+                throw new Exception('Job title data not found');
             }
             $this->jobTitleService->update($job_title, $request->validated());
             return ApiResponseHelper::success('Job title data has been updated successfully');
@@ -86,7 +86,7 @@ class JabatanController extends Controller
         try {
             $job_title = Jabatan::find($job_title);
             if (!$job_title) {
-                throw new Exception('Job title not found');
+                throw new Exception('Job title data not found');
             }
             $delete = $job_title->delete();
             if (!$delete) {

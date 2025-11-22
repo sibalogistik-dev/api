@@ -23,8 +23,8 @@ class IndonesiaController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $provinceQuery          = Province::query()->filter($validated);
-            $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQuery->paginate($validated['perPage'] ?? 10) : $provinceQuery->get();
+            $provinceQ          = Province::query()->filter($validated);
+            $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQ->paginate($validated['perPage'] ?? 10) : $provinceQ->get();
             $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
             $transformedProvince    = $itemsToTransform->map(function ($item) {
                 return [
@@ -49,7 +49,7 @@ class IndonesiaController extends Controller
         try {
             $province = Province::where('code', $code)->first();
             if (!$province) {
-                throw new Exception('Province not found');
+                throw new Exception('Province data not found');
             }
             return ApiResponseHelper::success('Province data', $province);
         } catch (Exception $e) {
@@ -62,7 +62,7 @@ class IndonesiaController extends Controller
         try {
             $province = Province::where('code', $code)->first();
             if (!$province) {
-                throw new Exception('Province not found');
+                throw new Exception('Province data not found');
             }
             $cities = $province->cities;
             return ApiResponseHelper::success('Cities data of ' . $province->name . ' province', $cities);
@@ -79,8 +79,8 @@ class IndonesiaController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $cityQuery          = City::query()->filter($validated);
-            $city               = isset($validated['paginate']) && $validated['paginate'] ? $cityQuery->paginate($validated['paginate'] ?? 10) : $cityQuery->get();
+            $cityQ          = City::query()->filter($validated);
+            $city               = isset($validated['paginate']) && $validated['paginate'] ? $cityQ->paginate($validated['paginate'] ?? 10) : $cityQ->get();
             $itemToTransform    = $city instanceof LengthAwarePaginator ? $city->getCollection() : $city;
             $tranformedCity     = $itemToTransform->map(function ($item) {
                 return [
@@ -106,7 +106,7 @@ class IndonesiaController extends Controller
         try {
             $city = City::where('code', $code)->first();
             if (!$city) {
-                throw new Exception('City not found');
+                throw new Exception('City data not found');
             }
             return ApiResponseHelper::success('City data', $city);
         } catch (Exception $e) {
@@ -119,7 +119,7 @@ class IndonesiaController extends Controller
         try {
             $city = City::where('code', $code)->first();
             if (!$city) {
-                throw new Exception('City not found');
+                throw new Exception('City data not found');
             }
             $districts = $city->districts;
             return ApiResponseHelper::success('Districts data of ' . $city->name, $districts);
@@ -136,8 +136,8 @@ class IndonesiaController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $districtQuery          = District::query()->filter($validated);
-            $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQuery->paginate($validated['perPage'] ?? 10) : $districtQuery->get();
+            $districtQ          = District::query()->filter($validated);
+            $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQ->paginate($validated['perPage'] ?? 10) : $districtQ->get();
             $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
             $transformedDistrict    = $itemsToTransform->map(function ($item) {
                 return [
@@ -165,7 +165,7 @@ class IndonesiaController extends Controller
                 ->where('code', $code)
                 ->first();
             if (!$district) {
-                throw new Exception('District not found');
+                throw new Exception('District data not found');
             }
             return ApiResponseHelper::success('District data', $district);
         } catch (Exception $e) {
@@ -180,7 +180,7 @@ class IndonesiaController extends Controller
                 ->where('code', $code)
                 ->first();
             if (!$district) {
-                throw new Exception('District not found');
+                throw new Exception('District data not found');
             }
             $villages = $district->villages;
             return ApiResponseHelper::success('Villages data of ' . $district->name, $villages);
@@ -197,8 +197,8 @@ class IndonesiaController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $villageQuery       = Village::query()->filter($validated);
-            $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQuery->paginate($validated['perPage'] ?? 10) : $villageQuery->get();
+            $villageQ       = Village::query()->filter($validated);
+            $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQ->paginate($validated['perPage'] ?? 10) : $villageQ->get();
             $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
             $transformedVillage = $itemsToTransform->map(function ($item) {
                 return [
@@ -225,7 +225,7 @@ class IndonesiaController extends Controller
             $village = Village::where('code', $code)
                 ->first();
             if (!$village) {
-                throw new Exception('Village not found');
+                throw new Exception('Village data not found');
             }
             return ApiResponseHelper::success('Village data', $village);
         } catch (Exception $e) {

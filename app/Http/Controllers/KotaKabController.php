@@ -23,8 +23,8 @@ class KotaKabController extends Controller
     {
         try {
             $validated = $request->validated();
-            $cityQuery = City::query()->filter($validated);
-            $city = isset($validated['paginate']) && $validated['paginate'] ? $cityQuery->paginate($validated['paginate'] ?? 10) : $cityQuery->get();
+            $cityQ = City::query()->filter($validated);
+            $city = isset($validated['paginate']) && $validated['paginate'] ? $cityQ->paginate($validated['paginate'] ?? 10) : $cityQ->get();
             $itemToTransform = $city instanceof LengthAwarePaginator ? $city->getCollection() : $city;
             $tranformedCity = $itemToTransform->map(function ($item) {
                 return [
@@ -58,7 +58,7 @@ class KotaKabController extends Controller
         try {
             $city = City::find($city);
             if (!$city) {
-                throw new Exception('City not found');
+                throw new Exception('City data not found');
             }
             return ApiResponseHelper::success('City data', $city);
         } catch (Exception $e) {
@@ -69,10 +69,6 @@ class KotaKabController extends Controller
     public function update(Request $request, $city)
     {
         try {
-            $city = City::find($city);
-            if (!$city) {
-                throw new Exception('City not found');
-            }
             $this->cityService->update($city, $request->validated());
             return ApiResponseHelper::success('City data has been updated successfully');
         } catch (Exception $e) {
@@ -85,7 +81,7 @@ class KotaKabController extends Controller
         try {
             $city = City::find($city);
             if (!$city) {
-                throw new Exception('City not found');
+                throw new Exception('City data not found');
             }
             $delete = $city->delete();
             if (!$delete) {
