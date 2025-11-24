@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('api')->group(function () {
     Route::post('/login',   [App\Http\Controllers\AuthController::class, 'login']);
     Route::get('/login',    [App\Http\Controllers\AuthController::class, 'loginError'])->name('login');
+
     Route::middleware('auth:sanctum')
         ->group(function () {
             Route::get('user', [App\Http\Controllers\AuthController::class, 'user']);

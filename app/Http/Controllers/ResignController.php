@@ -30,9 +30,12 @@ class ResignController extends Controller
             $itemsToTransform   = $resign instanceof LengthAwarePaginator ? $resign->getCollection() : $resign;
             $transformedResign  = $itemsToTransform->map(function ($item) {
                 return [
-                    'id'    => $item->id,
-                    'name'  => $item->name,
-                    'code'  => $item->code,
+                    'id'            => $item->id,
+                    'employee_id'   => $item->employee_id,
+                    'name'          => $item->employee->name,
+                    'date'          => $item->date,
+                    'status'        => $item->status,
+                    'description'   => $item->description,
                 ];
             });
             if ($resign instanceof LengthAwarePaginator) {
@@ -49,7 +52,9 @@ class ResignController extends Controller
     {
         try {
             $resign = $this->resignService->create($request->validated());
-            return ApiResponseHelper::success('Resign data has been added successfully', $resign);
+            if ($resign) {
+                return ApiResponseHelper::success('Resign data has been added successfully', $resign);
+            }
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when saving resign data', $e->getMessage());
         }
@@ -68,7 +73,7 @@ class ResignController extends Controller
         }
     }
 
-    public function update(ResignUpdateRequest $request, $resign)
+    public function update(ResignUpdateRequest $request, Resign $resign)
     {
         try {
             $this->resignService->update($resign, $request->validated());

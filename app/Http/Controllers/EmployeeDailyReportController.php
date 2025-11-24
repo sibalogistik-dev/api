@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\EmployeeDailyReportIndexRequest;
-use App\Http\Requests\EmployeeStoreRequest;
+use App\Http\Requests\EmployeeDailyReportStoreRequest;
+use App\Http\Requests\EmployeeDailyReportUpdateRequest;
 use App\Models\EmployeeDailyReport;
 use Exception;
 use Illuminate\Http\Request;
@@ -44,10 +45,11 @@ class EmployeeDailyReportController extends Controller
         }
     }
 
-    public function store(EmployeeStoreRequest $request)
+    public function store(EmployeeDailyReportStoreRequest $request)
     {
         try {
-            $employeeDailyReport    = $this->employeeDailyReportService->create($request->validated());
+            $validated = $request->validated();
+            $employeeDailyReport    = $this->employeeDailyReportService->create($validated);
             return ApiResponseHelper::success('Employee daily report data has been added successfully', $employeeDailyReport);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when saving employee daily report data', $e->getMessage());
@@ -68,7 +70,7 @@ class EmployeeDailyReportController extends Controller
     }
 
 
-    public function update(Request $request, $dailyReport)
+    public function update(EmployeeDailyReportUpdateRequest $request, $dailyReport)
     {
         try {
             $dailyReport = EmployeeDailyReport::find($dailyReport);
