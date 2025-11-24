@@ -15,12 +15,12 @@ class Province extends Model
     ];
 
     protected $casts = [
-        'code'          => 'integer',
+        'code'  => 'integer',
     ];
 
     protected $hidden = ['updated_at', 'created_at'];
 
-public function scopeFilter($query, array $filters)
+    public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
             $query->where('name', 'like', "%{$keyword}%")

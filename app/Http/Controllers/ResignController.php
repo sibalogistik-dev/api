@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\ResignIndexRequest;
 use App\Http\Requests\ResignStoreRequest;
+use App\Http\Requests\ResignUpdateRequest;
 use App\Models\Resign;
 use App\Services\ResignService;
 use Exception;
@@ -67,21 +68,31 @@ class ResignController extends Controller
         }
     }
 
-    public function update(Request $request, $resign)
+    public function update(ResignUpdateRequest $request, $resign)
     {
         try {
-            //code...
+            $this->resignService->update($resign, $request->validated());
+            return ApiResponseHelper::success('Resign data has been updated successfully');
         } catch (Exception $e) {
-            //throw $e;
+            return ApiResponseHelper::error('Error when updating village data', $e->getMessage());
         }
     }
 
-    public function destroy(Resign $resign)
+    public function destroy($resign)
     {
         try {
-            //code...
+            $resign = Resign::find($resign);
+            if (!$resign) {
+                throw new Exception('Resign data not found');
+            }
+
+            $delete = $resign->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete village data');
+            }
+            return ApiResponseHelper::success('Resign data has been deleted successfully');
         } catch (Exception $e) {
-            //throw $e;
+            return ApiResponseHelper::error('Resign data failed to delete', $e->getMessage());
         }
     }
 }

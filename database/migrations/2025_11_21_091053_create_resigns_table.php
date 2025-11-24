@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('status', ['waiting', 'rejected', 'accepted'])->nullable()->default('waiting');
             $table->longText('description');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

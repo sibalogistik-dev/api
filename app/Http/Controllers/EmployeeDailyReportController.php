@@ -2,64 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\EmployeeDailyReportIndexRequest;
+use App\Http\Requests\EmployeeStoreRequest;
 use App\Models\EmployeeDailyReport;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeDailyReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $employeeDailyReportService;
+
+    public function __construct(EmployeeDailyReport $employeeDailyReportService)
     {
-        //
+        $this->employeeDailyReportService   = $employeeDailyReportService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(EmployeeDailyReportIndexRequest $request)
     {
-        //
+        try {
+            $validated                      = $request->validated();
+            $jdQ                            = EmployeeDailyReport::query()->filter($validated);
+            $employeeDailyReport            = isset($validated['paginate']) && $validated['paginate'] ? $jdQ->paginate($validated['perPage'] ?? 10) : $jdQ->get();
+            $itemsToTransform               = $employeeDailyReport instanceof LengthAwarePaginator ? $employeeDailyReport->getCollection() : $employeeDailyReport;
+            $transformedEmployeeDailyReport = $itemsToTransform->map(function ($item) {
+                return [
+                    'id'                => $item->id,
+                    'job_title'         => $item->jobTitle->name,
+                    'task_name'         => $item->task_name,
+                    'task_detail'       => $item->task_detail,
+                    'priority_level'    => $item->priority_level,
+                ];
+            });
+            if ($employeeDailyReport instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Employee daily report data', $employeeDailyReport->setCollection($transformedEmployeeDailyReport));
+            }
+            return ApiResponseHelper::success('Employee daily report data', $transformedEmployeeDailyReport);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get employee daily report ', $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(EmployeeStoreRequest $request)
     {
-        //
+        try {
+            $employeeDailyReport    = $this->employeeDailyReportService->create($request->validated());
+            return ApiResponseHelper::success('Employee daily report data has been added successfully', $employeeDailyReport);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving employee daily report data', $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(EmployeeDailyReport $employeeDailyReport)
+    public function show($dailyReport)
     {
-        //
+        try {
+            $dailyReport = EmployeeDailyReport::find($dailyReport);
+            if (!$dailyReport) {
+                throw new Exception('Employee daily report data not found');
+            }
+            return ApiResponseHelper::success('Employee daily report detail', $dailyReport);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get employee daily report', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(EmployeeDailyReport $employeeDailyReport)
+
+    public function update(Request $request, $dailyReport)
     {
-        //
+        try {
+            $dailyReport = EmployeeDailyReport::find($dailyReport);
+            if (!$dailyReport) {
+                throw new Exception('Employee daily report data not found');
+            }
+            $this->employeeDailyReportService->update($dailyReport, $request->validated());
+            return ApiResponseHelper::success('Employee daily report data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating employee daily report data', $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, EmployeeDailyReport $employeeDailyReport)
+    public function destroy($dailyReport)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(EmployeeDailyReport $employeeDailyReport)
-    {
-        //
+        try {
+            $dailyReport = EmployeeDailyReport::find($dailyReport);
+            if (!$dailyReport) {
+                throw new Exception('Employee daily report data not found');
+            }
+            $delete = $dailyReport->delete();
+            if (!$delete) {
+                throw new Exception('Employee daily report data failed to delete');
+            }
+            return ApiResponseHelper::success('Employee daily report data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when deleting employee daily report data', $e->getMessage());
+        }
     }
 }

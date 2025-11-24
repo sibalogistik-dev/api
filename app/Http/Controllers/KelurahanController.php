@@ -87,7 +87,7 @@ class KelurahanController extends Controller
 
             $delete = $village->delete();
             if (!$delete) {
-                throw new Exception('Failed to delete village data', 500);
+                throw new Exception('Failed to delete village data');
             }
             return ApiResponseHelper::success('Village data has been deleted successfully');
         } catch (Exception $e) {
