@@ -20,6 +20,15 @@ class EmployeeDailyReport extends Model
         'job_description_id'    => 'integer',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->wherehas('employee', function ($query) use ($keyword) {
+                // 
+            });
+        });
+    }
+
     public function employee()
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');
