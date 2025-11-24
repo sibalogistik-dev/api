@@ -71,6 +71,10 @@ class ProvinsiController extends Controller
     public function update(ProvinceUpdateRequest $request, $province)
     {
         try {
+            $province = Province::find($province);
+            if (!$province) {
+                throw new Exception('Province data not found');
+            }
             $this->provinceService->update($province, $request->validated());
             return ApiResponseHelper::success('Province data has been updated successfully');
         } catch (Exception $e) {
@@ -91,7 +95,6 @@ class ProvinsiController extends Controller
             }
             return ApiResponseHelper::success('Province data has been deleted successfully');
         } catch (Exception $e) {
-            // return ApiResponseHelper::error('Province data failed to delete', $e->getMessage());
             return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
         }
     }

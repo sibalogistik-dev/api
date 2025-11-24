@@ -8,7 +8,6 @@ use App\Http\Requests\EmployeeDailyReportStoreRequest;
 use App\Http\Requests\EmployeeDailyReportUpdateRequest;
 use App\Models\EmployeeDailyReport;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeDailyReportController extends Controller
@@ -37,35 +36,35 @@ class EmployeeDailyReportController extends Controller
                 ];
             });
             if ($employeeDailyReport instanceof LengthAwarePaginator) {
-                return ApiResponseHelper::success('Employee daily report data', $employeeDailyReport->setCollection($transformedEmployeeDailyReport));
+                return ApiResponseHelper::success('Employee\'s daily report data', $employeeDailyReport->setCollection($transformedEmployeeDailyReport));
             }
-            return ApiResponseHelper::success('Employee daily report data', $transformedEmployeeDailyReport);
+            return ApiResponseHelper::success('Employee\'s daily report data', $transformedEmployeeDailyReport);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get employee daily report ', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get employee\'s daily report ', $e->getMessage());
         }
     }
 
     public function store(EmployeeDailyReportStoreRequest $request)
     {
         try {
-            $validated = $request->validated();
-            $employeeDailyReport    = $this->employeeDailyReportService->create($validated);
-            return ApiResponseHelper::success('Employee daily report data has been added successfully', $employeeDailyReport);
+            $validated      = $request->validated();
+            $dailyReport    = $this->employeeDailyReportService->create($validated);
+            return ApiResponseHelper::success('Employee\'s daily report data has been added successfully', $dailyReport);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when saving employee daily report data', $e->getMessage());
+            return ApiResponseHelper::error('Error when saving employee\'s daily report data', $e->getMessage());
         }
     }
 
     public function show($dailyReport)
     {
         try {
-            $dailyReport = EmployeeDailyReport::find($dailyReport);
+            $dailyReport    = EmployeeDailyReport::find($dailyReport);
             if (!$dailyReport) {
-                throw new Exception('Employee daily report data not found');
+                throw new Exception('Employee\'s daily report data not found');
             }
-            return ApiResponseHelper::success('Employee daily report detail', $dailyReport);
+            return ApiResponseHelper::success('Employee\'s daily report detail', $dailyReport);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get employee daily report', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get employee\'s daily report', $e->getMessage());
         }
     }
 
@@ -75,12 +74,12 @@ class EmployeeDailyReportController extends Controller
         try {
             $dailyReport = EmployeeDailyReport::find($dailyReport);
             if (!$dailyReport) {
-                throw new Exception('Employee daily report data not found');
+                throw new Exception('Employee\'s daily report data not found');
             }
             $this->employeeDailyReportService->update($dailyReport, $request->validated());
-            return ApiResponseHelper::success('Employee daily report data has been updated successfully');
+            return ApiResponseHelper::success('Employee\'s daily report data has been updated successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when updating employee daily report data', $e->getMessage());
+            return ApiResponseHelper::error('Error when updating employee\'s daily report data', $e->getMessage());
         }
     }
 
@@ -89,15 +88,15 @@ class EmployeeDailyReportController extends Controller
         try {
             $dailyReport = EmployeeDailyReport::find($dailyReport);
             if (!$dailyReport) {
-                throw new Exception('Employee daily report data not found');
+                throw new Exception('Employee\'s daily report data not found');
             }
             $delete = $dailyReport->delete();
             if (!$delete) {
-                throw new Exception('Employee daily report data failed to delete');
+                throw new Exception('Employee\'s daily report data failed to delete');
             }
-            return ApiResponseHelper::success('Employee daily report data has been deleted successfully');
+            return ApiResponseHelper::success('Employee\'s daily report data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when deleting employee daily report data', $e->getMessage());
+            return ApiResponseHelper::error('Error when deleting employee\'s daily report data', $e->getMessage());
         }
     }
 }

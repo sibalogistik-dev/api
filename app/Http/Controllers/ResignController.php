@@ -73,9 +73,13 @@ class ResignController extends Controller
         }
     }
 
-    public function update(ResignUpdateRequest $request, Resign $resign)
+    public function update(ResignUpdateRequest $request, $resign)
     {
         try {
+            $resign = Resign::find($resign);
+            if (!$resign) {
+                throw new Exception('Resign data not found');
+            }
             $this->resignService->update($resign, $request->validated());
             return ApiResponseHelper::success('Resign data has been updated successfully');
         } catch (Exception $e) {
