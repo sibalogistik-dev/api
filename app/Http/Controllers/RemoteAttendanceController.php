@@ -32,7 +32,7 @@ class RemoteAttendanceController extends Controller
                 return [
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,
-                    'name'          => $item->employee->name,
+                    'employee_name' => $item->employee->name,
                     'start_date'    => $item->start_date,
                     'end_date'      => $item->end_date,
                 ];

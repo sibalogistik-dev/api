@@ -15,7 +15,7 @@ Route::middleware('api')->group(function () {
                 'religion'          => App\Http\Controllers\AgamaController::class,
                 'education'         => App\Http\Controllers\PendidikanController::class,
                 'marriage-status'   => App\Http\Controllers\MarriageStatusController::class,
-                // 'attendance-status' => App\Http\Controllers\StatusAbsensiController::class,
+                'attendance-status' => App\Http\Controllers\StatusAbsensiController::class,
 
                 // Indonesia Regional
                 'village'           => App\Http\Controllers\KelurahanController::class,

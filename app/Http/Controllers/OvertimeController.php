@@ -31,7 +31,7 @@ class OvertimeController extends Controller
                 return [
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,
-                    'name'          => $item->employee->name,
+                    'employee_name' => $item->employee->name,
                     'start_time'    => $item->start_time,
                     'end_time'      => $item->end_time,
                     'approved'      => $item->approved,

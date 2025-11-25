@@ -32,7 +32,7 @@ class ResignController extends Controller
                 return [
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,
-                    'name'          => $item->employee->name,
+                    'employee_name' => $item->employee->name,
                     'date'          => $item->date,
                     'status'        => $item->status,
                     'description'   => $item->description,

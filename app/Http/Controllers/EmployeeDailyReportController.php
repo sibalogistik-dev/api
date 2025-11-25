@@ -7,6 +7,7 @@ use App\Http\Requests\EmployeeDailyReportIndexRequest;
 use App\Http\Requests\EmployeeDailyReportStoreRequest;
 use App\Http\Requests\EmployeeDailyReportUpdateRequest;
 use App\Models\EmployeeDailyReport;
+use App\Services\EmployeeDailyReportService;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -14,7 +15,7 @@ class EmployeeDailyReportController extends Controller
 {
     protected $employeeDailyReportService;
 
-    public function __construct(EmployeeDailyReport $employeeDailyReportService)
+    public function __construct(EmployeeDailyReportService $employeeDailyReportService)
     {
         $this->employeeDailyReportService   = $employeeDailyReportService;
     }
@@ -28,11 +29,13 @@ class EmployeeDailyReportController extends Controller
             $itemsToTransform               = $employeeDailyReport instanceof LengthAwarePaginator ? $employeeDailyReport->getCollection() : $employeeDailyReport;
             $transformedEmployeeDailyReport = $itemsToTransform->map(function ($item) {
                 return [
-                    'id'                => $item->id,
-                    'job_title'         => $item->jobTitle->name,
-                    'task_name'         => $item->task_name,
-                    'task_detail'       => $item->task_detail,
-                    'priority_level'    => $item->priority_level,
+                    'id'                    => $item->id,
+                    'employee_id'           => $item->employee_id,
+                    'employee_name'         => $item->employee->name,
+                    'job_title'             => $item->employee->jobTitle->name,
+                    'job_description_id'    => $item->job_description_id,
+                    'job_description'       => $item->jobDescription->task_name,
+                    'description'           => $item->description,
                 ];
             });
             if ($employeeDailyReport instanceof LengthAwarePaginator) {
