@@ -15,6 +15,13 @@ class StatusAbsensi extends Model
         'name',
     ];
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where('name', 'like', "%{$keyword}%");
+        });
+    }
+
     public function attendances()
     {
         return $this->hasMany(Absensi::class, 'attendance_status_id');
