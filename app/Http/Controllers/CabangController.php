@@ -26,8 +26,8 @@ class CabangController extends Controller
             $validated = $request->validated();
             $branchQ = Cabang::query()->with(['company', 'village.district.city.province'])->filter($validated);
             $branch = isset($validated['paginate']) && $validated['paginate'] ? $branchQ->paginate($validated['perPage'] ?? 10) : $branchQ->get();
-            $itemsToTransform = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
-            $transformedBranch = $itemsToTransform->map(function ($item) {
+            $transformedItems = $branch instanceof LengthAwarePaginator ? $branch->getCollection() : $branch;
+            $transformedBranch = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'name'          => $item->name,

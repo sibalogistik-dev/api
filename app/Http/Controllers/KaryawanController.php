@@ -26,8 +26,8 @@ class KaryawanController extends Controller
             $validated              = $request->validated();
             $karyawanQ          = Karyawan::query()->filter($validated)->orderBy('id', 'desc');
             $karyawan               = isset($validated['paginate']) && $validated['paginate'] ? $karyawanQ->paginate($validated['perPage'] ?? 10) : $karyawanQ->get();
-            $itemsToTransform       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
-            $transformedKaryawan    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $karyawan instanceof LengthAwarePaginator ? $karyawan->getCollection() : $karyawan;
+            $transformedKaryawan    = $transformedItems->map(function ($item) {
                 return [
                     'id'                => $item->id,
                     'name'              => $item->name,

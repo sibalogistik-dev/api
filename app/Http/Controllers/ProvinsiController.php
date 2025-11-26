@@ -28,8 +28,8 @@ class ProvinsiController extends Controller
             $validated              = $request->validated();
             $provinceQ              = Province::query()->filter($validated);
             $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQ->paginate($validated['perPage'] ?? 10) : $provinceQ->get();
-            $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
-            $transformedProvince    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
+            $transformedProvince    = $transformedItems->map(function ($item) {
                 return [
                     'id'    => $item->id,
                     'name'  => $item->name,

@@ -26,8 +26,8 @@ class EmployeeDailyReportController extends Controller
             $validated                      = $request->validated();
             $jdQ                            = EmployeeDailyReport::query()->filter($validated);
             $employeeDailyReport            = isset($validated['paginate']) && $validated['paginate'] ? $jdQ->paginate($validated['perPage'] ?? 10) : $jdQ->get();
-            $itemsToTransform               = $employeeDailyReport instanceof LengthAwarePaginator ? $employeeDailyReport->getCollection() : $employeeDailyReport;
-            $transformedEmployeeDailyReport = $itemsToTransform->map(function ($item) {
+            $transformedItems               = $employeeDailyReport instanceof LengthAwarePaginator ? $employeeDailyReport->getCollection() : $employeeDailyReport;
+            $transformedEmployeeDailyReport = $transformedItems->map(function ($item) {
                 return [
                     'id'                    => $item->id,
                     'employee_id'           => $item->employee_id,

@@ -26,8 +26,8 @@ class KelurahanController extends Controller
             $validated          = $request->validated();
             $villageQ           = Village::query()->filter($validated);
             $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQ->paginate($validated['perPage'] ?? 10) : $villageQ->get();
-            $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
-            $transformedVillage = $itemsToTransform->map(function ($item) {
+            $transformedItems   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
+            $transformedVillage = $transformedItems->map(function ($item) {
                 return [
                     'id'    => $item->id,
                     'name'  => $item->name,

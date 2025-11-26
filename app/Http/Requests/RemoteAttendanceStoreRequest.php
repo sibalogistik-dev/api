@@ -15,8 +15,8 @@ class RemoteAttendanceStoreRequest extends FormRequest
     {
         return [
             'employee_id'   => ['required', 'integer', 'exists:karyawans,id'],
-            'start_date'    => ['required', 'date', 'date_format:Y-m-d'],
-            'end_date'      => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            'start_date'    => ['required', 'date_format:Y-m-d'],
+            'end_date'      => ['required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
         ];
     }
 }

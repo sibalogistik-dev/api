@@ -27,8 +27,8 @@ class ResignController extends Controller
             $validated          = $request->validated();
             $resignQ            = Resign::query()->filter($validated);
             $resign             = isset($validated['paginate']) && $validated['paginate'] ? $resignQ->paginate($validated['perPage'] ?? 10) : $resignQ->get();
-            $itemsToTransform   = $resign instanceof LengthAwarePaginator ? $resign->getCollection() : $resign;
-            $transformedResign  = $itemsToTransform->map(function ($item) {
+            $transformedItems   = $resign instanceof LengthAwarePaginator ? $resign->getCollection() : $resign;
+            $transformedResign  = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,
@@ -40,9 +40,8 @@ class ResignController extends Controller
             });
             if ($resign instanceof LengthAwarePaginator) {
                 return ApiResponseHelper::success('Resigns data', $resign->setCollection($transformedResign));
-            } else {
-                return ApiResponseHelper::success('Resigns data', $transformedResign);
             }
+            return ApiResponseHelper::success('Resigns data', $transformedResign);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get resign data', $e->getMessage());
         }

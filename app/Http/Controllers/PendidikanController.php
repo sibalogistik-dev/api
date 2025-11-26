@@ -27,8 +27,8 @@ class PendidikanController extends Controller
             $validated              = $request->validated();
             $educationQ             = Pendidikan::query()->filter($validated);
             $education              = isset($validated['paginate']) && $validated['paginate'] ? $educationQ->paginate($validated['perPage'] ?? 10) : $educationQ->get();
-            $itemsToTransform       = $education instanceof LengthAwarePaginator ? $education->getCollection() : $education;
-            $transformedEducation   = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $education instanceof LengthAwarePaginator ? $education->getCollection() : $education;
+            $transformedEducation   = $transformedItems->map(function ($item) {
                 return [
                     'id'    => $item->id,
                     'name'  => $item->name,

@@ -27,8 +27,8 @@ class RemoteAttendanceController extends Controller
             $validated                      = $request->validated();
             $remoteAttendanceQ          = RemoteAttendance::query()->filter($validated);
             $remoteAttendance               = isset($validated['paginate']) && $validated['paginate'] ? $remoteAttendanceQ->paginate($validated['perPage'] ?? 10) : $remoteAttendanceQ->get();
-            $itemsToTransform               = $remoteAttendance instanceof LengthAwarePaginator ? $remoteAttendance->getCollection() : $remoteAttendance;
-            $transformedRemoteAttendance    = $itemsToTransform->map(function ($item) {
+            $transformedItems               = $remoteAttendance instanceof LengthAwarePaginator ? $remoteAttendance->getCollection() : $remoteAttendance;
+            $transformedRemoteAttendance    = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,

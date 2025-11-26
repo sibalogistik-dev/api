@@ -26,8 +26,8 @@ class JabatanController extends Controller
             $validated          = $request->validated();
             $jabatanQ       = Jabatan::query()->filter($validated);
             $jabatan            = isset($validated['paginate']) && $validated['paginate'] ? $jabatanQ->paginate($validated['perPage'] ?? 10) : $jabatanQ->get();
-            $itemsToTransform   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
-            $transformedJabatan = $itemsToTransform->map(function ($item) {
+            $transformedItems   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
+            $transformedJabatan = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'name'          => $item->name,

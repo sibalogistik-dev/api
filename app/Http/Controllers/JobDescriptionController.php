@@ -26,8 +26,8 @@ class JobDescriptionController extends Controller
             $validated              = $request->validated();
             $jdQ                    = JobDescription::query()->filter($validated);
             $jobDescs               = isset($validated['paginate']) && $validated['paginate'] ? $jdQ->paginate($validated['perPage'] ?? 10) : $jdQ->get();
-            $itemsToTransform       = $jobDescs instanceof LengthAwarePaginator ? $jobDescs->getCollection() : $jobDescs;
-            $transformedJobDescs    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $jobDescs instanceof LengthAwarePaginator ? $jobDescs->getCollection() : $jobDescs;
+            $transformedJobDescs    = $transformedItems->map(function ($item) {
                 return [
                     'id'                => $item->id,
                     'job_title'         => $item->jobTitle->name,

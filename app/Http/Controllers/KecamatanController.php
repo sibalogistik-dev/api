@@ -26,8 +26,8 @@ class KecamatanController extends Controller
             $validated              = $request->validated();
             $districtQ          = District::query()->filter($validated);
             $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQ->paginate($validated['perPage'] ?? 10) : $districtQ->get();
-            $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
-            $transformedDistrict    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
+            $transformedDistrict    = $transformedItems->map(function ($item) {
                 return [
                     'id'    => $item->id,
                     'name'  => $item->name,

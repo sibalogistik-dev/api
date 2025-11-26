@@ -26,8 +26,8 @@ class MarriageStatusController extends Controller
             $validated                  = $request->validated();
             $msQ                    = MarriageStatus::query()->filter($validated);
             $marriageStatus             = isset($validated['paginate']) && $validated['paginate'] ? $msQ->paginate($validated['perPage'] ?? 10) : $msQ->get();
-            $itemsToTransform           = $marriageStatus instanceof LengthAwarePaginator ? $marriageStatus->getCollection() : $marriageStatus;
-            $transformedMarriageStatus  = $itemsToTransform->map(function ($item) {
+            $transformedItems           = $marriageStatus instanceof LengthAwarePaginator ? $marriageStatus->getCollection() : $marriageStatus;
+            $transformedMarriageStatus  = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'name'          => $item->name,

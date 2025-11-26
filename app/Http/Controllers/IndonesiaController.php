@@ -25,8 +25,8 @@ class IndonesiaController extends Controller
             $validated              = $request->validated();
             $provinceQ          = Province::query()->filter($validated);
             $province               = isset($validated['paginate']) && $validated['paginate'] ? $provinceQ->paginate($validated['perPage'] ?? 10) : $provinceQ->get();
-            $itemsToTransform       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
-            $transformedProvince    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $province instanceof LengthAwarePaginator ? $province->getCollection() : $province;
+            $transformedProvince    = $transformedItems->map(function ($item) {
                 return [
                     'id'    => $item->id,
                     'code'  => $item->code,
@@ -138,8 +138,8 @@ class IndonesiaController extends Controller
             $validated              = $request->validated();
             $districtQ          = District::query()->filter($validated);
             $district               = isset($validated['paginate']) && $validated['paginate'] ? $districtQ->paginate($validated['perPage'] ?? 10) : $districtQ->get();
-            $itemsToTransform       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
-            $transformedDistrict    = $itemsToTransform->map(function ($item) {
+            $transformedItems       = $district instanceof LengthAwarePaginator ? $district->getCollection() : $district;
+            $transformedDistrict    = $transformedItems->map(function ($item) {
                 return [
                     'id'        => $item->id,
                     'code'      => $item->code,
@@ -199,8 +199,8 @@ class IndonesiaController extends Controller
             $validated          = $request->validated();
             $villageQ       = Village::query()->filter($validated);
             $village            = isset($validated['paginate']) && $validated['paginate'] ? $villageQ->paginate($validated['perPage'] ?? 10) : $villageQ->get();
-            $itemsToTransform   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
-            $transformedVillage = $itemsToTransform->map(function ($item) {
+            $transformedItems   = $village instanceof LengthAwarePaginator ? $village->getCollection() : $village;
+            $transformedVillage = $transformedItems->map(function ($item) {
                 return [
                     'id'            => $item->id,
                     'code'          => $item->code,

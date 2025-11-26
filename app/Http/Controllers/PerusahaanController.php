@@ -25,8 +25,8 @@ class PerusahaanController extends Controller
         $validated          = $request->validated();
         $companyQ       = Perusahaan::query()->filter($validated)->orderBy('id', 'desc');
         $company            = isset($validated['paginate']) && $validated['paginate'] ? $companyQ->paginate($validated['perPage'] ?? 10) : $companyQ->get();
-        $itemsToTransform   = $company instanceof LengthAwarePaginator ? $company->getCollection() : $company;
-        $transformedCompany = $itemsToTransform->map(function ($item) {
+        $transformedItems   = $company instanceof LengthAwarePaginator ? $company->getCollection() : $company;
+        $transformedCompany = $transformedItems->map(function ($item) {
             return [
                 'id'                => $item->id,
                 'name'              => $item->name,
