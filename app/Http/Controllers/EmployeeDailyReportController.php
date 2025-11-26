@@ -32,6 +32,7 @@ class EmployeeDailyReportController extends Controller
                     'id'                    => $item->id,
                     'employee_id'           => $item->employee_id,
                     'employee_name'         => $item->employee->name,
+                    'date'                  => $item->date,
                     'job_title'             => $item->employee->jobTitle->name,
                     'job_description_id'    => $item->job_description_id,
                     'job_description'       => $item->jobDescription->task_name,
