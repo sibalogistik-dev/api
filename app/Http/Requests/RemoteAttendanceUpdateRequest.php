@@ -15,8 +15,8 @@ class RemoteAttendanceUpdateRequest extends FormRequest
     {
         return [
             'employee_id'   => ['sometimes', 'integer', 'exists:karyawans,id'],
-            'start_date'    => ['sometimes', 'date', 'date_format:Y-m-d'],
-            'end_date'      => ['sometimes', 'date', 'date_format:Y-m-d'],
+            'start_date'    => ['sometimes', 'date_format:Y-m-d'],
+            'end_date'      => ['sometimes', 'date_format:Y-m-d'],
         ];
     }
 }

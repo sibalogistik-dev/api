@@ -15,6 +15,7 @@ class EmployeeDailyReportStoreRequest extends FormRequest
     {
         return [
             'employee_id'           => ['required', 'integer', 'exists:karyawans,id'],
+            'date'                  => ['required', 'date_format:Y-m-d'],
             'job_description_id'    => ['required', 'integer', 'exists:job_descriptions,id'],
             'description'           => ['required', 'string'],
         ];

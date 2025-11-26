@@ -15,6 +15,7 @@ class EmployeeDailyReportUpdateRequest extends FormRequest
     {
         return [
             'employee_id'           => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'date'                  => ['sometimes', 'date_format:Y-m-d'],
             'job_description_id'    => ['sometimes', 'integer', 'exists:job_descriptions,id'],
             'description'           => ['sometimes', 'string'],
         ];
