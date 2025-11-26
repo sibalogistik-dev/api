@@ -22,10 +22,14 @@ class PayrollController extends Controller
 
     public function index(PayrollIndexRequest $request)
     {
-        $validated      = $request->validated();
-        $payrollQ   = Payroll::query()->filter($validated)->orderBy('id');
-        $payroll        = isset($validated['paginate']) && $validated['paginate'] ? $payrollQ->paginate($validated['perPage'] ?? 10) : $payrollQ->get();
-        return ApiResponseHelper::success('Payroll list', $payroll);
+        try {
+            $validated  = $request->validated();
+            $payrollQ   = Payroll::query()->filter($validated)->orderBy('period_start');
+            $payroll    = isset($validated['paginate']) && $validated['paginate'] ? $payrollQ->paginate($validated['perPage'] ?? 10) : $payrollQ->get();
+            return ApiResponseHelper::success('Payroll list', $payroll);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get payroll data', $e->getMessage());
+        }
     }
 
     public function store(PayrollStoreRequest $request)
@@ -40,36 +44,41 @@ class PayrollController extends Controller
 
     public function show($payroll)
     {
-        $payroll = Payroll::find($payroll);
-        if (!$payroll) {
-            return ApiResponseHelper::error('Company data not found', []);
+        try {
+            $payroll    = Payroll::find($payroll);
+            if (!$payroll) {
+                throw new Exception('Payroll data not found');
+            }
+            $data = [
+                'id'                => $payroll->id,
+                'employee_id'       => $payroll->employee_id,
+                'employee_name'     => $payroll->employee->name,
+                'period_name'       => $payroll->period_name,
+                'period_start'      => $payroll->period_start,
+                'period_end'        => $payroll->period_end,
+                'salary_type'       => $payroll->salary_type,
+                'base_salary'       => $payroll->base_salary,
+                'days'              => $payroll->days,
+                'present_days'      => $payroll->present_days,
+                'half_days'         => $payroll->half_days,
+                'absent_days'       => $payroll->absent_days,
+                'sick_days'         => $payroll->sick_days,
+                'leave_days'        => $payroll->leave_days,
+                'permission_days'   => $payroll->permission_days,
+                'off_days'          => $payroll->off_days,
+                'overtime_minutes'  => $payroll->overtime_minutes,
+                'late_minutes'      => $payroll->late_minutes,
+                'deductions'        => $payroll->deductions,
+                'allowances'        => $payroll->allowances,
+                'overtime'          => $payroll->overtime,
+                'compensation'      => $payroll->compensation,
+                'net_salary'        => $payroll->net_salary,
+                'generated_at'      => $payroll->generated_at,
+            ];
+            return ApiResponseHelper::success("Payroll data", $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get payroll data', $e->getMessage());
         }
-        $data = [
-            'id'                => $payroll->id,
-            'employee_id'       => $payroll->employee_id,
-            'period_name'       => $payroll->period_name,
-            'period_start'      => $payroll->period_start,
-            'period_end'        => $payroll->period_end,
-            'salary_type'       => $payroll->salary_type,
-            'base_salary'       => $payroll->base_salary,
-            'days'              => $payroll->days,
-            'present_days'      => $payroll->present_days,
-            'half_days'         => $payroll->half_days,
-            'absent_days'       => $payroll->absent_days,
-            'sick_days'         => $payroll->sick_days,
-            'leave_days'        => $payroll->leave_days,
-            'permission_days'   => $payroll->permission_days,
-            'off_days'          => $payroll->off_days,
-            'overtime_minutes'  => $payroll->overtime_minutes,
-            'late_minutes'      => $payroll->late_minutes,
-            'deductions'        => $payroll->deductions,
-            'allowances'        => $payroll->allowances,
-            'overtime'          => $payroll->overtime,
-            'compensation'      => $payroll->compensation,
-            'net_salary'        => $payroll->net_salary,
-            'generated_at'      => $payroll->generated_at,
-        ];
-        return ApiResponseHelper::success("Payroll's detail", $data);
     }
 
     public function update(PayrollUpdateRequest $request, Payroll $payroll)
@@ -87,15 +96,15 @@ class PayrollController extends Controller
         try {
             $payroll = Payroll::find($payroll);
             if (!$payroll) {
-                return ApiResponseHelper::error('Payroll data not found', null);
+                throw new Exception('Payroll data not found');
             }
             $delete = $payroll->delete();
             if (!$delete) {
-                return ApiResponseHelper::error('Payroll data failed to delete', null, 500);
+                throw new Exception('Failed to delete payroll data');
             }
             return ApiResponseHelper::success('Payroll data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Payroll data failed to delete', $e->getMessage());
+            return ApiResponseHelper::error('Error when deleting payroll data', $e->getMessage());
         }
     }
 }

@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceStatusIndexRequest;
+use App\Http\Requests\AttendanceStatusStoreRequest;
+use App\Http\Requests\AttendanceStatusUpdateRequest;
 use App\Models\StatusAbsensi;
+use App\Services\AttendanceStatusService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatusAbsensiController extends Controller
 {
     protected $attendanceStatusService;
 
-    public function __construct($attendanceStatusService)
+    public function __construct(AttendanceStatusService $attendanceStatusService)
     {
         $this->attendanceStatusService = $attendanceStatusService;
     }
@@ -36,43 +38,60 @@ class StatusAbsensiController extends Controller
             }
             return ApiResponseHelper::success('Attendance status data', $transformedAttendanceStatus);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Failed to get attendance status data', $e->getMessage());
         }
     }
 
-    public function store(Request $request)
+    public function store(AttendanceStatusStoreRequest $request)
     {
         try {
-            //code...
+            $attendanceStatus   = $this->attendanceStatusService->create($request->validated());
+            return ApiResponseHelper::success('Attendance status data has been added successfully', $attendanceStatus);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when saving attendance status data', $e->getMessage());
         }
     }
 
-    public function show(StatusAbsensi $attendanceStatus)
+    public function show($attendanceStatus)
     {
         try {
-            //code...
+            $attendanceStatus   = StatusAbsensi::find($attendanceStatus);
+            if (!$attendanceStatus) {
+                throw new Exception('Attendance status data not found');
+            }
+            return ApiResponseHelper::success('Attendance status data', $attendanceStatus);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Failed to get attendance status data', $e->getMessage());
         }
     }
 
-    public function update(Request $request, StatusAbsensi $attendanceStatus)
+    public function update(AttendanceStatusUpdateRequest $request, $attendanceStatus)
     {
         try {
-            //code...
+            $attendanceStatus   = StatusAbsensi::find($attendanceStatus);
+            if (!$attendanceStatus) {
+                throw new Exception('Attendance status data not found');
+            }
+            $this->attendanceStatusService->update($attendanceStatus, $request->validated());
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when updating attendance status data', $e->getMessage());
         }
     }
 
-    public function destroy(StatusAbsensi $attendanceStatus)
+    public function destroy($attendanceStatus)
     {
         try {
-            //code...
+            $attendanceStatus   = StatusAbsensi::find($attendanceStatus);
+            if (!$attendanceStatus) {
+                throw new Exception('Attendance status data not found');
+            }
+            $delete = $attendanceStatus->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete attendance status data');
+            }
+            return ApiResponseHelper::success('Attendance status data has been deleted successfully');
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when deleting attendance status data', $e->getMessage());
         }
     }
 }

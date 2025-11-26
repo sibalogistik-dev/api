@@ -95,7 +95,7 @@ class ProvinsiController extends Controller
             }
             return ApiResponseHelper::success('Province data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
+            return ApiResponseHelper::error('Error when deleting province data', $e->getMessage());
         }
     }
 }

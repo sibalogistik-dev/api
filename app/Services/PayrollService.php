@@ -117,7 +117,9 @@ class PayrollService
         $deduction      += $this->calculateAllowance($base_salary, min($totalLeaveDays, $maxDays));
         $deduction      += $this->calculateFullDaySalary($base_salary, min($totalOffDays, $maxDays));
         $deduction      += $this->calculateLate($lateMinutes);
-
+        if ($totalAttendanceDays < $maxDays) {
+            $deduction  += $this->calculateFullDaySalary($base_salary,  1);
+        }
         $overtimePay    = $this->calculateOvertimePay($base_salary, ceil($overtimeMinutes));
 
         $compensation   = $this->calculateCompensation($employee, $attendances);
