@@ -14,10 +14,11 @@ class OvertimeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id'   => ['nullable', 'integer', 'exists:karyawans,id'],
-            'start_time'    => ['nullable', 'date'],
-            'end_time'      => ['nullable', 'date', 'after:start_time'],
-            'approved'      => ['nullable', 'boolean'],
+            'employee_id'   => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'start_time'    => ['sometimes', 'date'],
+            'end_time'      => ['sometimes', 'date', 'after:start_time'],
+            'approved'      => ['sometimes', 'boolean'],
+            'description'   => ['sometimes', 'string'],
         ];
     }
 }
