@@ -70,9 +70,10 @@ class PayrollService
         return $dataPayroll;
     }
 
-    // private function calculatePayrollP() : Returntype {
-
-    // }
+    private function calculatePayrollPersonal()
+    {
+        // 
+    }
 
     private function calculateMonthlyPayroll($employee, $period, $periodName, $monthsDays)
     {

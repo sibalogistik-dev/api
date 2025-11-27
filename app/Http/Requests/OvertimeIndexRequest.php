@@ -18,7 +18,7 @@ class OvertimeIndexRequest extends FormRequest
             'start_date'    => ['nullable', 'date'],
             'end_date'      => ['nullable', 'date'],
             'employee_id'   => ['nullable', 'integer'],
-            'approved'      => ['nullable', 'boolean'],
+            'approved'      => ['nullable'],
             'paginate'      => ['nullable', 'boolean'],
             'perPage'       => ['nullable', 'integer'],
         ];

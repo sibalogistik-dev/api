@@ -9,7 +9,6 @@ use App\Http\Requests\PayrollUpdateRequest;
 use App\Models\Payroll;
 use App\Services\PayrollService;
 use Exception;
-use Illuminate\Http\Request;
 
 class PayrollController extends Controller
 {
@@ -35,7 +34,7 @@ class PayrollController extends Controller
     public function store(PayrollStoreRequest $request)
     {
         try {
-            $payroll = $this->payrollService->create($request->validated());
+            $payroll    = $this->payrollService->create($request->validated());
             return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when saving payroll data', $e->getMessage());
@@ -81,9 +80,13 @@ class PayrollController extends Controller
         }
     }
 
-    public function update(PayrollUpdateRequest $request, Payroll $payroll)
+    public function update(PayrollUpdateRequest $request, $payroll)
     {
         try {
+            $payroll    = Payroll::find($payroll);
+            if (!$payroll) {
+                throw new Exception('Payroll data not found');
+            }
             $this->payrollService->update($payroll, $request->validated());
             return ApiResponseHelper::success('Payroll data has been updated successfully');
         } catch (Exception $e) {
@@ -108,8 +111,13 @@ class PayrollController extends Controller
         }
     }
 
-    public function generatePayrollPersonal($employee)
+    public function generatePayrollPersonal(PayrollStoreRequest $request, $employee)
     {
-        // 
+        try {
+            $payroll    = $this->payrollService->create($request->validated());
+            return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when generating payroll data', $e->getMessage());
+        }
     }
 }

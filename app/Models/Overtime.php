@@ -26,20 +26,17 @@ class Overtime extends Model
                 $query->where('name', 'like', "%{$keyword}%");
             });
         });
-        $query->when($filters['start_date'] ?? null, function ($query, $startDate) {
-            $query->whereDate('start_time', '>=', $startDate);
-        });
-        $query->when($filters['end_date'] ?? null, function ($query, $endDate) {
-            $query->whereDate('end_time', '<=', $endDate);
-        });
-        $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
-            $query->where('employee_id', $employeeId);
-        });
-        $query->when($filters['approved'] ?? null, function ($query, $approved) {
-            if ($approved !== 'all') {
+
+        $query->when($filters['start_date']     ?? null, fn($q, $v) => $q->whereDate('start_time', '>=', $v));
+        $query->when($filters['end_date']       ?? null, fn($q, $v) => $q->whereDate('end_time', '<=', $v));
+        $query->when($filters['employee_id']    ?? null, fn($q, $v) => $q->where('employee_id', $v));
+
+        if (array_key_exists('approved', $filters)) {
+            $approved   = $filters['approved'];
+            if ($approved == 0 || $approved == 1) {
                 $query->where('approved', $approved);
             }
-        });
+        }
     }
 
     public function employee()
