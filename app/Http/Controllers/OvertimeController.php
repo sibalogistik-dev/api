@@ -35,6 +35,7 @@ class OvertimeController extends Controller
                     'start_time'    => $item->start_time,
                     'end_time'      => $item->end_time,
                     'approved'      => $item->approved,
+                    'description'   => $item->description,
                 ];
             });
             if ($overtimes instanceof LengthAwarePaginator) {
@@ -67,10 +68,11 @@ class OvertimeController extends Controller
             $data = [
                 'id'            => $ot->id,
                 'employee_id'   => $ot->employee_id,
-                'name'          => $ot->employee->name,
+                'employee_name' => $ot->employee->name,
                 'start_time'    => $ot->start_time,
                 'end_time'      => $ot->end_time,
                 'approved'      => $ot->approved,
+                'description'   => $ot->description,
             ];
             return ApiResponseHelper::success("Overtime's detail", $data);
         } catch (Exception $e) {
