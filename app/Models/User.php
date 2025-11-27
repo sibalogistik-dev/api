@@ -32,6 +32,6 @@ class User extends Authenticatable
 
     public function employee()
     {
-        return $this->hasOne(Karyawan::class);
+        return $this->hasOne(Karyawan::class)->withTrashed();
     }
 }

@@ -27,7 +27,7 @@ class Jabatan extends Model
 
     public function employee()
     {
-        return $this->hasMany(Karyawan::class, 'job_title_id');
+        return $this->hasMany(Karyawan::class, 'job_title_id')->withTrashed();
     }
 
     public function jobDescriptions()

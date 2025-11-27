@@ -24,7 +24,7 @@ class OvertimeController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $otQ                = Overtime::query()->filter($validated);
+            $otQ                    = Overtime::query()->filter($validated);
             $overtimes              = isset($validated['paginate']) && $validated['paginate'] ? $otQ->paginate($validated['perPage'] ?? 10) : $otQ->get();
             $transformedItems       = $overtimes instanceof LengthAwarePaginator ? $overtimes->getCollection() : $overtimes;
             $transformedOvertimes   = $transformedItems->map(function ($item) {

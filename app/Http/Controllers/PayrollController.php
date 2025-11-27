@@ -107,4 +107,9 @@ class PayrollController extends Controller
             return ApiResponseHelper::error('Error when deleting payroll data', $e->getMessage());
         }
     }
+
+    public function generatePayrollPersonal($employee)
+    {
+        // 
+    }
 }

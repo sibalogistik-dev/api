@@ -60,6 +60,6 @@ class Cabang extends Model
 
     public function employee()
     {
-        return $this->hasMany(Karyawan::class, 'branch_id');
+        return $this->hasMany(Karyawan::class, 'branch_id')->withTrashed();
     }
 }

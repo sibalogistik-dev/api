@@ -22,8 +22,8 @@ class Pendidikan extends Model
         });
     }
 
-    public function employee()
+    public function employeeDetails()
     {
-        return $this->hasMany(Karyawan::class, 'education_id');
+        return $this->hasMany(DetailDiri::class, 'education_id');
     }
 }

@@ -34,6 +34,6 @@ class DetailGaji extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Karyawan::class, 'employee_id');
+        return $this->belongsTo(Karyawan::class, 'employee_id')->withTrashed();
     }
 }

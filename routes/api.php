@@ -45,6 +45,7 @@ Route::middleware('api')->group(function () {
             Route::get('company/{company}/branches',            [App\Http\Controllers\PerusahaanController::class,      'companyBranches'])->name('company.branches');
 
             Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class,         'hrdAttendanceAdd'])->name('attendance.storeByHRD');
+            Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class,         'generatePayrollPersonal'])->name('payroll.generatePersonal');
         });
 
     // getter public routes
