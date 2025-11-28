@@ -70,7 +70,7 @@ class PayrollService
         return $dataPayroll;
     }
 
-    private function calculatePayrollPersonal()
+    public function calculatePayrollPersonal($employee, array $data)
     {
         // 
     }

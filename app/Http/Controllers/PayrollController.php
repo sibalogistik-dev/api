@@ -114,7 +114,7 @@ class PayrollController extends Controller
     public function generatePayrollPersonal(PayrollStoreRequest $request, $employee)
     {
         try {
-            $payroll    = $this->payrollService->create($request->validated());
+            $payroll    = $this->payrollService->calculatePayrollPersonal($employee, $request->validated());
             return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when generating payroll data', $e->getMessage());
