@@ -16,6 +16,7 @@ class JobTitleStoreRequest extends FormRequest
         return [
             'name'          => ['required', 'string', 'max:255'],
             'description'   => ['nullable', 'string'],
+            'min_kpi'       => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }
 }

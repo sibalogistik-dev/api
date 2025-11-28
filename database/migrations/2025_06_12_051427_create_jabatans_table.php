@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description')->nullable();
+            $table->integer('min_kpi')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

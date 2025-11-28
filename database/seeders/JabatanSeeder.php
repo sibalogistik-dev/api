@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Jabatan;
+use Faker\Provider\Lorem;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -101,7 +102,8 @@ class JabatanSeeder extends Seeder
 
         for ($i = 0; $i < count($jabatanBaru); $i++) {
             Jabatan::create([
-                'name' => $jabatanBaru[$i]
+                'name'      => $jabatanBaru[$i],
+                'min_kpi'   => rand(45,90),
             ]);
         }
     }

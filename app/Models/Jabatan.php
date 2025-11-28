@@ -13,7 +13,8 @@ class Jabatan extends Model
 
     protected $fillable = [
         'name',
-        'description'
+        'description',
+        'min_kpi'
     ];
 
     public function scopeFilter($query, array $filters)

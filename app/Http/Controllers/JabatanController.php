@@ -24,7 +24,7 @@ class JabatanController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $jabatanQ       = Jabatan::query()->filter($validated);
+            $jabatanQ           = Jabatan::query()->filter($validated);
             $jabatan            = isset($validated['paginate']) && $validated['paginate'] ? $jabatanQ->paginate($validated['perPage'] ?? 10) : $jabatanQ->get();
             $transformedItems   = $jabatan instanceof LengthAwarePaginator ? $jabatan->getCollection() : $jabatan;
             $transformedJabatan = $transformedItems->map(function ($item) {
@@ -32,12 +32,13 @@ class JabatanController extends Controller
                     'id'            => $item->id,
                     'name'          => $item->name,
                     'description'   => $item->description,
+                    'min_kpi'       => $item->min_kpi,
                 ];
             });
             if ($jabatan instanceof LengthAwarePaginator) {
-                return ApiResponseHelper::success('Job titles list', $jabatan->setCollection($transformedJabatan));
+                return ApiResponseHelper::success('Job title data', $jabatan->setCollection($transformedJabatan));
             } else {
-                return ApiResponseHelper::success('Job titles list', $transformedJabatan);
+                return ApiResponseHelper::success('Job title data', $transformedJabatan);
             }
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get job title data', $e->getMessage());
@@ -94,7 +95,7 @@ class JabatanController extends Controller
             }
             return ApiResponseHelper::success('Job title data has been deleted successfully');
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Job title data failed to delete', $e->getMessage());
+            return ApiResponseHelper::error('Error when deleting job title data', $e->getMessage());
         }
     }
 }

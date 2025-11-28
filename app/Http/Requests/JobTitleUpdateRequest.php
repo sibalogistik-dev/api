@@ -14,8 +14,9 @@ class JobTitleUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'          => ['required', 'string', 'max:255'],
-            'description'   => ['nullable', 'string'],
+            'name'          => ['sometimes', 'string', 'max:255'],
+            'description'   => ['sometimes', 'string'],
+            'min_kpi'       => ['sometimes', 'integer', 'min:0', 'max:100'],
         ];
     }
 }
