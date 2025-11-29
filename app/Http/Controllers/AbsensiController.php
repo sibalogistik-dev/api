@@ -28,7 +28,7 @@ class AbsensiController extends Controller
     public function index(AttendanceIndexRequest $request)
     {
         $validated          = $request->validated();
-        $absensiQ       = Absensi::query()->filter($validated)->orderBy('id', 'desc');
+        $absensiQ           = Absensi::query()->filter($validated)->orderBy('date', 'desc');
         $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQ->paginate($validated['perPage'] ?? 10) : $absensiQ->get();
         $transformedItems   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
         $transformedAbsensi = $transformedItems->map(function ($item) {
