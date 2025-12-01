@@ -32,9 +32,10 @@ class AuthController extends Controller
             }
             $token = $user->createToken($request->app_access_key)->plainTextToken;
             $data = [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email
+                'id'            => $user->id,
+                'employee_id'   => $user->employee_id,
+                'name'          => $user->name,
+                'email'         => $user->email
             ];
             $roles = $user->getRoleNames();
             $permissions = $user->getAllPermissions()->pluck('name');
@@ -43,7 +44,6 @@ class AuthController extends Controller
                 'user'          => $data,
                 'roles'         => $roles,
                 'permissions'   => $permissions,
-                'employee'      => $user->employee,
             ]);
         }
 
