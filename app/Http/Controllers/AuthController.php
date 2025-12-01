@@ -33,7 +33,7 @@ class AuthController extends Controller
             $token = $user->createToken($request->app_access_key)->plainTextToken;
             $data = [
                 'id'            => $user->id,
-                'employee_id'   => $user->employee_id,
+                'employee_id'   => $user->employee->id ?? null,
                 'name'          => $user->name,
                 'email'         => $user->email
             ];
