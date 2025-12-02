@@ -128,4 +128,9 @@ class Karyawan extends Model
     {
         return $this->hasMany(Overtime::class, 'employee_id');
     }
+
+    public function faceRecognitionModel()
+    {
+        return $this->hasMany(FaceRecognitionModel::class, 'employee_id');
+    }
 }

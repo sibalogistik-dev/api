@@ -35,7 +35,7 @@ Route::middleware('api')->group(function () {
                 'overtime'          => App\Http\Controllers\OvertimeController::class,
                 'payroll'           => App\Http\Controllers\PayrollController::class,
                 'resign'            => App\Http\Controllers\ResignController::class,
-
+                'face-recognition'  => App\Http\Controllers\FaceRecognitionModelController::class,
             ]);
 
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
