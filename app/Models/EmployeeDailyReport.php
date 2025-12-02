@@ -28,6 +28,11 @@ class EmployeeDailyReport extends Model
                 $query->where('name', 'like', "%{$keyword}%");
             });
         });
+        $query->when($filters['employee_id'] ?? null, function ($query, $keyword) {
+            $query->wherehas('employee', function ($query) use ($keyword) {
+                $query->where('id', $keyword);
+            });
+        });
     }
 
     public function employee()
