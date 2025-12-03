@@ -14,7 +14,10 @@ class FaceRecognitionIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'q'             => ['sometimes', 'string'],
+            'paginate'      => ['sometimes', 'boolean'],
+            'perPage'       => ['sometimes', 'integer', 'min:1'],
+            'employee_id'   => ['sometimes', 'integer', 'exists:employees,id'],
         ];
     }
 }

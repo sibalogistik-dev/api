@@ -83,7 +83,7 @@ class AttendanceService
                 }
 
                 if (!empty($data['check_in_image'])) {
-                    $filePaths['check_in_image']        = $this->storeFile($data['check_in_image'], 'uploads/check_in_image', $karyawan->name);
+                    $filePaths['check_in_image']        = $this->storeBase64Image($data['check_in_image'], 'uploads/check_in_image', $karyawan->name);
                 } else {
                     $filePaths['check_in_image']        = 'uploads/check_in_image/default.webp';
                 }
@@ -136,7 +136,7 @@ class AttendanceService
             }
 
             if (!empty($data['check_out_image'])) {
-                $filePaths['check_out_image']   = $this->storeFile($data['check_out_image'], 'uploads/check_out_image', $karyawan->name);
+                $filePaths['check_out_image']   = $this->storeBase64Image($data['check_out_image'], 'uploads/check_out_image', $karyawan->name);
                 $attendance->check_out_image    = $filePaths['check_out_image'];
             } else {
                 $attendance->check_out_image    = 'uploads/check_out_image/default.webp';
@@ -205,6 +205,31 @@ class AttendanceService
 
             return $fullPath;
         }
+    }
+
+    private function storeBase64Image(string $base64, string $path, string $employeeName, int $quality = 90)
+    {
+        if (!preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+            throw new \Exception("Invalid base64 image format");
+        }
+
+        $saneName = Str::slug($employeeName);
+
+        $data = substr($base64, strpos($base64, ',') + 1);
+        $binary = base64_decode($data);
+
+        if ($binary === false) {
+            throw new \Exception("Failed to decode base64 image");
+        }
+
+        $filename = date('Ymd-His') . '-' . $saneName . '-' . Str::random(10) . '.webp';
+        $fullPath = $path . '/' . $filename;
+
+        $image = Image::read($binary)->toWebp($quality);
+
+        Storage::disk('public')->put($fullPath, (string) $image);
+
+        return $fullPath;
     }
 
     private function distanceCount($lat_kantor, $long_kantor, $lat_pengguna, $long_pengguna)

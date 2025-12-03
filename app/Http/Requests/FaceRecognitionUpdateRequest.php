@@ -14,7 +14,8 @@ class FaceRecognitionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'employee_id'   => ['sometimes', 'integer', 'exists:employees,id'],
+            'image_path'    => ['sometimes', 'string'],
         ];
     }
 }
