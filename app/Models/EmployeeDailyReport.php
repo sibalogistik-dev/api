@@ -21,6 +21,8 @@ class EmployeeDailyReport extends Model
         'job_description_id'    => 'integer',
     ];
 
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {

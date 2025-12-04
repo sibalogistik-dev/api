@@ -32,7 +32,7 @@ class Cabang extends Model
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
             $query->where(function ($query) use ($keyword) {
-                $query->where('cabangs.name', 'like', "%{$keyword}%")
+                $query->where('name', 'like', "%{$keyword}%")
                     ->orWhereHas('company', function ($query) use ($keyword) {
                         $query->where('name', 'like', "%{$keyword}%");
                     });

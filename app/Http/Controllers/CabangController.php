@@ -42,9 +42,9 @@ class CabangController extends Controller
             });
 
             if ($branch instanceof LengthAwarePaginator) {
-                return ApiResponseHelper::success('Branches list', $branch->setCollection($transformedBranch));
+                return ApiResponseHelper::success('Branches data', $branch->setCollection($transformedBranch));
             } else {
-                return ApiResponseHelper::success('Branches list', $transformedBranch);
+                return ApiResponseHelper::success('Branches data', $transformedBranch);
             }
         } catch (Exception $e) {
             return ApiResponseHelper::success('Failed to get branch data', $e->getMessage());
@@ -74,10 +74,14 @@ class CabangController extends Controller
         }
     }
 
-    public function update(Cabang $branch, BranchUpdateRequest $request)
+    public function update($branch, BranchUpdateRequest $request)
     {
         try {
-            $this->branchService->update($branch, $request->validated());
+            $q = Cabang::find($branch);
+            if (!$q) {
+                throw new Exception('Branch data not found');
+            }
+            $this->branchService->update($q, $request->validated());
             return ApiResponseHelper::success('Branch data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when updating branch data', $e->getMessage());

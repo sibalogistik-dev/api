@@ -15,4 +15,9 @@ class AssetType extends Model
         'name',
         'description'
     ];
+
+    public function branchAssets()
+    {
+        return $this->hasMany(BranchAsset::class);
+    }
 }

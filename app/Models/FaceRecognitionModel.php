@@ -14,6 +14,8 @@ class FaceRecognitionModel extends Model
         'image_path',
     ];
 
+    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
