@@ -56,47 +56,45 @@ class FaceRecognitionModelController extends Controller
             return ApiResponseHelper::error('Error when saving face recognition data', $e->getMessage());
         }
     }
-    // public function store(Request $request)
-    // {
-    //     try {
-    //         $validate = Validator::make($request->all(), [
-    //             'employee_id'   => ['required', 'integer', 'exists:karyawans,id'],
-    //             'image_path'    => ['required', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 4 * 1024 * 1024)],
-    //         ]);
-
-    //         if ($validate->fails()) {
-    //             throw new Exception($validate->errors());
-    //         }
-    //         // return ApiResponseHelper::success('Face recognition data has been added successfully', $faceRecognition);
-    //     } catch (Exception $e) {
-    //         return ApiResponseHelper::error('Error when saving face recognition data', $e->getMessage());
-    //     }
-    // }
 
     public function show($faceRecognition)
     {
         try {
-            //code...
+            $query = FaceRecognitionModel::find($faceRecognition);
+            if (!$query) {
+                throw new Exception('Face recognition data not found');
+            }
+            $data = [
+                'id'            => $query->id,
+                'employee_id'   => $query->employee_id,
+                'employee_name' => $query->employee->name,
+                'image_path'    => $query->image_path,
+            ];
+            return ApiResponseHelper::success('Face recognition detail', $data);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Failed to retrieve face recognition detail', $e->getMessage());
         }
     }
 
     public function update(Request $request, $faceRecognition)
     {
-        try {
-            //code...
-        } catch (Exception $e) {
-            //code...
-        }
+        return ApiResponseHelper::success('This endpoint does not have any functionality', []);
     }
 
     public function destroy($faceRecognition)
     {
         try {
-            //code...
+            $query = FaceRecognitionModel::find($faceRecognition);
+            if (!$query) {
+                throw new Exception('Face recognition data not found');
+            }
+            $query->delete();
+            if (file_exists(storage_path('app/public/' . $query->image_path))) {
+                unlink(storage_path('app/public/' . $query->image_path));
+            }
+            return ApiResponseHelper::success('Face recognition data has been deleted successfully');
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Failed to delete face recognition data', $e->getMessage());
         }
     }
 }

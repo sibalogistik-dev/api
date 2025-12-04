@@ -22,6 +22,9 @@ class FaceRecognitionModel extends Model
                     ->orWhere('npk', 'like', '%' . $keyword . '%');
             });
         });
+        $query->when($filters['employee_id'] ?? null, function ($query, $keyword) {
+            $query->where('employee_id', 'like', '%' . $keyword . '%');
+        });
     }
 
     public function employee()

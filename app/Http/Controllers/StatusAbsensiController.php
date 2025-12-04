@@ -73,6 +73,7 @@ class StatusAbsensiController extends Controller
                 throw new Exception('Attendance status data not found');
             }
             $this->attendanceStatusService->update($attendanceStatus, $request->validated());
+            return ApiResponseHelper::success('Attendance status data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when updating attendance status data', $e->getMessage());
         }

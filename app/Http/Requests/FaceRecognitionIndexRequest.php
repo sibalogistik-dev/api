@@ -17,7 +17,7 @@ class FaceRecognitionIndexRequest extends FormRequest
             'q'             => ['sometimes', 'string'],
             'paginate'      => ['sometimes', 'boolean'],
             'perPage'       => ['sometimes', 'integer', 'min:1'],
-            'employee_id'   => ['sometimes', 'integer', 'exists:employees,id'],
+            'employee_id'   => ['sometimes', 'integer'],
         ];
     }
 }

@@ -63,30 +63,34 @@ class AbsensiController extends Controller
 
     public function show($attendance)
     {
-        $query = Absensi::find($attendance);
-        if (!$query) {
-            return ApiResponseHelper::error('Attendance data not found', []);
+        try {
+            $query = Absensi::find($attendance);
+            if (!$query) {
+                throw new Exception('Attendance data not found');
+            }
+            $data = [
+                'id'                    => $query->id,
+                'employee_id'           => $query->employee_id,
+                'attendance_status_id'  => $query->attendance_status_id,
+                'status'                => $query->attendanceStatus->name,
+                'description'           => $query->description,
+                'date'                  => $query->date,
+                'start_time'            => $query->start_time,
+                'end_time'              => $query->end_time,
+                'check_in_latitude'     => $query->check_in_latitude,
+                'check_in_longitude'    => $query->check_in_longitude,
+                'check_out_latitude'    => $query->check_out_latitude,
+                'check_out_longitude'   => $query->check_out_longitude,
+                'check_in_image'        => $query->check_in_image,
+                'check_out_image'       => $query->check_out_image,
+                'half_day'              => $query->half_day,
+                'sick_note'             => $query->sick_note,
+                'late_arrival_time'     => $query->late_arrival_time,
+            ];
+            return ApiResponseHelper::success('Attendance detail', $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to retrieve attendance detail', $e->getMessage());
         }
-        $data = [
-            'id'                    => $query->id,
-            'employee_id'           => $query->employee_id,
-            'attendance_status_id'  => $query->attendance_status_id,
-            'status'                => $query->attendanceStatus->name,
-            'description'           => $query->description,
-            'date'                  => $query->date,
-            'start_time'            => $query->start_time,
-            'end_time'              => $query->end_time,
-            'check_in_latitude'     => $query->check_in_latitude,
-            'check_in_longitude'    => $query->check_in_longitude,
-            'check_out_latitude'    => $query->check_out_latitude,
-            'check_out_longitude'   => $query->check_out_longitude,
-            'check_in_image'        => $query->check_in_image,
-            'check_out_image'       => $query->check_out_image,
-            'half_day'              => $query->half_day,
-            'sick_note'             => $query->sick_note,
-            'late_arrival_time'     => $query->late_arrival_time,
-        ];
-        return ApiResponseHelper::success('Attendance detail', $data);
     }
 
     public function update(AttendanceUpdateRequest $request, $attendance)
