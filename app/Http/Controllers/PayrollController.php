@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\PayrollIndexRequest;
+use App\Http\Requests\PayrollReportRequest;
+use App\Http\Requests\PayrollSlipRequest;
 use App\Http\Requests\PayrollStoreRequest;
 use App\Http\Requests\PayrollUpdateRequest;
+use App\Models\Karyawan;
 use App\Models\Payroll;
 use App\Services\PayrollService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Exception;
 
 class PayrollController extends Controller
@@ -114,10 +119,37 @@ class PayrollController extends Controller
     public function generatePayrollPersonal(PayrollStoreRequest $request, $employee)
     {
         try {
+            $employee   = Karyawan::find($employee);
             $payroll    = $this->payrollService->calculatePayrollPersonal($employee, $request->validated());
             return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when generating payroll data', $e->getMessage());
+        }
+    }
+
+    public function report(PayrollReportRequest $request)
+    {
+        try {
+            $validated  = $request->validated();
+
+            $period     = $validated['month'] ? Carbon::parse($validated['month'])->locale('id')->translatedFormat('F Y') : null;
+            $report     = $this->payrollService->generatePayrollReport($validated);
+            $pdf        = Pdf::loadView('payroll.report', compact('report', 'period'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Penggajian ' . $period . '.pdf');
+            return view('payroll.report', compact('report', 'period'));
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when generating payroll report', $e->getMessage());
+        }
+    }
+
+    public function slip(PayrollSlipRequest $request)
+    {
+        try {
+            $validated  = $request->validated();
+            $slip       = $this->payrollService->generatePayrollSlip($validated['payroll_id']);
+            return ApiResponseHelper::success('Payroll slip generated successfully', $slip);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when generating payroll slip', $e->getMessage());
         }
     }
 }

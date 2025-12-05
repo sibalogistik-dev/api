@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
-use App\Http\Requests\AttendancePrintRequest;
+use App\Http\Requests\AttendanceReportRequest;
 use App\Http\Requests\AttendanceStoreRequest;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Absensi;
@@ -172,7 +172,7 @@ class AbsensiController extends Controller
         }
     }
 
-    public function reportAttendance(AttendancePrintRequest $request)
+    public function report(AttendanceReportRequest $request)
     {
         try {
             $validated = $request->validated();
@@ -187,8 +187,8 @@ class AbsensiController extends Controller
                     throw new Exception('Employee data not found.');
                 }
             }
-            $report         = $this->attendanceServiceHRD->generateAttendanceReport($validated);
-            $pdf = Pdf::loadView('attendance.report', compact('report', 'start', 'end', 'employee'))->setPaper('a4', 'landscape');
+            $report = $this->attendanceServiceHRD->generateAttendanceReport($validated);
+            $pdf    = Pdf::loadView('attendance.report', compact('report', 'start', 'end', 'employee'))->setPaper('a4', 'landscape');
             return $pdf->stream('Laporan Absensi.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when generating attendance report", $e->getMessage());

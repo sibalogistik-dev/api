@@ -72,7 +72,24 @@ class PayrollService
 
     public function calculatePayrollPersonal($employee, array $data)
     {
-        // 
+        $month          = $data['month'] ?? now()->format('Y-m');
+        $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
+        $periodEnd      = Carbon::parse("$month-27")->endOfDay();
+        $monthsDays     = $this->countDaysInPeriod($month, true);
+
+        $period = [
+            'start' => $periodStart,
+            'end'   => $periodEnd,
+        ];
+        $periodName         = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+
+        if ($employee->salaryDetails->salary_type == 'monthly') {
+            $payroll = $this->calculateMonthlyPayroll($employee, $period, $periodName, $monthsDays);
+        } else {
+            $payroll = $this->calculateDailyPayroll($employee, $period, $periodName);
+        }
+        Payroll::insert($payroll);
+        return $payroll;
     }
 
     private function calculateMonthlyPayroll($employee, $period, $periodName, $monthsDays)
@@ -314,5 +331,28 @@ class PayrollService
         }
 
         return $this->calculateLate($totalLateMinutes);
+    }
+
+    public function generatePayrollReport(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $periodMonth    = Carbon::parse($data['month'] ?? now())->format('m');
+            $periodYear     = Carbon::parse($data['month'] ?? now())->format('Y');
+
+            $data = Payroll::whereMonth('period_end', $periodMonth)
+                ->whereYear('period_end', $periodYear)
+                ->get();
+            DB::commit();
+            return $data;
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Failed to generate payroll report: ' . $e->getMessage());
+        }
+    }
+
+    public function generatePayrollSlip($payrollId)
+    {
+        // 
     }
 }

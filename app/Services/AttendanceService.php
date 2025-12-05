@@ -20,7 +20,7 @@ class AttendanceService
     {
         DB::beginTransaction();
         try {
-            $today      = $data['date'] ?? Carbon::now()->toDateString();
+            $today      = Carbon::now()->toDateString();
             $karyawan   = Karyawan::find($data['employee_id']);
 
             if (!$karyawan) {
@@ -54,7 +54,7 @@ class AttendanceService
             $attendanceData     = [
                 'employee_id'           => $data['employee_id'],
                 'attendance_status_id'  => $data['attendance_status_id'],
-                'description'           => $data['description'],
+                'description'           => $data['description'] ?? null,
                 'check_in_longitude'    => $data['check_in_longitude'],
                 'check_in_latitude'     => $data['check_in_latitude'],
             ];

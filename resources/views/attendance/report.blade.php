@@ -69,7 +69,7 @@
     <table>
         <thead>
             <tr>
-                <th>NO</th>
+                <th>#</th>
                 <th>Nama</th>
                 <th>Tanggal</th>
                 <th>Jam Masuk</th>
