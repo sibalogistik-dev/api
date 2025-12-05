@@ -188,8 +188,6 @@ class AbsensiController extends Controller
                 }
             }
             $report         = $this->attendanceServiceHRD->generateAttendanceReport($validated);
-            // return view('attendance.report', compact('report', 'start', 'end'));
-            // return ApiResponseHelper::success("Attendance report generated successfully.", $report);
             $pdf = Pdf::loadView('attendance.report', compact('report', 'start', 'end', 'employee'))->setPaper('a4', 'landscape');
             return $pdf->stream('Laporan Absensi.pdf');
         } catch (Exception $e) {

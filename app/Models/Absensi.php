@@ -46,6 +46,10 @@ class Absensi extends Model
             });
         });
 
+        $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
+            $query->where('employee_id', $employeeId);
+        });
+
         $query->when($filters['date'] ?? null, function ($query, $date) {
             $query->where('date', $date);
         });

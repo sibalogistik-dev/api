@@ -14,12 +14,13 @@ class AttendanceIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'         => ['nullable', 'string'],
-            'date'      => ['nullable', 'date'],
-            'branch'    => ['nullable', 'string'],
-            'status'    => ['nullable', 'string'],
-            'paginate'  => ['nullable', 'boolean'],
-            'perPage'   => ['nullable', 'integer', 'min:1'],
+            'q'             => ['nullable', 'string'],
+            'employee_id'   => ['nullable', 'integer'],
+            'date'          => ['nullable', 'date'],
+            'branch'        => ['nullable', 'string'],
+            'status'        => ['nullable', 'string'],
+            'paginate'      => ['nullable', 'boolean'],
+            'perPage'       => ['nullable', 'integer', 'min:1'],
         ];
     }
 }
