@@ -172,7 +172,7 @@ class AbsensiController extends Controller
         }
     }
 
-    public function printAttendance(AttendancePrintRequest $request)
+    public function reportAttendance(AttendancePrintRequest $request)
     {
         try {
             $validated = $request->validated();

@@ -39,7 +39,7 @@ Route::middleware('api')->group(function () {
                 'branch-asset'      => App\Http\Controllers\BranchAssetController::class,
             ]);
 
-            Route::post('attendance/print',                     [App\Http\Controllers\AbsensiController::class,         'printAttendance'])->name('attendance.print');
+            Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'reportAttendance'])->name('attendance.report');
 
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
             Route::get('employee/{employee}/salary',            [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalary'])->name('employee.salary');
