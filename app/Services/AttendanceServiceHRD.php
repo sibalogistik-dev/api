@@ -61,6 +61,24 @@ class attendanceServiceHRD
         }
     }
 
+    public function generateAttendanceReport(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $std = Carbon::parse($data['start_date'])->startOfDay();
+            $end = Carbon::parse($data['end_date'])->endOfDay();
+            $attendances = Absensi::whereBetween('date', [$std, $end])
+                ->when(!empty($data['employee_id']), function ($attendances) use ($data) {
+                    $attendances->where('employee_id', $data['employee_id']);
+                });
+            $attendances = $attendances->get();
+            DB::commit();
+            return $attendances;
+        } catch (Exception $e) {
+            //code...
+        }
+    }
+
     private function storeFile(UploadedFile $file, string $path, string $employeeName, int $quality = 90)
     {
         $saneName = Str::slug($employeeName);

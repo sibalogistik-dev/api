@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AttendanceIndexRequest;
+use App\Http\Requests\AttendancePrintRequest;
 use App\Http\Requests\AttendanceStoreRequest;
 use App\Http\Requests\AttendanceUpdateRequest;
 use App\Models\Absensi;
@@ -166,6 +167,19 @@ class AbsensiController extends Controller
             return ApiResponseHelper::success("Attendance successfully recorded.", $attendance);
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage());
+        }
+    }
+
+    public function printAttendance(AttendancePrintRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            $report = $this->attendanceServiceHRD->generateAttendanceReport($validated);
+
+            return ApiResponseHelper::success("Attendance report generated successfully.", $report);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Error when generating attendance report", $e->getMessage());
         }
     }
 }
