@@ -11,6 +11,8 @@ use App\Models\Absensi;
 use App\Models\Karyawan;
 use App\Services\AttendanceService;
 use App\Services\AttendanceServiceHRD;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -175,9 +177,21 @@ class AbsensiController extends Controller
         try {
             $validated = $request->validated();
 
-            $report = $this->attendanceServiceHRD->generateAttendanceReport($validated);
-
-            return ApiResponseHelper::success("Attendance report generated successfully.", $report);
+            $employee_id    = $validated['employee_id'] ?? null;
+            $employee       = null;
+            $start          = Carbon::parse($validated['start_date'])->startOfDay();
+            $end            = Carbon::parse($validated['end_date'])->endOfDay();
+            if ($employee_id != null) {
+                $employee = Karyawan::find($employee_id);
+                if (!$employee) {
+                    throw new Exception('Employee data not found.');
+                }
+            }
+            $report         = $this->attendanceServiceHRD->generateAttendanceReport($validated);
+            // return view('attendance.report', compact('report', 'start', 'end'));
+            // return ApiResponseHelper::success("Attendance report generated successfully.", $report);
+            $pdf = Pdf::loadView('attendance.report', compact('report', 'start', 'end', 'employee'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Absensi.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when generating attendance report", $e->getMessage());
         }

@@ -75,7 +75,8 @@ class attendanceServiceHRD
             DB::commit();
             return $attendances;
         } catch (Exception $e) {
-            //code...
+            DB::rollBack();
+            throw new Exception('Failed to generate attendance report: ' . $e->getMessage());
         }
     }
 
