@@ -51,6 +51,7 @@ Route::middleware('api')->group(function () {
             Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class,         'generatePayrollPersonal'])->name('payroll.generatePersonal');
         });
 
+    Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');
     // getter public routes
     Route::get('/get/province',                 [App\Http\Controllers\IndonesiaController::class, 'getAllProvince']);
     Route::get('/get/province/{code}',          [App\Http\Controllers\IndonesiaController::class, 'getProvince']);
