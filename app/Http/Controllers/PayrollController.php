@@ -146,8 +146,9 @@ class PayrollController extends Controller
     {
         try {
             $validated  = $request->validated();
-            $slip       = $this->payrollService->generatePayrollSlip($validated['payroll_id']);
-            return ApiResponseHelper::success('Payroll slip generated successfully', $slip);
+            $slip       = $this->payrollService->generatePayrollSlip($validated);
+            $pdf        = Pdf::loadView('payroll.slip', compact('slip'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Slip Gaji ' . $slip->employee->name . ' ' . $slip->period_name . '.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when generating payroll slip', $e->getMessage());
         }

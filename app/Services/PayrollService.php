@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Absensi;
 use App\Models\Karyawan;
 use App\Models\Payroll;
 use Carbon\Carbon;
@@ -81,14 +82,24 @@ class PayrollService
             'start' => $periodStart,
             'end'   => $periodEnd,
         ];
-        $periodName         = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+
+        $periodName = 'Payroll ' . $periodEnd->locale('id')->translatedFormat('F Y');
+
+        $existing = Payroll::where('period_start', $period['start'])
+            ->where('employee_id', $employee->id)
+            ->first();
+
+        if ($existing) {
+            throw new Exception('Payroll data for this employee and month already exists');
+        }
 
         if ($employee->salaryDetails->salary_type == 'monthly') {
             $payroll = $this->calculateMonthlyPayroll($employee, $period, $periodName, $monthsDays);
         } else {
             $payroll = $this->calculateDailyPayroll($employee, $period, $periodName);
         }
-        Payroll::insert($payroll);
+
+        Payroll::insert([$payroll]);
         return $payroll;
     }
 
@@ -351,8 +362,19 @@ class PayrollService
         }
     }
 
-    public function generatePayrollSlip($payrollId)
+    public function generatePayrollSlip(array $data)
     {
-        // 
+        DB::beginTransaction();
+        try {
+            $payroll        = Payroll::find($data['payroll_id']);
+            if (!$payroll) {
+                throw new Exception('Payroll data not found');
+            }
+            DB::commit();
+            return $payroll->load('employee.jobTitle', 'employee.branch.company','employee.branch.village.district.city.province');
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Failed to generate payroll slip: ' . $e->getMessage());
+        }
     }
 }

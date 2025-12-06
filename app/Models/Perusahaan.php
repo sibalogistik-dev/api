@@ -14,6 +14,9 @@ class Perusahaan extends Model
     protected $fillable = [
         'name',
         'codename',
+        'email',
+        'website',
+        'company_brand',
     ];
 
     public function scopeFilter($query, array $filters)
