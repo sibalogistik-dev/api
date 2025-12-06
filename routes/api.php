@@ -37,6 +37,8 @@ Route::middleware('api')->group(function () {
                 'resign'            => App\Http\Controllers\ResignController::class,
                 'face-recognition'  => App\Http\Controllers\FaceRecognitionModelController::class,
                 'branch-asset'      => App\Http\Controllers\BranchAssetController::class,
+                'reprimand-letter'  => App\Http\Controllers\ReprimandLetterController::class,
+                'warning-letter'    => App\Http\Controllers\WarningLetterController::class,
             ]);
 
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
