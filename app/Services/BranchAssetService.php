@@ -17,13 +17,23 @@ class BranchAssetService
         DB::beginTransaction();
         $filePaths = [];
         try {
-            if (!empty($data['image_path'])) {
+            if (isset($data['image_path']) && !empty($data['image_path'])) {
                 $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
                 $data['image_path']         = $filePaths['image_path'];
             } else {
                 throw new Exception('Image path is required');
             }
-            $branchAsset = BranchAsset::create($data);
+            $branchAsset = BranchAsset::create([
+                'branch_id'     => $data['branch_id'],
+                'asset_type_id' => $data['asset_type_id'],
+                'is_vehicle'    => $data['is_vehicle'] ?? false,
+                'name'          => $data['name'],
+                'price'         => $data['price'],
+                'quantity'      => $data['quantity'],
+                'image_path'    => $filePaths['image_path'] ?? null,
+                'purchase_date' => $data['purchase_date'] ?? null,
+                'description'   => $data['description'] ?? null,
+            ]);
             DB::commit();
             return $branchAsset;
         } catch (Exception $e) {
