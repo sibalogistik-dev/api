@@ -54,8 +54,6 @@ class BranchAssetService
                 if (!empty($branchAsset->image_path) && Storage::disk('public')->exists($branchAsset->image_path)) {
                     Storage::disk('public')->delete($branchAsset->image_path);
                 }
-            } else {
-                throw new Exception('Image path is required');
             }
             $branchAsset->update($data);
             DB::commit();
