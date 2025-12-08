@@ -116,7 +116,7 @@
         </tbody>
         <tfoot>
             <tr class="nowrap">
-                <th colspan="10" class="text-end">TOTAL</th>
+                <th colspan="11" class="text-end">TOTAL</th>
                 <th class="text-end">
                     {{ $report->sum('late_minutes') }} Menit
                 </th>
