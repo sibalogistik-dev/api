@@ -96,7 +96,7 @@ class ResignController extends Controller
 
             $delete = $resign->delete();
             if (!$delete) {
-                throw new Exception('Failed to delete village data');
+                throw new Exception('Failed to delete resign data');
             }
             return ApiResponseHelper::success('Resign data has been deleted successfully');
         } catch (Exception $e) {

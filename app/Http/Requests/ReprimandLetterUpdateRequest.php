@@ -14,7 +14,7 @@ class ReprimandLetterUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id'    => ['required', 'integer', 'exists:employees,id'],
+            'employee_id'    => ['required', 'integer', 'exists:karyawans,id'],
             'letter_date'    => ['required', 'date'],
             'reason'         => ['required', 'string'],
             'issued_by'      => ['required', 'string'],

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\ReprimandLetterIndexRequest;
 use App\Http\Requests\ReprimandLetterStoreRequest;
+use App\Http\Requests\ReprimandLetterUpdateRequest;
 use App\Models\ReprimandLetter;
 use App\Services\ReprimandLetterService;
 use Exception;
@@ -71,13 +72,34 @@ class ReprimandLetterController extends Controller
         }
     }
 
-    public function update(Request $request, ReprimandLetter $reprimandLetter)
+    public function update(ReprimandLetterUpdateRequest $request, $reprimandLetter)
     {
-        //
+        try {
+            $reprimandLetter = ReprimandLetter::find($reprimandLetter);
+            if (!$reprimandLetter) {
+                throw new Exception('Reprimand letter data not found');
+            }
+            $reprimandLetter = $this->reprimandLetterService->update($reprimandLetter, $request->validated());
+            return ApiResponseHelper::success('Reprimand letter data has been updated successfully', $reprimandLetter);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to update reprimand letter data', $e->getMessage());
+        }
     }
 
-    public function destroy(ReprimandLetter $reprimandLetter)
+    public function destroy($reprimandLetter)
     {
-        //
+        try {
+            $reprimandLetter = ReprimandLetter::find($reprimandLetter);
+            if (!$reprimandLetter) {
+                throw new Exception('Reprimand letter data not found');
+            }
+            $delete = $reprimandLetter->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete reprimand letter data');
+            }
+            return ApiResponseHelper::success('Reprimand letter data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to delete reprimand letter data', $e->getMessage());
+        }
     }
 }
