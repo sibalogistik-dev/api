@@ -21,7 +21,7 @@ class BranchAssetUpdateRequest extends FormRequest
             'name'          => ['sometimes', 'string', 'max:255'],
             'price'         => ['sometimes', 'numeric', 'min:0'],
             'quantity'      => ['sometimes', 'integer', 'min:1'],
-            'image_path'    => ['sometimes', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 2 * 1024 * 1024)],
+            'image_path'    => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'purchase_date' => ['sometimes', 'date'],
             'description'   => ['sometimes', 'string'],
         ];
