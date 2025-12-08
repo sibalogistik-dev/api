@@ -72,6 +72,7 @@
             <tr class="nowrap">
                 <th>#</th>
                 <th>Nama</th>
+                <th>Tipe</th>
                 <th>Hari Kerja</th>
                 <th>Hadir</th>
                 <th>Sakit</th>
@@ -94,6 +95,7 @@
                 <tr class="nowrap">
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $data->employee->name }}</td>
+                    <td>{{ $data->employee->salaryDetails->salary_type }}</td>
                     <td>{{ $data->days }}</td>
                     <td>{{ $data->present_days }}</td>
                     <td>{{ $data->sick_days }}</td>

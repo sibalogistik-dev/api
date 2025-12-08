@@ -34,9 +34,11 @@ class BranchAsset extends Model
                     $query->where('name', 'like', "%{$keyword}%");
                 });
         });
+
         $query->when($filters['branch_id'] ?? null, function ($query, $branchId) {
             $query->where('branch_id', $branchId);
         });
+
         $query->when($filters['asset_type_id'] ?? null, function ($query, $assetTypeId) {
             $query->where('asset_type_id', $assetTypeId);
         });
