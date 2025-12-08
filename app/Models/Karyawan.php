@@ -36,17 +36,16 @@ class Karyawan extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query->where('karyawans.name', 'like', "%{$keyword}%")
-                    ->orWhere('karyawans.npk', 'like', "%{$keyword}%")
-                    ->orWhereHas('branch', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    })
-                    ->orWhereHas('branch.company', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%")
-                            ->orWhere('codename', 'like', "%{$keyword}%");
-                    });
-            });
+            $query
+                ->where('karyawans.name', 'like', "%{$keyword}%")
+                ->orWhere('karyawans.npk', 'like', "%{$keyword}%")
+                ->orWhereHas('branch', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('branch.company', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('codename', 'like', "%{$keyword}%");
+                });
         });
         $query->when($filters['branch'] ?? null, function ($query, $branch) {
             if ($branch !== 'all') {

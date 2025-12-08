@@ -21,7 +21,8 @@ class JobDescription extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where('task_name', 'like', '%' . $keyword . '%')
+            $query
+                ->where('task_name', 'like', '%' . $keyword . '%')
                 ->orWhere('task_detail', 'like', '%' . $keyword . '%');
         });
         $query->when($filters['job_title_id'] ?? null, function ($query, $job_title_id) {

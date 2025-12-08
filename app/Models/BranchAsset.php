@@ -24,17 +24,21 @@ class BranchAsset extends Model
     public function scopeFilter($query, $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query
-                    ->where('name', 'like', "%{$keyword}%")
-                    ->orWhere('description', 'like', "%{$keyword}%")
-                    ->orWhereHas('branch', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    })
-                    ->orWhereHas('assetType', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    });
-            });
+            $query
+                ->where('name', 'like', "%{$keyword}%")
+                ->orWhere('description', 'like', "%{$keyword}%")
+                ->orWhereHas('branch', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('assetType', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                });
+        });
+        $query->when($filters['branch_id'] ?? null, function ($query, $branchId) {
+            $query->where('branch_id', $branchId);
+        });
+        $query->when($filters['asset_type_id'] ?? null, function ($query, $assetTypeId) {
+            $query->where('asset_type_id', $assetTypeId);
         });
     }
 

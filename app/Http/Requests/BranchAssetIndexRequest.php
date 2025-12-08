@@ -14,9 +14,11 @@ class BranchAssetIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'         => ['nullable', 'string'],
-            'paginate'  => ['nullable', 'boolean'],
-            'perPage'   => ['nullable', 'integer'],
+            'branch_id'     => ['nullable', 'integer'],
+            'asset_type_id' => ['nullable', 'integer'],
+            'q'             => ['nullable', 'string'],
+            'paginate'      => ['nullable', 'boolean'],
+            'perPage'       => ['nullable', 'integer'],
         ];
     }
 }
