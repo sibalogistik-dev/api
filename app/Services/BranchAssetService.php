@@ -48,7 +48,7 @@ class BranchAssetService
     {
         DB::beginTransaction();
         try {
-            if (!empty($data['image_path'])) {
+            if (isset($data['image_path']) && !empty($data['image_path'])) {
                 $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
                 $data['image_path']         = $filePaths['image_path'];
                 if (!empty($branchAsset->image_path) && Storage::disk('public')->exists($branchAsset->image_path)) {
