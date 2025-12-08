@@ -15,6 +15,7 @@ class BranchAssetService
     public function create(array $data)
     {
         DB::beginTransaction();
+        $filePaths = [];
         try {
             if (!empty($data['image_path'])) {
                 $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
