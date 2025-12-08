@@ -19,8 +19,6 @@ class BranchAssetService
         try {
             if (isset($data['image_path']) && !empty($data['image_path'])) {
                 $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
-            } else {
-                throw new Exception('Image path is required');
             }
             $branchAsset = BranchAsset::create([
                 'branch_id'     => $data['branch_id'],
