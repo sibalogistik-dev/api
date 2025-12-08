@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Base64Image;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BranchAssetStoreRequest extends FormRequest
@@ -19,6 +20,8 @@ class BranchAssetStoreRequest extends FormRequest
             'is_vehicle'    => ['required', 'boolean'],
             'name'          => ['required', 'string', 'max:255'],
             'price'         => ['required', 'numeric', 'min:0'],
+            'quantity'      => ['required', 'integer', 'min:1'],
+            'image_path'    => ['required', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 2 * 1024 * 1024)],
             'purchase_date' => ['required', 'date'],
             'description'   => ['nullable', 'string'],
         ];

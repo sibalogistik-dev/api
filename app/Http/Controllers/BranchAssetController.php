@@ -37,6 +37,8 @@ class BranchAssetController extends Controller
                     'is_vehicle'        => $item->is_vehicle,
                     'name'              => $item->name,
                     'price'             => $item->price,
+                    'quantity'          => $item->quantity,
+                    'image_path'        => $item->image_path,
                     'purchase_date'     => $item->purchase_date,
                     'description'       => $item->description,
                 ];
@@ -76,6 +78,8 @@ class BranchAssetController extends Controller
                 'asset_type_name'   => $q->assetType->name,
                 'is_vehicle'        => $q->is_vehicle,
                 'name'              => $q->name,
+                'quantity'          => $q->quantity,
+                'image_path'        => $q->image_path,
                 'price'             => $q->price,
                 'purchase_date'     => $q->purchase_date,
                 'description'       => $q->description,
