@@ -17,6 +17,8 @@ class BranchAsset extends Model
         'is_vehicle',
         'name',
         'price',
+        'quantity',
+        'image_path',
         'purchase_date',
         'description',
     ];
