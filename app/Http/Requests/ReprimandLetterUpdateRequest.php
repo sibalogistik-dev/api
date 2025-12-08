@@ -14,11 +14,11 @@ class ReprimandLetterUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id'    => ['required', 'integer', 'exists:karyawans,id'],
-            'letter_date'    => ['required', 'date'],
-            'reason'         => ['required', 'string'],
-            'issued_by'      => ['required', 'string'],
-            'notes'          => ['nullable', 'string'],
+            'employee_id'    => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'issued_by'      => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'letter_date'    => ['sometimes', 'date'],
+            'reason'         => ['sometimes', 'string'],
+            'notes'          => ['sometimes', 'string'],
         ];
     }
 }

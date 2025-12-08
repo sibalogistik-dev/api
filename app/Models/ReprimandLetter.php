@@ -39,6 +39,11 @@ class ReprimandLetter extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Karyawan::class, 'employee_id');
+        return $this->belongsTo(Karyawan::class, 'employee_id')->withTrashed();
+    }
+
+    public function issuer()
+    {
+        return $this->belongsTo(Karyawan::class, 'issued_by')->withTrashed();
     }
 }

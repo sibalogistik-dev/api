@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('warning_letters', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('issued_by');
+            $table->date('letter_date');
+            $table->text('reason');
+            $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

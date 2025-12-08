@@ -15,9 +15,9 @@ class ReprimandLetterStoreRequest extends FormRequest
     {
         return [
             'employee_id'    => ['required', 'integer', 'exists:karyawans,id'],
+            'issued_by'      => ['required', 'integer', 'exists:karyawans,id'],
             'letter_date'    => ['required', 'date'],
             'reason'         => ['required', 'string'],
-            'issued_by'      => ['required', 'string'],
             'notes'          => ['nullable', 'string'],
         ];
     }

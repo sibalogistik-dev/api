@@ -15,14 +15,14 @@ class BranchAssetStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'branch_id'     => ['required', 'exists:cabangs,id'],
-            'asset_type_id' => ['required', 'exists:asset_types,id'],
+            'branch_id'     => ['sometimes', 'exists:cabangs,id'],
+            'asset_type_id' => ['sometimes', 'exists:asset_types,id'],
             'is_vehicle'    => ['sometimes', 'boolean'],
-            'name'          => ['required', 'string', 'max:255'],
-            'price'         => ['required', 'numeric', 'min:0'],
-            'quantity'      => ['required', 'integer', 'min:1'],
-            'image_path'    => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-            'purchase_date' => ['required', 'date'],
+            'name'          => ['sometimes', 'string', 'max:255'],
+            'price'         => ['sometimes', 'numeric', 'min:0'],
+            'quantity'      => ['sometimes', 'integer', 'min:1'],
+            'image_path'    => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'purchase_date' => ['sometimes', 'date'],
             'description'   => ['nullable', 'string'],
         ];
     }

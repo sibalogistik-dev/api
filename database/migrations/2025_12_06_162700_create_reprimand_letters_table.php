@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('reprimand_letters', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('issued_by');
             $table->date('letter_date');
             $table->text('reason');
-            $table->string('issued_by');
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
