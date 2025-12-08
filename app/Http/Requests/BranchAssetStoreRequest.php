@@ -17,7 +17,7 @@ class BranchAssetStoreRequest extends FormRequest
         return [
             'branch_id'     => ['required', 'exists:cabangs,id'],
             'asset_type_id' => ['required', 'exists:asset_types,id'],
-            'is_vehicle'    => ['required', 'boolean'],
+            'is_vehicle'    => ['sometimes', 'boolean'],
             'name'          => ['required', 'string', 'max:255'],
             'price'         => ['required', 'numeric', 'min:0'],
             'quantity'      => ['required', 'integer', 'min:1'],
