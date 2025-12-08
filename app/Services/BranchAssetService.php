@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\BranchAsset;
 use Exception;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,7 +17,7 @@ class BranchAssetService
         DB::beginTransaction();
         try {
             if (!empty($data['image_path'])) {
-                $filePaths['image_path']    = $this->storeBase64Image($data['image_path'], 'uploads/branch_asset');
+                $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
                 $data['image_path']         = $filePaths['image_path'];
             } else {
                 throw new Exception('Image path is required');
@@ -35,7 +36,7 @@ class BranchAssetService
         DB::beginTransaction();
         try {
             if (!empty($data['image_path'])) {
-                $filePaths['image_path']    = $this->storeBase64Image($data['image_path'], 'uploads/branch_asset');
+                $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
                 $data['image_path']         = $filePaths['image_path'];
                 if (!empty($branchAsset->image_path) && Storage::disk('public')->exists($branchAsset->image_path)) {
                     Storage::disk('public')->delete($branchAsset->image_path);
@@ -73,5 +74,28 @@ class BranchAssetService
         Storage::disk('public')->put($fullPath, (string) $image);
 
         return $fullPath;
+    }
+
+    private function storeFile(UploadedFile $file, string $path, int $quality = 90)
+    {
+        $isImage = Str::startsWith($file->getMimeType(), 'image/');
+
+        if ($isImage) {
+            $filename = date('Ymd-His') . '-' . Str::random(10) . '.webp';
+            $fullPath = $path . '/' . $filename;
+
+            $imageContent = Image::read($file->getRealPath())->toWebp($quality);
+            Storage::disk('public')->put($fullPath, (string) $imageContent);
+
+            return $fullPath;
+        } else {
+            $extension = $file->getClientOriginalExtension();
+            $filename  = date('Ymd-His') . '-' . Str::random(10) . '.' . $extension;
+            $fullPath  = $path . '/' . $filename;
+
+            Storage::disk('public')->putFileAs($path, $file, $filename);
+
+            return $fullPath;
+        }
     }
 }

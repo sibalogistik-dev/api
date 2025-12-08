@@ -9,7 +9,6 @@ use App\Http\Requests\RemoteAttendanceUpdateRequest;
 use App\Models\RemoteAttendance;
 use App\Services\RemoteAttendanceService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class RemoteAttendanceController extends Controller
@@ -25,7 +24,7 @@ class RemoteAttendanceController extends Controller
     {
         try {
             $validated                      = $request->validated();
-            $remoteAttendanceQ          = RemoteAttendance::query()->filter($validated);
+            $remoteAttendanceQ              = RemoteAttendance::query()->filter($validated);
             $remoteAttendance               = isset($validated['paginate']) && $validated['paginate'] ? $remoteAttendanceQ->paginate($validated['perPage'] ?? 10) : $remoteAttendanceQ->get();
             $transformedItems               = $remoteAttendance instanceof LengthAwarePaginator ? $remoteAttendance->getCollection() : $remoteAttendance;
             $transformedRemoteAttendance    = $transformedItems->map(function ($item) {

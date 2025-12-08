@@ -182,12 +182,20 @@
             </td>
         </tr>
     </table>
-
-    <!-- TANDA TANGAN -->
     <table style="margin-top: 20px;">
         <tr>
             <td style="width: 50%; text-align: center; border: none;">
-                {{ $slip->employee->branch->village->name ?? '................' }},
+                @php
+                    $kotakab = $slip->employee->branch->village->district->city->name ?? '................';
+                    $kotakab = str_ireplace(
+                        ['KOTA ', 'KABUPATEN ', 'KAB ', 'KOTA ADM. ', 'KABUPATEN ADM. '],
+                        '',
+                        $kotakab,
+                    );
+                    $kotakab = strtolower($kotakab);
+                    $kotakab = ucwords($kotakab);
+                @endphp
+                {{ $kotakab }},
                 {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}<br>
                 Mengetahui,<br><br><br><br>
                 ____________________________

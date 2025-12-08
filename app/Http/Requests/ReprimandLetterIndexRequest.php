@@ -14,9 +14,10 @@ class ReprimandLetterIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'         => ['nullable', 'string'],
-            'paginate'  => ['nullable', 'boolean'],
-            'perPage'   => ['nullable', 'integer', 'min:1'],
+            'employee_id'   => ['nullable', 'integer'],
+            'q'             => ['nullable', 'string'],
+            'paginate'      => ['nullable', 'boolean'],
+            'perPage'       => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

@@ -21,7 +21,7 @@ class BranchAssetStoreRequest extends FormRequest
             'name'          => ['required', 'string', 'max:255'],
             'price'         => ['required', 'numeric', 'min:0'],
             'quantity'      => ['required', 'integer', 'min:1'],
-            'image_path'    => ['required', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 2 * 1024 * 1024)],
+            'image_path'    => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'purchase_date' => ['required', 'date'],
             'description'   => ['nullable', 'string'],
         ];
