@@ -21,6 +21,7 @@ class ReprimandLetter extends Model
 
     protected $casts = [
         'employee_id'   => 'integer',
+        'issued_by'     => 'integer',
     ];
 
     public function scopeFilter($query, array $filters)
@@ -34,6 +35,14 @@ class ReprimandLetter extends Model
 
         $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
             $query->where('employee_id', $employeeId);
+        });
+
+        $query->when($filters['issued_by'] ?? null, function ($query, $issuedBy) {
+            $query->where('issued_by', $issuedBy);
+        });
+
+        $query->when($filters['letter_date'] ?? null, function ($query, $letterDate) {
+            $query->whereDate('letter_date', $letterDate);
         });
     }
 

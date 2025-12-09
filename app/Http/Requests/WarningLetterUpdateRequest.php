@@ -14,7 +14,11 @@ class WarningLetterUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'employee_id'    => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'issued_by'      => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'letter_date'    => ['sometimes', 'date'],
+            'reason'         => ['sometimes', 'string'],
+            'notes'          => ['sometimes', 'string'],
         ];
     }
 }

@@ -14,7 +14,11 @@ class WarningLetterStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'employee_id'    => ['required', 'integer', 'exists:karyawans,id'],
+            'issued_by'      => ['required', 'integer', 'exists:karyawans,id'],
+            'letter_date'    => ['required', 'date'],
+            'reason'         => ['required', 'string'],
+            'notes'          => ['nullable', 'string'],
         ];
     }
 }

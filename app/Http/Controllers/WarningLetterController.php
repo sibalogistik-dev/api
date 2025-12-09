@@ -2,64 +2,113 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\WarningLetterIndexRequest;
+use App\Http\Requests\WarningLetterStoreRequest;
+use App\Http\Requests\WarningLetterUpdateRequest;
 use App\Models\WarningLetter;
-use Illuminate\Http\Request;
+use App\Services\WarningLetterService;
+use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class WarningLetterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $warningLetterService;
+
+    public function __construct(WarningLetterService $warningLetterService)
     {
-        //
+        $this->warningLetterService = $warningLetterService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(WarningLetterIndexRequest $request)
     {
-        //
+        try {
+            $validated                  = $request->validated();
+            $warningLetterQ             = WarningLetter::query()->filter($validated);
+            $warningLetters             = isset($validated['paginate']) && $validated['paginate'] ? $warningLetterQ->paginate($validated['perPage'] ?? 10) : $warningLetterQ->get();
+            $transformedItems           = $warningLetters instanceof LengthAwarePaginator ? $warningLetters->getCollection() : $warningLetters;
+            $transformedWarningLetters  = $transformedItems->map(function ($item) {
+                return [
+                    'id'            => $item->id,
+                    'employee_id'   => $item->employee_id,
+                    'employee_name' => $item->employee->name,
+                    'letter_date'   => $item->letter_date,
+                    'reason'        => $item->reason,
+                    'issuer_id'     => $item->issued_by,
+                    'issuer_name'   => $item->issuer->name,
+                    'notes'         => $item->notes,
+                ];
+            });
+            if ($warningLetters instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Warning letter data', $warningLetters->setCollection($transformedWarningLetters));
+            }
+            return ApiResponseHelper::success('Warning letter data', $transformedWarningLetters);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get warning letter data', $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(WarningLetterStoreRequest $request)
     {
-        //
+        try {
+            $warningLetter = $this->warningLetterService->create($request->validated());
+            return ApiResponseHelper::success('Warning letter data', $warningLetter);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get warning letter data', $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(WarningLetter $warningLetter)
+    public function show($warningLetter)
     {
-        //
+        try {
+            $warningLetter = WarningLetter::find($warningLetter);
+            if (!$warningLetter) {
+                throw new Exception('Warning letter data not found');
+            }
+            $data = [
+                'id'            => $warningLetter->id,
+                'employee_id'   => $warningLetter->employee_id,
+                'employee_name' => $warningLetter->employee->name,
+                'letter_date'   => $warningLetter->letter_date,
+                'reason'        => $warningLetter->reason,
+                'issued_by'     => $warningLetter->issuer->name,
+                'notes'         => $warningLetter->notes,
+            ];
+
+            return ApiResponseHelper::success('Warning letter data', $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get warning letter data', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(WarningLetter $warningLetter)
+    public function update(WarningLetterUpdateRequest $request, $warningLetter)
     {
-        //
+        try {
+            $warningLetter = WarningLetter::find($warningLetter);
+            if (!$warningLetter) {
+                throw new Exception('Warning letter data not found');
+            }
+            $warningLetter = $this->warningLetterService->update($warningLetter, $request->validated());
+            return ApiResponseHelper::success('Warning letter data has been updated successfully', $warningLetter);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to update warning letter data', $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, WarningLetter $warningLetter)
+    public function destroy($warningLetter)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(WarningLetter $warningLetter)
-    {
-        //
+        try {
+            $warningLetter = WarningLetter::find($warningLetter);
+            if (!$warningLetter) {
+                throw new Exception('Warning letter data not found');
+            }
+            $delete = $warningLetter->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete warning letter data');
+            }
+            return ApiResponseHelper::success('Warning letter data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to delete warning letter data', $e->getMessage());
+        }
     }
 }

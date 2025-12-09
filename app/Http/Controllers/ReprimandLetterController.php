@@ -9,7 +9,6 @@ use App\Http\Requests\ReprimandLetterUpdateRequest;
 use App\Models\ReprimandLetter;
 use App\Services\ReprimandLetterService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReprimandLetterController extends Controller
@@ -35,7 +34,8 @@ class ReprimandLetterController extends Controller
                     'employee_name' => $item->employee->name,
                     'letter_date'   => $item->letter_date,
                     'reason'        => $item->reason,
-                    'issued_by'     => $item->issued_by,
+                    'issuer_id'     => $item->issued_by,
+                    'issuer_name'   => $item->issuer->name,
                     'notes'         => $item->notes,
                 ];
             });
@@ -66,7 +66,17 @@ class ReprimandLetterController extends Controller
             if (!$reprimandLetter) {
                 throw new Exception('Reprimand letter data not found');
             }
-            return ApiResponseHelper::success('Reprimand letter data', $reprimandLetter);
+            $data = [
+                'id'            => $reprimandLetter->id,
+                'employee_id'   => $reprimandLetter->employee_id,
+                'employee_name' => $reprimandLetter->employee->name,
+                'letter_date'   => $reprimandLetter->letter_date,
+                'reason'        => $reprimandLetter->reason,
+                'issued_by'     => $reprimandLetter->issuer->name,
+                'notes'         => $reprimandLetter->notes,
+            ];
+
+            return ApiResponseHelper::success('Reprimand letter data', $data);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get reprimand letter data', $e->getMessage());
         }
