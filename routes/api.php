@@ -40,11 +40,12 @@ Route::middleware('api')->group(function () {
                 'reprimand-letter'  => App\Http\Controllers\ReprimandLetterController::class,
                 'warning-letter'    => App\Http\Controllers\WarningLetterController::class,
             ]);
-
+            // documents
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
             Route::post('payroll/report',                       [App\Http\Controllers\PayrollController::class,         'report'])->name('payroll.report');
             Route::post('payroll/slip',                         [App\Http\Controllers\PayrollController::class,         'slip'])->name('payroll.slip');
 
+            // support route
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
             Route::get('employee/{employee}/salary',            [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalary'])->name('employee.salary');
             Route::get('employee/{employee}/salary-histories',  [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalaryHistory'])->name('employee.salaryHistory');

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\WarningLetterDocumentRequest;
 use App\Http\Requests\WarningLetterIndexRequest;
+use App\Http\Requests\WarningLetterReportRequest;
 use App\Http\Requests\WarningLetterStoreRequest;
 use App\Http\Requests\WarningLetterUpdateRequest;
 use App\Models\WarningLetter;
@@ -110,5 +112,15 @@ class WarningLetterController extends Controller
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to delete warning letter data', $e->getMessage());
         }
+    }
+
+    public function document(WarningLetterDocumentRequest $request)
+    {
+        // 
+    }
+
+    public function report(WarningLetterReportRequest $request)
+    {
+        // 
     }
 }
