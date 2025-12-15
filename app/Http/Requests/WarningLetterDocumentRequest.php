@@ -14,7 +14,7 @@ class WarningLetterDocumentRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'integer']
+            'warning_letter_id' => ['required', 'integer']
         ];
     }
 }
