@@ -15,8 +15,9 @@ class WarningLetterReportRequest extends FormRequest
     {
         return [
             'employee_id'   => ['nullable', 'integer'],
-            'from_date'     => ['sometimes', 'date'],
-            'to_date'       => ['nullable', 'date', 'after_or_equal:from_date'],
+            'issuer_id'     => ['nullable', 'integer'],
+            'start_date'    => ['nullable', 'date', 'required_with:end_date'],
+            'end_date'      => ['nullable', 'date', 'required_with:start_date', 'after_or_equal:start_date'],
         ];
     }
 }

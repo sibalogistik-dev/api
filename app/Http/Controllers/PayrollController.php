@@ -131,7 +131,6 @@ class PayrollController extends Controller
     {
         try {
             $validated  = $request->validated();
-
             $period     = $validated['month'] ? Carbon::parse($validated['month'])->locale('id')->translatedFormat('F Y') : null;
             $report     = $this->payrollService->generatePayrollReport($validated);
             $pdf        = Pdf::loadView('payroll.report', compact('report', 'period'))->setPaper('a4', 'landscape');

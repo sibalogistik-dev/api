@@ -42,6 +42,8 @@ Route::middleware('api')->group(function () {
             ]);
             // documents
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
+            Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,   'report'])->name('warning-letter.report');
+            Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,   'document'])->name('warning-letter.report');
             Route::post('payroll/report',                       [App\Http\Controllers\PayrollController::class,         'report'])->name('payroll.report');
             Route::post('payroll/slip',                         [App\Http\Controllers\PayrollController::class,         'slip'])->name('payroll.slip');
 

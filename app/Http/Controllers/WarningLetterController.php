@@ -10,6 +10,7 @@ use App\Http\Requests\WarningLetterStoreRequest;
 use App\Http\Requests\WarningLetterUpdateRequest;
 use App\Models\WarningLetter;
 use App\Services\WarningLetterService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -121,6 +122,16 @@ class WarningLetterController extends Controller
 
     public function report(WarningLetterReportRequest $request)
     {
-        // 
+        try {
+            $validated  = $request->validated();
+            $report     = $this->warningLetterService->report($validated);
+            $start      = $validated['start_date'] ?? null;
+            $end        = $validated['end_date'] ?? null;
+            // $pdf        = Pdf::loadView('warning-letter.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            // return $pdf->stream('Laporan Penggajian.pdf');
+            return view('warning-letter.report', compact('report', 'start', 'end'));
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when warning letter report', $e->getMessage());
+        }
     }
 }
