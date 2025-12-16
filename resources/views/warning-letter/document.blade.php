@@ -3,118 +3,269 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Surat Peringatan</title>
+    <title>Surat Peringatan - {{ $document->employee->name }}</title>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Arial', sans-serif;
             font-size: 12px;
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
         }
 
-        .header {
-            text-align: center;
+        /* Container utama untuk dokumen, berguna untuk margin cetak */
+        .document-container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 10px;
+            table-layout: fixed;
+            /* Opsional: menjaga lebar tetap stabil */
+        }
+
+        .header-logo {
+            width: 15%;
+            /* Sesuaikan, misal 15-20% */
+            vertical-align: middle;
+            text-align: left;
+            padding: 0;
+        }
+
+        .header-info {
+            width: 85%;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0;
+        }
+
+        .company-brand {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        .company-address {
+            font-size: 11px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .document-title {
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .employee-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .employee-details td {
+            padding: 2px 0;
         }
 
         .content {
             text-align: justify;
+            margin-bottom: 20px;
         }
 
-        table {
-            width: 100%;
-            font-size: 12px;
+        .content p {
+            margin: 0 0 10px 0;
         }
 
-        .signature {
+        /* Styling untuk daftar pelanggaran/instruksi */
+        .indented-list {
+            margin-left: 30px;
+            padding-left: 0;
+            list-style-type: none;
+            /* Hilangkan bullet default */
+        }
+
+        .indented-list li {
+            margin-bottom: 5px;
+        }
+
+        .signature-block {
             margin-top: 40px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .signature-block td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        .signature-details {
+            text-align: center;
+        }
+
+        .signature-space {
+            height: 50px;
+            /* Jarak untuk tanda tangan */
+            display: block;
         }
 
         .footer {
             position: fixed;
             bottom: 0;
             width: 100%;
-            font-size: 10px;
             text-align: center;
+            font-size: 9px;
+            padding-bottom: 5px;
+        }
+
+        .hr-line {
+            border: 0;
+            border-top: 1px solid #000;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <table style="width:90%; margin:0 auto;">
+    <div class="document-container">
+        @php
+            function spConvert($value)
+            {
+                switch ($value) {
+                    case '1':
+                        return 'Pertama';
+                    case '2':
+                        return 'Kedua';
+                    case '3':
+                        return 'Ketiga';
+                    default:
+                        return $value;
+                }
+            }
+            function genNumb($id)
+            {
+                // GUNAKAN RETURN, JANGAN ECHO
+                return str_pad($id, 5, '0', STR_PAD_LEFT);
+            }
+
+            function documentNumber($data)
+            {
+                // Variabel $numb sekarang akan berisi nilai "00003", bukan null
+                $numb = genNumb($data->id);
+
+                // Logika penggabungan string
+                $docNumb = '0' . $data->letter_number . '/SP/' . $numb . '/' . $data->letter_date->format('Y');
+
+                return $docNumb;
+            }
+        @endphp
+
+        <table class="header-content">
             <tr>
-                <td width="10%" style="text-align:left; vertical-align:middle;">
+                <td class="header-logo">
                     <img src="{{ public_path('images/logo/' . $document->employee->branch->company->codename . '.png') }}"
-                        alt="Logo Perusahaan" style="width:95px;">
+                        alt="Logo" style="width:75px; height: auto;">
                 </td>
-                <td width="85%" style="text-align:center; vertical-align:middle;">
-                    <strong style="font-size:24px;">
+                <td class="header-info">
+                    <span class="company-brand">
                         {{ $document->employee->branch->company->company_brand }}
-                    </strong>
-                    <br>
-                    <span style="font-size:14px;">
+                    </span>
+                    <span class="company-address">
                         {{ $document->employee->branch->address }}<br>
                         Telp. {{ $document->employee->branch->telephone }}
                     </span>
                 </td>
             </tr>
         </table>
-    </div>
-    <hr style="border:1px solid #000; margin-top:10px;">
-    <p style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16px;">
-        SURAT PERINGATAN
-    </p>
-    <table>
-        <tr>
-            <td width="10%">Nama</td>
-            <td width="5%">:</td>
-            <td><strong>{{ $document->employee->name }}</strong></td>
-        </tr>
-        <tr>
-            <td>Jabatan</td>
-            <td>:</td>
-            <td>{{ $document->employee->jobTitle->name }}</td>
-        </tr>
-    </table>
-    <br>
-    <div class="content">
-        <p>
-            Dengan ini perusahaan memberikan <strong>Surat Peringatan</strong>
-            kepada karyawan tersebut di atas atas pelanggaran disiplin kerja berupa:
+        <hr class="hr-line">
+        <p class="document-title">
+            SURAT PERINGATAN
         </p>
+        <div class="employee-details">
+            <table>
+                <tr>
+                    <td width="15%">Nomor Dokumen</td>
+                    <td width="2%">:</td>
+                    <td><strong>{{ documentNumber($document) }}</strong></td>
+                </tr>
+                <tr>
+                    <td>Kepada Yth.</td>
+                    <td>:</td>
+                    <td><strong>{{ $document->employee->name }}</strong></td>
+                </tr>
+                <tr>
+                    <td>Jabatan</td>
+                    <td>:</td>
+                    <td><strong>{{ $document->employee->jobTitle->name }}</strong></td>
+                </tr>
+                <tr>
+                    <td>Cabang</td>
+                    <td>:</td>
+                    <td><strong>{{ $document->employee->branch->name ?? '-' }}</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="content">
+            <p>
+                Dengan ini perusahaan memberikan <strong>Surat Peringatan {{ $document->letter_number }}
+                    ({{ spConvert($document->letter_number) }})</strong> kepada karyawan tersebut di atas atas
+                pelanggaran disiplin kerja berupa:
+            </p>
 
-        <p style="margin-left:20px;">
-            <strong>{{ $document->reason }}</strong>
-        </p>
+            <ul class="indented-list">
+                <li>&bull; <strong>{{ $document->reason }}</strong></li>
+            </ul>
 
-        <p>
-            Adapun catatan dan instruksi yang harus diperhatikan:
-        </p>
+            <p>
+                Adapun catatan dan instruksi yang harus diperhatikan adalah sebagai berikut:
+            </p>
 
-        <p style="margin-left:20px;">
-            {{ $document->notes }}
-        </p>
+            <ul class="indented-list">
+                <li>&bull; {{ $document->notes }}</li>
+            </ul>
 
-        <p>
-            Surat peringatan ini berlaku sejak tanggal
-            <strong>{{ $document->letter_date->format('d F Y') }}</strong>.
-            Apabila di kemudian hari terjadi pelanggaran serupa, maka perusahaan akan
-            mengambil tindakan lanjutan sesuai peraturan yang berlaku.
-        </p>
-    </div>
-    <table class="signature">
-        <tr>
-            <td width="60%"></td>
-            <td>
-                Jakarta, {{ $document->letter_date->format('d F Y') }}<br>
-                Diterbitkan oleh,<br><br><br>
-                <strong>{{ $document->issuer->name }}</strong><br>
-                {{ $document->issuer->jobTitle->name ?? 'HRD' }}
-            </td>
-        </tr>
-    </table>
-    <div class="footer">
-        Dicetak pada: {{ now()->locale('id')->translatedFormat('d M Y H:i:s') }}
+            <p>
+                Surat peringatan ini berlaku sejak tanggal
+                <strong>{{ $document->letter_date->format('d F Y') }}</strong>.
+                Apabila di kemudian hari terjadi pelanggaran serupa, maka perusahaan akan mengambil tindakan lanjutan
+                sesuai peraturan dan kebijakan perusahaan yang berlaku.
+            </p>
+        </div>
+
+        <table class="signature-block">
+            <tr>
+                <td width="50%" class="signature-details">
+                    <p>
+                        Karyawan yang bersangkutan,<br><br>
+                        <span class="signature-space"></span>
+                        <strong>{{ $document->employee->name }}</strong>
+                    </p>
+                </td>
+                <td width="50%" class="signature-details">
+                    <p>
+                        {{ $document->employee->branch->city ?? 'Jakarta' }},
+                        {{ $document->letter_date->format('d F Y') }}<br>
+                        Diterbitkan oleh,<br>
+                        <span class="signature-space"></span>
+                        <strong>{{ $document->issuer->name }}</strong><br>
+                        {{ $document->issuer->jobTitle->name ?? 'HRD' }}
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <div class="footer">
+            Dicetak pada: {{ now()->locale('id')->translatedFormat('d F Y H:i:s') }}
+        </div>
     </div>
 </body>
 

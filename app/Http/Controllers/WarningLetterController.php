@@ -35,6 +35,7 @@ class WarningLetterController extends Controller
                     'id'            => $item->id,
                     'employee_id'   => $item->employee_id,
                     'employee_name' => $item->employee->name,
+                    'letter_number' => $item->letter_number,
                     'letter_date'   => $item->letter_date,
                     'reason'        => $item->reason,
                     'issuer_id'     => $item->issued_by,
@@ -72,6 +73,7 @@ class WarningLetterController extends Controller
                 'id'            => $warningLetter->id,
                 'employee_id'   => $warningLetter->employee_id,
                 'employee_name' => $warningLetter->employee->name,
+                'letter_number' => $warningLetter->letter_number,
                 'letter_date'   => $warningLetter->letter_date,
                 'reason'        => $warningLetter->reason,
                 'issued_by'     => $warningLetter->issuer->name,
@@ -120,7 +122,6 @@ class WarningLetterController extends Controller
         try {
             $validated  = $request->validated();
             $document   = $this->warningLetterService->document($validated);
-            // return $document;
             $pdf        = Pdf::loadView('warning-letter.document', compact('document'))->setPaper('a4');
             return $pdf->stream('Surat Peringatan Karyawan.pdf');
         } catch (Exception $e) {
