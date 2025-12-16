@@ -10,6 +10,7 @@ use App\Models\Karyawan;
 use App\Services\EmployeeService;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class KaryawanController extends Controller
 {
@@ -86,16 +87,23 @@ class KaryawanController extends Controller
 
     public function destroy($employee)
     {
+        DB::beginTransaction();
         try {
             $employee = Karyawan::find($employee);
             if (!$employee) {
                 throw new Exception('Employee data not found');
             }
-            $employee->user->delete();
+            $employeeDelete = $employee->user->delete();
             $delete = $employee->delete();
+            if (!$employeeDelete) {
+                throw new Exception('Failed to delete user data');
+                DB::rollBack();
+            }
             if (!$delete) {
                 throw new Exception('Failed to delete employee data');
+                DB::rollBack();
             }
+            DB::commit();
             return ApiResponseHelper::success('Employee data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
