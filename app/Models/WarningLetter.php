@@ -22,6 +22,7 @@ class WarningLetter extends Model
     protected $casts = [
         'employee_id'   => 'integer',
         'issued_by'     => 'integer',
+        'letter_date'   => 'date',
     ];
 
     public function scopeFilter($query, array $filters)

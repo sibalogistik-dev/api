@@ -120,7 +120,9 @@ class WarningLetterController extends Controller
         try {
             $validated  = $request->validated();
             $document   = $this->warningLetterService->document($validated);
-            return $document;
+            // return $document;
+            $pdf        = Pdf::loadView('warning-letter.document', compact('document'))->setPaper('a4');
+            return $pdf->stream('Surat Peringatan Karyawan.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when warning letter document', $e->getMessage());
         }
