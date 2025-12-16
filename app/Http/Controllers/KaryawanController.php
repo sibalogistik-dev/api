@@ -109,4 +109,9 @@ class KaryawanController extends Controller
             return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
         }
     }
+
+    public function restore(Karyawan $employee)
+    {
+        // 
+    }
 }
