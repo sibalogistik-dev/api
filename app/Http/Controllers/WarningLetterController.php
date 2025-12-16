@@ -117,7 +117,13 @@ class WarningLetterController extends Controller
 
     public function document(WarningLetterDocumentRequest $request)
     {
-        // 
+        try {
+            $validated  = $request->validated();
+            $document   = $this->warningLetterService->document($validated);
+            return $document;
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when warning letter document', $e->getMessage());
+        }
     }
 
     public function report(WarningLetterReportRequest $request)
@@ -127,9 +133,8 @@ class WarningLetterController extends Controller
             $report     = $this->warningLetterService->report($validated);
             $start      = $validated['start_date'] ?? null;
             $end        = $validated['end_date'] ?? null;
-            // $pdf        = Pdf::loadView('warning-letter.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
-            // return $pdf->stream('Laporan Penggajian.pdf');
-            return view('warning-letter.report', compact('report', 'start', 'end'));
+            $pdf        = Pdf::loadView('warning-letter.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan SP Karyawan.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when warning letter report', $e->getMessage());
         }

@@ -62,29 +62,28 @@
 <body>
     <div class="header">
         <h2 style="margin-bottom: 4px; margin-top: 0;">LAPORAN SURAT PERINGATAN</h2>
-        <h3 style="margin-bottom: 4px; margin-top: 0;">
-            @php
-                function parseCarbon($value, $is_translate)
-                {
-                    if ($is_translate) {
-                        $data = \Carbon\Carbon::parse($value)->locale('id')->translatedFormat('d F Y');
-                    } else {
-                        $data = \Carbon\Carbon::parse($value)->format('d F Y');
-                    }
-                    return $data;
+        @php
+            function parseCarbon($value, $is_translate = false)
+            {
+                if ($is_translate) {
+                    $data = \Carbon\Carbon::parse($value)->locale('id')->translatedFormat('d F Y');
+                } else {
+                    $data = \Carbon\Carbon::parse($value)->format('d F Y');
                 }
-
-                $start_date = !is_null($start) ? parseCarbon($start, true) : null;
-                $end_date = !is_null($end) ? parseCarbon($end, true) : null;
-            @endphp
-            @if (!is_null($start_date) && !is_null($end_date))
+                return $data;
+            }
+            $start_date = !is_null($start) ? parseCarbon($start, true) : null;
+            $end_date = !is_null($end) ? parseCarbon($end, true) : null;
+        @endphp
+        @if (!is_null($start_date) && !is_null($end_date))
+            <h3 style="margin-bottom: 4px; margin-top: 0;">
                 @if ($start_date === $end_date)
-                    Periode Data : {{ $start_date }}
+                    Data Periode {{ $start_date }}
                 @else
-                    Periode Data : {{ $start_date }} - {{ $start_date }}
+                    Data Periode {{ $start_date }} - {{ $end_date }}
                 @endif
-            @endif
-        </h3>
+            </h3>
+        @endif
     </div>
 
     <table>

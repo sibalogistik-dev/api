@@ -4,18 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo/siba cargo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo/sibacargo.png') }}">
     <title>API Documentation</title>
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
 </head>
 
 <body class="bg-gray-50">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Header Section -->
         <div class="text-center mb-8">
-            <img src="{{ asset('images/logo/siba cargo.png') }}" alt="Siba Cargo Logo"
+            <img src="{{ asset('images/logo/sibacargo.png') }}" alt="Siba Cargo Logo"
                 class="max-w-[200px] mx-auto h-auto">
             <h1 class="text-3xl font-bold mt-4 text-gray-800">API Documentation</h1>
             <p class="text-gray-600 mt-2">

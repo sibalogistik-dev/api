@@ -63,7 +63,7 @@
     <div class="header">
         <h2 style="margin-bottom: 4px; margin-top: 0;">LAPORAN PENGGAJIAN</h2>
         <h3 style="margin-bottom: 4px; margin-top: 0;">
-            Periode Penggajian: {{ $period }}
+            Penggajian Periode {{ $period }}
         </h3>
     </div>
 

@@ -57,4 +57,19 @@ class WarningLetterService
             throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
         }
     }
+    
+    public function document(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $data = WarningLetter::find($data['warning_letter_id']);
+            DB::commit();
+            if (!$data) {
+                throw new Exception('Warning letter data not found');
+            }
+            return $data;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
+        }
+    }
 }
