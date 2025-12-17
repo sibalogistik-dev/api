@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\EmployeeIndexRequest;
+use App\Http\Requests\EmployeeRestoreRequest;
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
 use App\Models\Karyawan;
@@ -93,46 +94,47 @@ class KaryawanController extends Controller
             if (!$employee) {
                 throw new Exception('Employee data not found');
             }
-            $employeeDelete = $employee->user->delete();
-            $delete = $employee->delete();
-            if (!$employeeDelete) {
+
+            $user = $employee->user()->withTrashed()->first();
+            if (!$user) {
                 throw new Exception('Failed to delete user data');
-                DB::rollBack();
             }
+            $user->delete();
+
+            $delete = $employee->delete();
             if (!$delete) {
                 throw new Exception('Failed to delete employee data');
-                DB::rollBack();
             }
             DB::commit();
             return ApiResponseHelper::success('Employee data has been deleted successfully');
         } catch (Exception $e) {
+            DB::rollBack();
             return ApiResponseHelper::error('Error when deleting employee data', $e->getMessage());
         }
     }
 
-    public function restore($employee)
+    public function restore($employee, EmployeeRestoreRequest $request)
     {
+        $validated = $request->validated();
         DB::beginTransaction();
         try {
-            $employee = Karyawan::where('id', $employee)
-                ->onlyTrashed()
-                ->first();
+            $employee = Karyawan::onlyTrashed()->find($employee);
             if (!$employee) {
                 throw new Exception('Employee data not found');
             }
-            $userRestore = $employee->user->restore();
-            $restore = $employee->restore();
-            if (!$userRestore) {
-                throw new Exception('Failed to restore user data');
-                DB::rollBack();
+            if (!empty($validated['is_with_user']) && $validated['is_with_user']) {
+                $user = $employee->user()->onlyTrashed()->first();
+                if (!$user) {
+                    throw new Exception('Related user not found');
+                }
+
+                $user->restore();
             }
-            if (!$restore) {
-                throw new Exception('Failed to restore employee data');
-                DB::rollBack();
-            }
+            $employee->restore();
             DB::commit();
             return ApiResponseHelper::success('Employee data has been restored successfully');
         } catch (Exception $e) {
+            DB::rollBack();
             return ApiResponseHelper::error('Error when restoring employee data', $e->getMessage());
         }
     }
