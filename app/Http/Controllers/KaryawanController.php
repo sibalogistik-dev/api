@@ -110,8 +110,30 @@ class KaryawanController extends Controller
         }
     }
 
-    public function restore(Karyawan $employee)
+    public function restore($employee)
     {
-        // 
+        DB::beginTransaction();
+        try {
+            $employee = Karyawan::where('id', $employee)
+                ->onlyTrashed()
+                ->first();
+            if (!$employee) {
+                throw new Exception('Employee data not found');
+            }
+            $userRestore = $employee->user->restore();
+            $restore = $employee->restore();
+            if (!$userRestore) {
+                throw new Exception('Failed to restore user data');
+                DB::rollBack();
+            }
+            if (!$restore) {
+                throw new Exception('Failed to restore employee data');
+                DB::rollBack();
+            }
+            DB::commit();
+            return ApiResponseHelper::success('Employee data has been restored successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when restoring employee data', $e->getMessage());
+        }
     }
 }
