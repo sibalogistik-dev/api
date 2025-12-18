@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             MarriageStatusSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
+            EmployeeTrainingTypeSeeder::class,
 
             UserSeeder::class,
             CabangSeeder::class,
