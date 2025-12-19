@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WarningLetterReportRequest extends FormRequest
+class ReprimandLetterReportRequest extends FormRequest
 {
     public function authorize()
     {
@@ -16,7 +16,6 @@ class WarningLetterReportRequest extends FormRequest
         return [
             'employee_id'   => ['nullable', 'integer'],
             'issuer_id'     => ['nullable', 'integer'],
-            'letter_number' => ['nullable', 'string'],
             'start_date'    => ['nullable', 'date', 'required_with:end_date'],
             'end_date'      => ['nullable', 'date', 'required_with:start_date', 'after_or_equal:start_date'],
         ];

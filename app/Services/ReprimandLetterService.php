@@ -33,4 +33,14 @@ class ReprimandLetterService
             throw new Exception('Failed to update reprimand letter data: ' . $e->getMessage());
         }
     }
+
+    public function report(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }

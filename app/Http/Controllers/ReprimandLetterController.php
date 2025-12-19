@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\ReprimandLetterDocumentRequest;
 use App\Http\Requests\ReprimandLetterIndexRequest;
+use App\Http\Requests\ReprimandLetterReportRequest;
 use App\Http\Requests\ReprimandLetterStoreRequest;
 use App\Http\Requests\ReprimandLetterUpdateRequest;
 use App\Models\ReprimandLetter;
@@ -110,6 +112,24 @@ class ReprimandLetterController extends Controller
             return ApiResponseHelper::success('Reprimand letter data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to delete reprimand letter data', $e->getMessage());
+        }
+    }
+
+    public function document(ReprimandLetterDocumentRequest $request)
+    {
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
+        }
+    }
+
+    public function report(ReprimandLetterReportRequest $request)
+    {
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
         }
     }
 }

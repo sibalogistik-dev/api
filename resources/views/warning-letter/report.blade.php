@@ -93,6 +93,7 @@
                 <th>Nama</th>
                 <th>Penerbit</th>
                 <th>Tanggal Terbit</th>
+                <th style="text-align: center;">SP Ke-</th>
                 <th>Alasan</th>
                 <th>Catatan</th>
             </tr>
@@ -104,6 +105,7 @@
                     <td>{{ $data->employee->name }}</td>
                     <td>{{ $data->issuer->name }}</td>
                     <td>{{ parseCarbon($data->letter_date, true) }}</td>
+                    <td style="text-align: center;">{{ $data->letter_number }}</td>
                     <td>{{ $data->reason }}</td>
                     <td>{{ $data->notes }}</td>
                 </tr>

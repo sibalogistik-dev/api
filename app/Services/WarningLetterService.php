@@ -44,12 +44,17 @@ class WarningLetterService
                 $end_date   = Carbon::parse($data['end_date'])->endOfDay();
                 $query->whereBetween('letter_date', [$start_date, $end_date]);
             })
-                ->when(isset($data['employee_id']), function ($query) use ($data) {
-                    $query->where('employee_id', $data['employee_id']);
-                })
-                ->when(isset($data['issuer_id']), function ($query) use ($data) {
-                    $query->where('issued_by', $data['issuer_id']);
-                })
+                ->when(($employeeId = $data['employee_id'] ?? null) && $employeeId !== 'all',
+                    fn($query) => $query->where('employee_id', $employeeId)
+                )
+                ->when(
+                    ($issuerId = $data['issuer_id'] ?? null) && $issuerId !== 'all',
+                    fn($query) => $query->where('issued_by', $issuerId)
+                )
+                ->when(
+                    ($letterNumber = $data['letter_number'] ?? null) && $letterNumber !== 'all',
+                    fn($query) => $query->where('letter_number', $letterNumber)
+                )
                 ->get();
             DB::commit();
             return $data;
@@ -57,7 +62,7 @@ class WarningLetterService
             throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
         }
     }
-    
+
     public function document(array $data)
     {
         DB::beginTransaction();
