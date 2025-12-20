@@ -39,7 +39,7 @@ class WarningLetterService
     {
         DB::beginTransaction();
         try {
-            $data   = WarningLetter::when(isset($data['start_date']) && isset($data['end_date']), function ($query) use ($data) {
+            $response   = WarningLetter::when(isset($data['start_date']) && isset($data['end_date']), function ($query) use ($data) {
                 $start_date = Carbon::parse($data['start_date'])->startOfDay();
                 $end_date   = Carbon::parse($data['end_date'])->endOfDay();
                 $query->whereBetween('letter_date', [$start_date, $end_date]);
@@ -57,7 +57,7 @@ class WarningLetterService
                 )
                 ->get();
             DB::commit();
-            return $data;
+            return $response;
         } catch (Exception $e) {
             throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
         }
@@ -67,12 +67,12 @@ class WarningLetterService
     {
         DB::beginTransaction();
         try {
-            $data = WarningLetter::find($data['warning_letter_id']);
-            DB::commit();
-            if (!$data) {
+            $response = WarningLetter::find($data['warning_letter_id']);
+            if (!$response) {
                 throw new Exception('Warning letter data not found');
             }
-            return $data;
+            DB::commit();
+            return $response;
         } catch (Exception $e) {
             throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
         }

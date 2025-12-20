@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Surat Peringatan</title>
+    <title>Laporan Surat Teguran</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -61,7 +61,7 @@
 
 <body>
     <div class="header">
-        <h2 style="margin-bottom: 4px; margin-top: 0;">LAPORAN SURAT PERINGATAN</h2>
+        <h2 style="margin-bottom: 4px; margin-top: 0;">LAPORAN SURAT TEGURAN</h2>
         @php
             function parseCarbon($value, $is_translate = false)
             {
@@ -93,7 +93,6 @@
                 <th>Nama</th>
                 <th>Penerbit</th>
                 <th>Tanggal Terbit</th>
-                <th style="text-align: center;">SP Ke-</th>
                 <th>Alasan</th>
                 <th>Catatan</th>
             </tr>
@@ -105,7 +104,6 @@
                     <td>{{ $data->employee->name }}</td>
                     <td>{{ $data->issuer->name }}</td>
                     <td>{{ parseCarbon($data->letter_date, true) }}</td>
-                    <td style="text-align: center;">{{ $data->letter_number }}</td>
                     <td>{{ $data->reason }}</td>
                     <td>{{ $data->notes }}</td>
                 </tr>

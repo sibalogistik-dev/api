@@ -137,7 +137,7 @@ class WarningLetterController extends Controller
             $start      = $validated['start_date'] ?? null;
             $end        = $validated['end_date'] ?? null;
             $pdf        = Pdf::loadView('warning-letter.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
-            return $pdf->stream('Laporan SP Karyawan.pdf');
+            return $pdf->stream('Laporan Surat Peringatan Karyawan.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when warning letter report', $e->getMessage());
         }

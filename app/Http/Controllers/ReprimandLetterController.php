@@ -10,6 +10,7 @@ use App\Http\Requests\ReprimandLetterStoreRequest;
 use App\Http\Requests\ReprimandLetterUpdateRequest;
 use App\Models\ReprimandLetter;
 use App\Services\ReprimandLetterService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -118,18 +119,26 @@ class ReprimandLetterController extends Controller
     public function document(ReprimandLetterDocumentRequest $request)
     {
         try {
-            // 
+            $validated  = $request->validated();
+            $document   = $this->reprimandLetterService->document($validated);
+            $pdf        = Pdf::loadView('reprimand-letter.document', compact('document'))->setPaper('a4');
+            return $pdf->stream('Surat Teguran Karyawan.pdf');
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Error when reprimand letter document', $e->getMessage());
         }
     }
 
     public function report(ReprimandLetterReportRequest $request)
     {
         try {
-            // 
+            $validated  = $request->validated();
+            $report     = $this->reprimandLetterService->report($validated);
+            $start      = $validated['start_date'] ?? null;
+            $end        = $validated['end_date'] ?? null;
+            $pdf        = Pdf::loadView('reprimand-letter.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Surat Teguran Karyawan.pdf');
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Error when reprimand letter report', $e->getMessage());
         }
     }
 }
