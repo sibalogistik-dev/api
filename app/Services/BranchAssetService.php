@@ -17,6 +17,7 @@ class BranchAssetService
         DB::beginTransaction();
         $filePaths = [];
         try {
+            $filePaths['image_path']    = 'uploads/branch_asset/default.webp';
             if (isset($data['image_path']) && !empty($data['image_path'])) {
                 $filePaths['image_path']    = $this->storeFile($data['image_path'], 'uploads/branch_asset');
             }
@@ -27,7 +28,7 @@ class BranchAssetService
                 'name'          => $data['name'],
                 'price'         => $data['price'],
                 'quantity'      => $data['quantity'],
-                'image_path'    => $filePaths['image_path'] ?? null,
+                'image_path'    => $filePaths['image_path'],
                 'purchase_date' => $data['purchase_date'] ?? null,
                 'description'   => $data['description'] ?? null,
             ]);
@@ -61,6 +62,18 @@ class BranchAssetService
         } catch (Exception $e) {
             DB::rollBack();
             throw new Exception('Failed to update branch\'s asset data: ' . $e->getMessage());
+        }
+    }
+
+    public function report(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $response   = BranchAsset::query()->filter($data)->get();
+            DB::commit();
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate warning letter report: ' . $e->getMessage());
         }
     }
 

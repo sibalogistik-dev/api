@@ -6,15 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AttendanceStatusIndexRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'q',

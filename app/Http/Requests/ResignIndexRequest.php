@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ResignIndexRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }

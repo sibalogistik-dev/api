@@ -39,23 +39,7 @@ class WarningLetterService
     {
         DB::beginTransaction();
         try {
-            $response   = WarningLetter::when(isset($data['start_date']) && isset($data['end_date']), function ($query) use ($data) {
-                $start_date = Carbon::parse($data['start_date'])->startOfDay();
-                $end_date   = Carbon::parse($data['end_date'])->endOfDay();
-                $query->whereBetween('letter_date', [$start_date, $end_date]);
-            })
-                ->when(($employeeId = $data['employee_id'] ?? null) && $employeeId !== 'all',
-                    fn($query) => $query->where('employee_id', $employeeId)
-                )
-                ->when(
-                    ($issuerId = $data['issuer_id'] ?? null) && $issuerId !== 'all',
-                    fn($query) => $query->where('issued_by', $issuerId)
-                )
-                ->when(
-                    ($letterNumber = $data['letter_number'] ?? null) && $letterNumber !== 'all',
-                    fn($query) => $query->where('letter_number', $letterNumber)
-                )
-                ->get();
+            $response   = WarningLetter::query()->filter($data)->get();
             DB::commit();
             return $response;
         } catch (Exception $e) {

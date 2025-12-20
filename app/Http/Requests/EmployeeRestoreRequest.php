@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EmployeeRestoreRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'is_with_user' => ['sometimes', 'boolean']

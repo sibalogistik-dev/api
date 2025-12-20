@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AttendanceStatusStoreRequest extends FormRequest
+class BranchAssetReportRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,7 +14,9 @@ class AttendanceStatusStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => ['required', 'string', 'max:255']
+            'branch_id'     => ['nullable', 'integer'],
+            'asset_type_id' => ['nullable', 'integer'],
+            'is_vehicle'    => ['nullable', 'boolean']
         ];
     }
 }

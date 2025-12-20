@@ -42,6 +42,7 @@ Route::middleware('api')->group(function () {
             ]);
             // documents route
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
+            Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,     'report'])->name('branch-asset.report');
             Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,   'report'])->name('warning-letter.report');
             Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,   'document'])->name('warning-letter.report');
             Route::post('reprimand-letter/report',              [App\Http\Controllers\ReprimandLetterController::class, 'report'])->name('reprimand-letter.report');

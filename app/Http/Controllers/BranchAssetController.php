@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\BranchAssetIndexRequest;
+use App\Http\Requests\BranchAssetReportRequest;
 use App\Http\Requests\BranchAssetStoreRequest;
 use App\Http\Requests\BranchAssetUpdateRequest;
 use App\Models\BranchAsset;
@@ -118,6 +119,17 @@ class BranchAssetController extends Controller
             return ApiResponseHelper::success('Branch\'s asset data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when deleting branch\'s asset data', $e->getMessage());
+        }
+    }
+
+    public function report(BranchAssetReportRequest $request)
+    {
+        try {
+            $validated  = $request->validated();
+            $report     = $this->branchAssetService->report($validated);
+            return ApiResponseHelper::success('Branch\'s asset data.', $report);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when branch asset report', $e->getMessage());
         }
     }
 }
