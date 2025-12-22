@@ -104,8 +104,8 @@
                     <td>{{ $data->employee->name }}</td>
                     <td>{{ $data->issuer->name }}</td>
                     <td>{{ parseCarbon($data->letter_date, true) }}</td>
-                    <td>{{ $data->reason }}</td>
-                    <td>{{ $data->notes }}</td>
+                    <td>{!! $data->reason !!}</td>
+                    <td>{!! $data->notes !!}</td>
                 </tr>
             @empty
                 <tr>
