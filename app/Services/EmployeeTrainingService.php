@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\EmployeeTraining;
-use App\Models\Jabatan;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -18,20 +17,20 @@ class EmployeeTrainingService
             return $et;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to save job title data: ' . $e->getMessage());
+            throw new Exception('Failed to save employee training data: ' . $e->getMessage());
         }
     }
 
-    public function update(Jabatan $jabatan, array $data)
+    public function update(EmployeeTraining $employeeTraining, array $data)
     {
         DB::beginTransaction();
         try {
-            $jabatan->update($data);
+            $employeeTraining->update($data);
             DB::commit();
-            return $jabatan;
+            return $employeeTraining;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new Exception('Failed to update job title data: ' . $e->getMessage());
+            throw new Exception('Failed to update employee training data: ' . $e->getMessage());
         }
     }
 }

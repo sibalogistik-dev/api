@@ -48,8 +48,8 @@ class EmployeeTraining extends Model
         return $this->belongsTo(EmployeeTrainingType::class);
     }
 
-    public function karyawan()
+    public function employee()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsTo(Karyawan::class, 'employee_id');
     }
 }

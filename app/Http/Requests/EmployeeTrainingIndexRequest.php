@@ -16,7 +16,15 @@ class EmployeeTrainingIndexRequest extends FormRequest
     {
         return [
             'q'                 => ['nullable', 'string'],
-            'status'            => ['nullable', 'integer'],
+            'paginate'          => ['nullable', 'boolean'],
+            'perPage'           => ['nullable', 'integer', 'min:1'],
+            'status'            => [
+                'nullable',
+                Rule::when(
+                    $this->input('status') !== 'all',
+                    ['integer']
+                ),
+            ],
             'karyawan_id'       => [
                 'nullable',
                 Rule::when(

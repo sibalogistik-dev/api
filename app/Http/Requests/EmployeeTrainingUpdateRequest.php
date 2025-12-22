@@ -16,7 +16,11 @@ class EmployeeTrainingUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'karyawan_id'       => ['sometimes', 'integer', 'exists:karyawans,id'],
+            'training_type_id'  => ['sometimes', 'integer', 'exists:employee_training_types,id'],
+            'start_date'        => ['sometimes', 'date'],
+            'notes'             => ['sometimes', 'string', 'max:255'],
+            'status'            => ['sometimes', 'boolean']
         ];
     }
 }

@@ -12,43 +12,45 @@ Route::middleware('api')->group(function () {
 
             Route::apiResources([
                 // master data
-                'religion'          => App\Http\Controllers\AgamaController::class,
-                'education'         => App\Http\Controllers\PendidikanController::class,
-                'marriage-status'   => App\Http\Controllers\MarriageStatusController::class,
-                'attendance-status' => App\Http\Controllers\StatusAbsensiController::class,
+                'attendance-status'         => App\Http\Controllers\StatusAbsensiController::class,
+                'education'                 => App\Http\Controllers\PendidikanController::class,
+                'marriage-status'           => App\Http\Controllers\MarriageStatusController::class,
+                'religion'                  => App\Http\Controllers\AgamaController::class,
 
                 // Indonesia Regional
-                'village'           => App\Http\Controllers\KelurahanController::class,
-                'district'          => App\Http\Controllers\KecamatanController::class,
-                'city'              => App\Http\Controllers\KotaKabController::class,
-                'province'          => App\Http\Controllers\ProvinsiController::class,
+                'village'                   => App\Http\Controllers\KelurahanController::class,
+                'district'                  => App\Http\Controllers\KecamatanController::class,
+                'city'                      => App\Http\Controllers\KotaKabController::class,
+                'province'                  => App\Http\Controllers\ProvinsiController::class,
 
                 // sensitive data
-                'company'           => App\Http\Controllers\PerusahaanController::class,
-                'branch'            => App\Http\Controllers\CabangController::class,
-                'employee'          => App\Http\Controllers\KaryawanController::class,
-                'job-title'         => App\Http\Controllers\JabatanController::class,
-                'job-description'   => App\Http\Controllers\JobDescriptionController::class,
-                'attendance'        => App\Http\Controllers\AbsensiController::class,
-                'remote-attendance' => App\Http\Controllers\RemoteAttendanceController::class,
-                'daily-report'      => App\Http\Controllers\EmployeeDailyReportController::class,
-                'overtime'          => App\Http\Controllers\OvertimeController::class,
-                'payroll'           => App\Http\Controllers\PayrollController::class,
-                'resign'            => App\Http\Controllers\ResignController::class,
-                'face-recognition'  => App\Http\Controllers\FaceRecognitionModelController::class,
-                'branch-asset'      => App\Http\Controllers\BranchAssetController::class,
-                'reprimand-letter'  => App\Http\Controllers\ReprimandLetterController::class,
-                'warning-letter'    => App\Http\Controllers\WarningLetterController::class,
+                'attendance'                => App\Http\Controllers\AbsensiController::class,
+                'branch'                    => App\Http\Controllers\CabangController::class,
+                'branch-asset'              => App\Http\Controllers\BranchAssetController::class,
+                'company'                   => App\Http\Controllers\PerusahaanController::class,
+                'daily-report'              => App\Http\Controllers\EmployeeDailyReportController::class,
+                'employee'                  => App\Http\Controllers\KaryawanController::class,
+                'employee-training'         => App\Http\Controllers\EmployeeTrainingController::class,
+                'employee-training-type'    => App\Http\Controllers\EmployeeTrainingTypeController::class,
+                'face-recognition'          => App\Http\Controllers\FaceRecognitionModelController::class,
+                'job-description'           => App\Http\Controllers\JobDescriptionController::class,
+                'job-title'                 => App\Http\Controllers\JabatanController::class,
+                'overtime'                  => App\Http\Controllers\OvertimeController::class,
+                'payroll'                   => App\Http\Controllers\PayrollController::class,
+                'remote-attendance'         => App\Http\Controllers\RemoteAttendanceController::class,
+                'reprimand-letter'          => App\Http\Controllers\ReprimandLetterController::class,
+                'resign'                    => App\Http\Controllers\ResignController::class,
+                'warning-letter'            => App\Http\Controllers\WarningLetterController::class,
             ]);
             // documents route
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
             Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,     'report'])->name('branch-asset.report');
-            Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,   'report'])->name('warning-letter.report');
-            Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,   'document'])->name('warning-letter.report');
-            Route::post('reprimand-letter/report',              [App\Http\Controllers\ReprimandLetterController::class, 'report'])->name('reprimand-letter.report');
-            Route::post('reprimand-letter/document',            [App\Http\Controllers\ReprimandLetterController::class, 'document'])->name('reprimand-letter.report');
             Route::post('payroll/report',                       [App\Http\Controllers\PayrollController::class,         'report'])->name('payroll.report');
             Route::post('payroll/slip',                         [App\Http\Controllers\PayrollController::class,         'slip'])->name('payroll.slip');
+            Route::post('reprimand-letter/document',            [App\Http\Controllers\ReprimandLetterController::class, 'document'])->name('reprimand-letter.report');
+            Route::post('reprimand-letter/report',              [App\Http\Controllers\ReprimandLetterController::class, 'report'])->name('reprimand-letter.report');
+            Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,   'document'])->name('warning-letter.report');
+            Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,   'report'])->name('warning-letter.report');
 
             // restore route
             Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,        'restore'])->name('employee.restore');
