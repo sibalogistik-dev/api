@@ -10,27 +10,15 @@ class AttendanceStatusService
 {
     public function create(array $data)
     {
-        DB::beginTransaction();
-        try {
-            $attendanceStatus = StatusAbsensi::create($data);
-            DB::commit();
-            return $attendanceStatus;
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception('Failed to save attendance status data: ' . $e->getMessage());
-        }
+        return DB::transaction(function () use ($data) {
+            return StatusAbsensi::create($data);
+        });
     }
 
     public function update(StatusAbsensi $attendanceStatus, array $data)
     {
-        DB::beginTransaction();
-        try {
-            $attendanceStatus->update($data);
-            DB::commit();
-            return $attendanceStatus;
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new Exception('Failed to update attendance status data: ' . $e->getMessage());
-        }
+        return DB::transaction(function () use ($attendanceStatus, $data) {
+            return $attendanceStatus->update($data);
+        });
     }
 }

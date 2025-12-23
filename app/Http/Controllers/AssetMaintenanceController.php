@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssetMaintenance;
+use App\Services\AssetMaintenanceService;
 use Illuminate\Http\Request;
 
 class AssetMaintenanceController extends Controller
 {
+    protected $assetMaintenanceService;
+
+    public function __construct(AssetMaintenanceService $assetMaintenanceService)
+    {
+        $this->assetMaintenanceService = $assetMaintenanceService;
+    }
 
     public function index()
     {
