@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssetMaintenanceIndexRequest;
+use App\Http\Requests\AssetMaintenanceStoreRequest;
+use App\Http\Requests\AssetMaintenanceUpdateRequest;
 use App\Models\AssetMaintenance;
 use App\Services\AssetMaintenanceService;
 use Illuminate\Http\Request;
@@ -15,27 +18,27 @@ class AssetMaintenanceController extends Controller
         $this->assetMaintenanceService = $assetMaintenanceService;
     }
 
-    public function index()
+    public function index(AssetMaintenanceIndexRequest $request)
     {
         //
     }
 
-    public function store(Request $request)
+    public function store(AssetMaintenanceStoreRequest $request)
     {
         //
     }
 
-    public function show(AssetMaintenance $assetMaintenance)
+    public function show($assetMaintenance)
     {
         //
     }
 
-    public function update(Request $request, AssetMaintenance $assetMaintenance)
+    public function update(AssetMaintenanceUpdateRequest $request, $assetMaintenance)
     {
         //
     }
 
-    public function destroy(AssetMaintenance $assetMaintenance)
+    public function destroy($assetMaintenance)
     {
         //
     }
