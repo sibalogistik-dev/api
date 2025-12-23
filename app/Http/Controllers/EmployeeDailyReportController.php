@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\EmployeeDailyReportIndexRequest;
+use App\Http\Requests\EmployeeDailyReportReportRequest;
 use App\Http\Requests\EmployeeDailyReportStoreRequest;
 use App\Http\Requests\EmployeeDailyReportUpdateRequest;
 use App\Models\EmployeeDailyReport;
 use App\Services\EmployeeDailyReportService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -101,6 +103,20 @@ class EmployeeDailyReportController extends Controller
             return ApiResponseHelper::success('Employee\'s daily report data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when deleting employee\'s daily report data', $e->getMessage());
+        }
+    }
+
+    public function report(EmployeeDailyReportReportRequest $request)
+    {
+        try {
+            $validated  = $request->validated();
+            $report     = $this->employeeDailyReportService->report($validated);
+            $start      = $validated['start_date'] ?? null;
+            $end        = $validated['end_date'] ?? null;
+            $pdf        = Pdf::loadView('employee-daily-report.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Harian Karyawan.pdf');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when warning letter report', $e->getMessage());
         }
     }
 }

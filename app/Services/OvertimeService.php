@@ -33,4 +33,16 @@ class OvertimeService
             throw new Exception('Failed to update overtime data: ' . $e->getMessage());
         }
     }
+
+    public function report(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $response   = Overtime::query()->filter($data)->get();
+            DB::commit();
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate overtime report: ' . $e->getMessage());
+        }
+    }
 }

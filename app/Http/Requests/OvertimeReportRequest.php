@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OvertimeIndexRequest extends FormRequest
+class OvertimeReportRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,9 +14,6 @@ class OvertimeIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'q'             => ['nullable', 'string'],
-            'paginate'      => ['nullable', 'boolean'],
-            'perPage'       => ['nullable', 'integer'],
             'start_date'    => ['nullable', 'date'],
             'end_date'      => ['nullable', 'date'],
             'employee_id'   => ['nullable', 'integer'],

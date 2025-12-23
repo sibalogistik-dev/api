@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\OvertimeIndexRequest;
+use App\Http\Requests\OvertimeReportRequest;
 use App\Http\Requests\OvertimeStoreRequest;
 use App\Http\Requests\OvertimeUpdateRequest;
 use App\Models\Overtime;
 use App\Services\OvertimeService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -101,6 +103,20 @@ class OvertimeController extends Controller
             return ApiResponseHelper::success('Overtime data has been deleted successfully');
         } else {
             return ApiResponseHelper::error('Overtime data failed to delete', [], 500);
+        }
+    }
+
+    public function report(OvertimeReportRequest $request)
+    {
+        try {
+            $validated  = $request->validated();
+            $report     = $this->overtimeService->report($validated);
+            $start      = $validated['start_date'] ?? null;
+            $end        = $validated['end_date'] ?? null;
+            $pdf        = Pdf::loadView('overtime.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Surat Peringatan Karyawan.pdf');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when overtime report', $e->getMessage());
         }
     }
 }

@@ -27,6 +27,8 @@ class BranchAssetIndexRequest extends FormRequest
                     ['boolean']
                 ),
             ],
+            'start_date'    => ['nullable', 'date', 'required_with:end_date'],
+            'end_date'      => ['nullable', 'date', 'required_with:start_date', 'after_or_equal:start_date'],
         ];
     }
 }

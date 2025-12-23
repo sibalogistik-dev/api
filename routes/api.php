@@ -44,14 +44,16 @@ Route::middleware('api')->group(function () {
                 'warning-letter'            => App\Http\Controllers\WarningLetterController::class,
             ]);
             // documents route
-            Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,         'report'])->name('attendance.report');
-            Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,     'report'])->name('branch-asset.report');
-            Route::post('payroll/report',                       [App\Http\Controllers\PayrollController::class,         'report'])->name('payroll.report');
-            Route::post('payroll/slip',                         [App\Http\Controllers\PayrollController::class,         'slip'])->name('payroll.slip');
-            Route::post('reprimand-letter/document',            [App\Http\Controllers\ReprimandLetterController::class, 'document'])->name('reprimand-letter.report');
-            Route::post('reprimand-letter/report',              [App\Http\Controllers\ReprimandLetterController::class, 'report'])->name('reprimand-letter.report');
-            Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,   'document'])->name('warning-letter.report');
-            Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,   'report'])->name('warning-letter.report');
+            Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,             'report'])->name('attendance.report');
+            Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,         'report'])->name('branch-asset.report');
+            Route::post('daily-report/report',                  [App\Http\Controllers\EmployeeDailyReportController::class, 'report'])->name('daily-report.report');
+            Route::post('overtime/report',                      [App\Http\Controllers\OvertimeController::class,            'report'])->name('overtime.report');
+            Route::post('payroll/report',                       [App\Http\Controllers\PayrollController::class,             'report'])->name('payroll.report');
+            Route::post('payroll/slip',                         [App\Http\Controllers\PayrollController::class,             'slip'])->name('payroll.slip');
+            Route::post('reprimand-letter/document',            [App\Http\Controllers\ReprimandLetterController::class,     'document'])->name('reprimand-letter.report');
+            Route::post('reprimand-letter/report',              [App\Http\Controllers\ReprimandLetterController::class,     'report'])->name('reprimand-letter.report');
+            Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,       'document'])->name('warning-letter.report');
+            Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,       'report'])->name('warning-letter.report');
 
             // restore route
             Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,        'restore'])->name('employee.restore');

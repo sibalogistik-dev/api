@@ -33,4 +33,16 @@ class EmployeeDailyReportService
             throw new Exception('Failed to update employee\'s daily report data: ' . $e->getMessage());
         }
     }
+
+    public function report($data)
+    {
+        DB::beginTransaction();
+        try {
+            $response   = EmployeeDailyReport::query()->filter($data)->get();
+            DB::commit();
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate employee\'s daily report: ' . $e->getMessage());
+        }
+    }
 }

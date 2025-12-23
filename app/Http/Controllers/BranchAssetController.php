@@ -9,6 +9,7 @@ use App\Http\Requests\BranchAssetStoreRequest;
 use App\Http\Requests\BranchAssetUpdateRequest;
 use App\Models\BranchAsset;
 use App\Services\BranchAssetService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -127,7 +128,10 @@ class BranchAssetController extends Controller
         try {
             $validated  = $request->validated();
             $report     = $this->branchAssetService->report($validated);
-            return ApiResponseHelper::success('Branch\'s asset data.', $report);
+            $start      = $validated['start_date'] ?? null;
+            $end        = $validated['end_date'] ?? null;
+            $pdf        = Pdf::loadView('branch-asset.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Aset Perusahaan.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when branch asset report', $e->getMessage());
         }

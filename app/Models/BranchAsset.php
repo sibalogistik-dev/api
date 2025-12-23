@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -47,6 +48,12 @@ class BranchAsset extends Model
 
         $query->when(array_key_exists('is_vehicle', $filters) && $filters['is_vehicle'] !== 'all', function ($query) use ($filters) {
             $query->where('is_vehicle', $filters['is_vehicle']);
+        });
+
+        $query->when(isset($filters['start_date']) && isset($filters['end_date']), function ($query) use ($filters) {
+            $start_date = Carbon::parse($filters['start_date'])->startOfDay();
+            $end_date   = Carbon::parse($filters['end_date'])->endOfDay();
+            $query->whereBetween('purchase_date', [$start_date, $end_date]);
         });
     }
 
