@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BranchAssetIndexRequest extends FormRequest
 {
@@ -14,11 +15,18 @@ class BranchAssetIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'branch_id'     => ['nullable', 'integer'],
-            'asset_type_id' => ['nullable', 'integer'],
             'q'             => ['nullable', 'string'],
             'paginate'      => ['nullable', 'boolean'],
             'perPage'       => ['nullable', 'integer'],
+            'branch_id'     => ['nullable', 'integer', 'exists:cabangs,id'],
+            'asset_type_id' => ['nullable', 'integer', 'exists:asset_types,id'],
+            'is_vehicle'            => [
+                'nullable',
+                Rule::when(
+                    $this->input('is_vehicle') !== 'all',
+                    ['boolean']
+                ),
+            ],
         ];
     }
 }

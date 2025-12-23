@@ -45,8 +45,8 @@ class BranchAsset extends Model
             $query->where('asset_type_id', $assetTypeId);
         });
 
-        $query->when($filters['is_vehicle'] ?? null, function ($query, $isVehicle) {
-            $query->where('is_vehicle', $isVehicle);
+        $query->when(array_key_exists('is_vehicle', $filters) && $filters['is_vehicle'] !== 'all', function ($query) use ($filters) {
+            $query->where('is_vehicle', $filters['is_vehicle']);
         });
     }
 

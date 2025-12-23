@@ -25,10 +25,10 @@ class EmployeeTrainingIndexRequest extends FormRequest
                     ['integer']
                 ),
             ],
-            'karyawan_id'       => [
+            'employee_id'       => [
                 'nullable',
                 Rule::when(
-                    $this->input('karyawan_id') !== 'all',
+                    $this->input('employee_id') !== 'all',
                     ['integer', 'exists:karyawans,id']
                 ),
             ],

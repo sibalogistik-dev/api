@@ -22,14 +22,15 @@ class EmployeeTraining extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->whereHas('karyawan', function ($query) use ($keyword) {
-                $query->where('name', 'like', '%' . $keyword . '%');
-            });
+            $query->where('notes', 'like', '%' . $keyword . '%')
+                ->orWhereHas('employee', function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%' . $keyword . '%');
+                });
         });
 
-        $query->when($filters['karyawan_id'] ?? null, function ($query, $karyawanId) {
+        $query->when($filters['employee_id'] ?? null, function ($query, $karyawanId) {
             if ($karyawanId !== 'all') {
-                $query->where('karyawan_id', $karyawanId);
+                $query->where('employee_id', $karyawanId);
             }
         });
 
@@ -39,10 +40,8 @@ class EmployeeTraining extends Model
             }
         });
 
-        $query->when($filters['status'] ?? null, function ($query, $status) {
-            if ($status !== 'all') {
-                $query->where('status', $status);
-            }
+        $query->when(array_key_exists('status', $filters) && $filters['status'] !== 'all', function ($query) use ($filters) {
+            $query->where('status', $filters['status']);
         });
     }
 
