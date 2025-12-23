@@ -24,6 +24,7 @@ Route::middleware('api')->group(function () {
                 'province'                  => App\Http\Controllers\ProvinsiController::class,
 
                 // sensitive data
+                'asset-maintenance'         => App\Http\Controllers\AssetMaintenanceController::class,
                 'attendance'                => App\Http\Controllers\AbsensiController::class,
                 'branch'                    => App\Http\Controllers\CabangController::class,
                 'branch-asset'              => App\Http\Controllers\BranchAssetController::class,

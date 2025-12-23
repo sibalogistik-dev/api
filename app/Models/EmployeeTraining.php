@@ -10,7 +10,7 @@ class EmployeeTraining extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'karyawan_id',
+        'employee_id',
         'training_type_id',
         'start_date',
         'notes',
