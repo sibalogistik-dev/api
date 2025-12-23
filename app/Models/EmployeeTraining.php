@@ -26,16 +26,19 @@ class EmployeeTraining extends Model
                 $query->where('name', 'like', '%' . $keyword . '%');
             });
         });
+
         $query->when($filters['karyawan_id'] ?? null, function ($query, $karyawanId) {
             if ($karyawanId !== 'all') {
                 $query->where('karyawan_id', $karyawanId);
             }
         });
+
         $query->when($filters['training_type_id'] ?? null, function ($query, $trainingTypeId) {
             if ($trainingTypeId !== 'all') {
                 $query->where('training_type_id', $trainingTypeId);
             }
         });
+
         $query->when($filters['status'] ?? null, function ($query, $status) {
             if ($status !== 'all') {
                 $query->where('status', $status);

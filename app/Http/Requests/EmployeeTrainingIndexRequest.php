@@ -36,7 +36,7 @@ class EmployeeTrainingIndexRequest extends FormRequest
                 'nullable',
                 Rule::when(
                     $this->input('training_type_id') !== 'all',
-                    ['integer', 'exists:employee_training_type,id']
+                    ['integer', 'exists:employee_training_types,id']
                 ),
             ],
         ];
