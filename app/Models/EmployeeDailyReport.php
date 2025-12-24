@@ -36,11 +36,8 @@ class EmployeeDailyReport extends Model
                 $query->where('id', $keyword);
             });
         });
-        $query->when(isset($filters['start_date']) && isset($filters['end_date']), function ($query) use ($filters) {
-            $start_date = Carbon::parse($filters['start_date'])->startOfDay();
-            $end_date   = Carbon::parse($filters['end_date'])->endOfDay();
-            $query->whereBetween('date', [$start_date, $end_date]);
-        });
+        $query->when($filters['start_date']     ?? null, fn($q, $v) => $q->whereDate('date', '>=', $v));
+        $query->when($filters['end_date']       ?? null, fn($q, $v) => $q->whereDate('date', '<=', $v));
     }
 
     public function employee()
