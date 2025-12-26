@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\AssetMaintenanceIndexRequest;
 use App\Http\Requests\AssetMaintenanceStoreRequest;
 use App\Http\Requests\AssetMaintenanceUpdateRequest;
 use App\Models\AssetMaintenance;
 use App\Services\AssetMaintenanceService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AssetMaintenanceController extends Controller
 {
@@ -20,26 +23,71 @@ class AssetMaintenanceController extends Controller
 
     public function index(AssetMaintenanceIndexRequest $request)
     {
-        //
+        try {
+            $validated          = $request->validated();
+            $assetMaintenanceQ  = AssetMaintenance::query()->filter($validated);
+            $assetMaintenance   = isset($validated['paginate']) && $validated['paginate'] ? $assetMaintenanceQ->paginate($validated['perPage'] ?? 10) : $assetMaintenanceQ->get();
+            $tranformItems      = $assetMaintenance instanceof LengthAwarePaginator ? $assetMaintenance->getCollection() : $assetMaintenance;
+            $transformedAM      = $tranformItems->map(function ($item) {
+                return [
+                    'id'                        => $item->id,
+                    'asset_id'                  => $item->asset_id,
+                    'asset_name'                => $item->asset->name,
+                    'creator_id'                => $item->creator_id,
+                    'creator_name'              => $item->creator->name,
+                    'maintenance_date'          => $item->maintenance_date,
+                    'min_maintenance_cost'      => $item->min_maintenance_cost,
+                    'max_maintenance_cost'      => $item->max_maintenance_cost,
+                    'actual_maintenance_cost'   => $item->actual_maintenance_cost,
+                    'description'               => $item->description,
+                    'approval_status'           => $item->status,
+                    'receipt'                   => $item->receipt,
+                ];
+            });
+            if ($assetMaintenance instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Asset maintenance data', $assetMaintenance->setCollection($transformedAM));
+            } else {
+                return ApiResponseHelper::success('Asset maintenance data', $transformedAM);
+            }
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get asset maintenance data', $e->getMessage());
+        }
     }
 
     public function store(AssetMaintenanceStoreRequest $request)
     {
-        //
+        try {
+            $assetMaintenance = $this->assetMaintenanceService->create($request->validated());
+            return ApiResponseHelper::success('Asset maintenance data has been added successfully', $assetMaintenance);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving asset maintenance data', $e->getMessage());
+        }
     }
 
     public function show($assetMaintenance)
     {
-        //
+        try {
+            //code...
+        } catch (Exception $e) {
+            //code...
+        }
     }
 
     public function update(AssetMaintenanceUpdateRequest $request, $assetMaintenance)
     {
-        //
+        try {
+            //code...
+        } catch (Exception $e) {
+            //code...
+        }
     }
 
     public function destroy($assetMaintenance)
     {
-        //
+        try {
+            //code...
+        } catch (Exception $e) {
+            //code...
+        }
     }
 }
