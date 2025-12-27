@@ -87,7 +87,6 @@ class MarriageStatusController extends Controller
             if (!$marriageStatus) {
                 throw new Exception('Marriage status data not found');
             }
-
             $delete = $marriageStatus->delete();
             if (!$delete) {
                 throw new Exception('Failed to delete marriage status data');

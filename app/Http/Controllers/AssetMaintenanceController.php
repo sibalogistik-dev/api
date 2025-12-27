@@ -67,27 +67,31 @@ class AssetMaintenanceController extends Controller
     public function show($assetMaintenance)
     {
         try {
-            //code...
+            $assetM = AssetMaintenance::findOrFail($assetMaintenance);
+            return ApiResponseHelper::success('Asset maintenance detail', $assetM);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Failed to get asset maintenance detail', $e->getMessage());
         }
     }
 
     public function update(AssetMaintenanceUpdateRequest $request, $assetMaintenance)
     {
         try {
-            //code...
+            $assetM = AssetMaintenance::findOrFail($assetMaintenance);
+            $this->assetMaintenanceService->update($assetM, $request->validated());
+            return ApiResponseHelper::success('Asset maintenance data has been updated successfully');
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when updating asset maintenance data', $e->getMessage());
         }
     }
 
     public function destroy($assetMaintenance)
     {
         try {
-            //code...
+            AssetMaintenance::findOrFail($assetMaintenance)->delete();
+            return ApiResponseHelper::success('Asset maintenance data has been deleted successfully');
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when deleting asset maintenance data', $e->getMessage());
         }
     }
 }

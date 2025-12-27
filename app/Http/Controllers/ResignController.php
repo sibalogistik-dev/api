@@ -93,7 +93,6 @@ class ResignController extends Controller
             if (!$resign) {
                 throw new Exception('Resign data not found');
             }
-
             $delete = $resign->delete();
             if (!$delete) {
                 throw new Exception('Failed to delete resign data');

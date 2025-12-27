@@ -44,10 +44,7 @@ class AgamaController extends Controller
     public function show($religion)
     {
         try {
-            $agama = Agama::find($religion);
-            if (!$agama) {
-                throw new Exception('Religion data not found');
-            }
+            $agama = Agama::findOrFail($religion);
             return ApiResponseHelper::success('Religion detail', $agama);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get religion data', $e->getMessage());
@@ -57,10 +54,7 @@ class AgamaController extends Controller
     public function update(ReligionUpdateRequest $request, $religion)
     {
         try {
-            $agama = Agama::find($religion);
-            if (!$agama) {
-                throw new Exception('Religion data not found');
-            }
+            $agama = Agama::findOrFail($religion);
             $this->religionService->update($agama, $request->validated());
             return ApiResponseHelper::success('Religion data has been updated successfully');
         } catch (Exception $e) {
@@ -71,14 +65,7 @@ class AgamaController extends Controller
     public function destroy($religion)
     {
         try {
-            $agama = Agama::find($religion);
-            if (!$agama) {
-                throw new Exception('Religion data not found');
-            }
-            $delete = $agama->delete();
-            if (!$delete) {
-                throw new Exception('Failed to delete religion data', 500);
-            }
+            Agama::findOrFail($religion)->delete();
             return ApiResponseHelper::success('Religion data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Religion data failed to delete', $e->getMessage());

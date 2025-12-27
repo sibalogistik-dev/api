@@ -65,4 +65,10 @@ class EmployeeDetailsController extends Controller
         ];
         return ApiResponseHelper::success("Employee's details", $data);
     }
+
+    public function employeeCount()
+    {
+        $employee = Karyawan::count();
+        return ApiResponseHelper::success("Employee's count", $employee);
+    }
 }

@@ -6,23 +6,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AssetMaintenanceUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function authorize()
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //
+            'asset_id'                  => ['sometimes', 'exists:branch_assets,id'],
+            'creator_id'                => ['sometimes', 'exists:karyawans,id'],
+            'maintenance_date'          => ['sometimes', 'date_format:Y-m-d'],
+            'min_maintenance_cost'      => ['sometimes', 'integer', 'min:0'],
+            'max_maintenance_cost'      => ['sometimes', 'integer', 'min:0'],
+            'actual_maintenance_cost'   => ['sometimes', 'integer', 'min:0'],
+            'description'               => ['sometimes', 'string'],
+            'receipt'                   => ['sometimes', 'file', 'mimes:pdf,jpeg,jpg,png,webp', 'max:5120'],
+            'approval_status'           => ['sometimes', 'string', 'in:pending,approved,rejected'],
         ];
     }
 }

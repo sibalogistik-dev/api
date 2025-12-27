@@ -67,6 +67,9 @@ Route::middleware('api')->group(function () {
 
             Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class,         'hrdAttendanceAdd'])->name('attendance.storeByHRD');
             Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class,         'generatePayrollPersonal'])->name('payroll.generatePersonal');
+
+            Route::get('dashboard/count-employee',              [App\Http\Controllers\EmployeeDetailsController::class, 'employeeCount'])->name('dashboard.employeeCount');
+            Route::get('dashboard/count-attendance',            [App\Http\Controllers\AbsensiController::class,         'attendanceCount'])->name('dashboard.attendanceCount');
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');

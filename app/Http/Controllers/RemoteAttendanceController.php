@@ -90,7 +90,6 @@ class RemoteAttendanceController extends Controller
             if (!$remoteAttendance) {
                 throw new Exception('Remote attendance data not found');
             }
-
             $delete = $remoteAttendance->delete();
             if (!$delete) {
                 throw new Exception('Failed to delete remote attendance data', 500);

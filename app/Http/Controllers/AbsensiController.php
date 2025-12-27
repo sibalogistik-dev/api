@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
 {
@@ -193,5 +194,15 @@ class AbsensiController extends Controller
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when generating attendance report", $e->getMessage());
         }
+    }
+
+    public function attendanceCount(Request $request)
+    {
+        $validate   = Validator::make($request->all(), [
+            'month' => ['sometimes', 'date_format:Y-m']
+        ]);
+        $validated  = $validate->validated();
+        $month      = $validated['month'] ?? date('Y-m');
+        
     }
 }

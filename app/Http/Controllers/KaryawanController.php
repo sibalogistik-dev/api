@@ -94,13 +94,11 @@ class KaryawanController extends Controller
             if (!$employee) {
                 throw new Exception('Employee data not found');
             }
-
             $user = $employee->user()->withTrashed()->first();
             if (!$user) {
                 throw new Exception('Failed to delete user data');
             }
             $user->delete();
-
             $delete = $employee->delete();
             if (!$delete) {
                 throw new Exception('Failed to delete employee data');
