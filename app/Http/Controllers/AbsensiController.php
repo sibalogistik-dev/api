@@ -271,4 +271,23 @@ class AbsensiController extends Controller
         }
         return ApiResponseHelper::success('Attendance count', $result);
     }
+
+    public function attendanceUnsubmitted(Request $request)
+    {
+        $today = $request->input('date') ?? Carbon::today()->toDateString();
+        $data = Karyawan::query()
+            ->whereDoesntHave('attendance', function ($q) use ($today) {
+                $q->where('date', $today);
+            })
+            ->get();
+        $result = $data->map(function ($item) {
+            return [
+                'id'                => $item->id,
+                'name'              => $item->name,
+                'branch_name'       => $item->branch->name,
+                'job_title_name'   => $item->jobTitle->name,
+            ];
+        });
+        return ApiResponseHelper::success('Unsubmitted attendance data', $result);
+    }
 }
