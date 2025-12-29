@@ -20,6 +20,10 @@ class AutoAbsentWithoutReason extends Command
 
         DB::transaction(function () use ($today, $now) {
             $employees = Karyawan::query()
+                ->where(function ($q) use ($today) {
+                    $q->whereNull('end_date')
+                        ->orWhere('end_date', '>=', $today);
+                })
                 ->whereDoesntHave('attendance', function ($q) use ($today) {
                     $q->where('date', $today);
                 })
