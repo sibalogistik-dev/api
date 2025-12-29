@@ -90,3 +90,7 @@ Route::middleware('api')->group(function () {
     Route::get('/get/village',                  [App\Http\Controllers\IndonesiaController::class, 'getAllVillage']);
     Route::get('/get/village/{code}',           [App\Http\Controllers\IndonesiaController::class, 'getVillage']);
 });
+
+Route::get('time', function () {
+    return date('Y-m-d H:i:s');
+});
