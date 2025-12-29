@@ -285,7 +285,8 @@ class AbsensiController extends Controller
                 'id'                => $item->id,
                 'name'              => $item->name,
                 'branch_name'       => $item->branch->name,
-                'job_title_name'   => $item->jobTitle->name,
+                'job_title_name'    => $item->jobTitle->name,
+                'phone'             => $item->employeeDetails->phone_number
             ];
         });
         return ApiResponseHelper::success('Unsubmitted attendance data', $result);
