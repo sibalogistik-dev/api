@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AbsensiController extends Controller
@@ -198,11 +199,76 @@ class AbsensiController extends Controller
 
     public function attendanceCount(Request $request)
     {
-        $validate   = Validator::make($request->all(), [
-            'month' => ['sometimes', 'date_format:Y-m']
+        $validator = Validator::make($request->all(), [
+            'month' => ['sometimes', 'date_format:Y-m'],
         ]);
-        $validated  = $validate->validated();
-        $month      = $validated['month'] ?? date('Y-m');
-        
+
+        $validated = $validator->validated();
+        $month     = $validated['month'] ?? now()->format('Y-m');
+
+        $statusMap = [
+            1 => 'present',
+            2 => 'permission',
+            3 => 'sick',
+            4 => 'absent',
+            5 => 'leave',
+            6 => 'offday',
+        ];
+
+        $currentMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+
+        $startDate = $currentMonth->copy()->subMonth()->day(28);
+        $endDate   = $currentMonth->copy()->day(27);
+
+        $raw = DB::table('absensis')
+            ->selectRaw('date, attendance_status_id, COUNT(*) as total')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('date', 'attendance_status_id')
+            ->get();
+
+        $indexed = [];
+
+        foreach ($raw as $row) {
+            if (!isset($statusMap[$row->attendance_status_id])) {
+                continue;
+            }
+
+            $dateKey = Carbon::parse($row->date)->toDateString();
+            $status  = $statusMap[$row->attendance_status_id];
+
+            $indexed[$dateKey][$status] = (int) $row->total;
+        }
+
+        $result = [];
+        $cursor = $startDate->copy();
+
+        while ($cursor->lte($endDate)) {
+            if ($cursor->isSunday()) {
+                $cursor->addDay();
+                continue;
+            }
+
+            $date = $cursor->toDateString();
+
+            $row = [
+                'date'        => $date,
+                'present'     => 0,
+                'permission'  => 0,
+                'sick'        => 0,
+                'absent'      => 0,
+                'leave'       => 0,
+                'offday'      => 0,
+            ];
+
+            if (isset($indexed[$date])) {
+                foreach ($indexed[$date] as $key => $value) {
+                    $row[$key] = $value;
+                }
+            }
+
+            $result[] = $row;
+            $cursor->addDay();
+        }
+        return ApiResponseHelper::success('Attendance count', $result);
     }
 }
