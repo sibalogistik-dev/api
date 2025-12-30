@@ -154,16 +154,12 @@
             }
             function genNumb($id)
             {
-                // GUNAKAN RETURN, JANGAN ECHO
                 return str_pad($id, 5, '0', STR_PAD_LEFT);
             }
 
             function documentNumber($data)
             {
-                // Variabel $numb sekarang akan berisi nilai "00003", bukan null
                 $numb = genNumb($data->id);
-
-                // Logika penggabungan string
                 $docNumb = '0' . $data->letter_number . '/SP/' . $numb . '/' . $data->letter_date->format('Y');
 
                 return $docNumb;

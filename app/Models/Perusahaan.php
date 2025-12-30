@@ -24,7 +24,10 @@ class Perusahaan extends Model
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
             $query
                 ->where('name', 'like', "%{$keyword}%")
-                ->orWhere('codename', 'like', "%{$keyword}%");
+                ->orWhere('codename', 'like', "%{$keyword}%")
+                ->orWhere('email', 'like', "%{$keyword}%")
+                ->orWhere('website', 'like', "%{$keyword}%")
+                ->orWhere('company_brand', 'like', "%{$keyword}%");
         });
     }
 

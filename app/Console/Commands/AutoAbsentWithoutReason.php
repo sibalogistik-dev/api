@@ -35,7 +35,6 @@ class AutoAbsentWithoutReason extends Command
                     'employee_id'          => $employee->id,
                     'attendance_status_id' => 4,
                     'date'                 => $today,
-                    'start_time'           => $now,
                     'description'          => 'Auto absent (tanpa keterangan)',
                 ]);
             }

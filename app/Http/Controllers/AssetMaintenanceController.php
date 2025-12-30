@@ -33,6 +33,7 @@ class AssetMaintenanceController extends Controller
                     'id'                        => $item->id,
                     'asset_id'                  => $item->asset_id,
                     'asset_name'                => $item->asset->name,
+                    'asset_branch_name'         => $item->asset->branch->name,
                     'creator_id'                => $item->creator_id,
                     'creator_name'              => $item->creator->name,
                     'maintenance_date'          => $item->maintenance_date,

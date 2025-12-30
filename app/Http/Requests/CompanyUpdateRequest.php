@@ -14,8 +14,11 @@ class CompanyUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => ['nullable', 'string', 'max:255'],
-            'codename'  => ['nullable', 'string', 'max:255']
+            'name'          => ['sometimes', 'string', 'max:255'],
+            'codename'      => ['sometimes', 'string', 'max:255'],
+            'email'         => ['sometimes', 'string', 'email', 'max:255'],
+            'website'       => ['sometimes', 'string', 'max:255'],
+            'company_brand' => ['sometimes', 'string', 'max:255'],
         ];
     }
 }

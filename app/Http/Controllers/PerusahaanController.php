@@ -23,7 +23,7 @@ class PerusahaanController extends Controller
     public function index(CompanyIndexRequest $request)
     {
         $validated          = $request->validated();
-        $companyQ       = Perusahaan::query()->filter($validated)->orderBy('id', 'desc');
+        $companyQ           = Perusahaan::query()->filter($validated)->orderBy('id', 'desc');
         $company            = isset($validated['paginate']) && $validated['paginate'] ? $companyQ->paginate($validated['perPage'] ?? 10) : $companyQ->get();
         $transformedItems   = $company instanceof LengthAwarePaginator ? $company->getCollection() : $company;
         $transformedCompany = $transformedItems->map(function ($item) {
