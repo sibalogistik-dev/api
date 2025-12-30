@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Agama;
 use App\Models\AssetMaintenance;
 use Exception;
 use Illuminate\Http\UploadedFile;
@@ -64,24 +63,25 @@ class AssetMaintenanceService
 
     private function storeFile(UploadedFile $file, string $path, int $quality = 90)
     {
-        $isImage    = Str::startsWith($file->getMimeType(), 'image/');
+        $isImage = Str::startsWith($file->getMimeType(), 'image/');
+        $filename = now()->format('Ymd-His') . '-' . Str::random(10);
+        $fullPath = $path . '/' . $filename;
 
         if ($isImage) {
-            $filename = date('Ymd-His') . '-' . Str::random(10) . '.png';
-            $fullPath = $path . '/' . $filename;
+            $fullPath .= '.png';
 
-            $imageContent = Image::read($file->getRealPath())->toPng($quality);
-            Storage::disk('public')->put($fullPath, (string) $imageContent);
+            $image = Image::read($file->getRealPath())->toPng();
 
-            return $fullPath;
-        } else {
-            $extension = $file->getClientOriginalExtension();
-            $filename  = date('Ymd-His') . '-' . Str::random(10) . '.' . $extension;
-            $fullPath  = $path . '/' . $filename;
-
-            Storage::disk('public')->putFileAs($path, $file, $filename);
+            Storage::disk('public')->put($fullPath, (string) $image);
 
             return $fullPath;
         }
+
+        $extension = $file->getClientOriginalExtension();
+        $fullPath .= '.' . $extension;
+
+        Storage::disk('public')->putFileAs($path, $file, basename($fullPath));
+
+        return $fullPath;
     }
 }
