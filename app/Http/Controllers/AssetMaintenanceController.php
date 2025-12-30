@@ -40,7 +40,7 @@ class AssetMaintenanceController extends Controller
                     'max_maintenance_cost'      => $item->max_maintenance_cost,
                     'actual_maintenance_cost'   => $item->actual_maintenance_cost,
                     'description'               => $item->description,
-                    'approval_status'           => $item->status,
+                    'approval_status'           => $item->approval_status,
                     'receipt'                   => $item->receipt,
                 ];
             });

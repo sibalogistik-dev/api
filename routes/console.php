@@ -9,6 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('attendance:auto-absent')
-    ->dailyAt('10:32')
+    ->dailyAt('10:30')
     ->withoutOverlapping()
     ->runInBackground();
