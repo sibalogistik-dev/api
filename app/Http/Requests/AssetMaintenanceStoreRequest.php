@@ -21,7 +21,7 @@ class AssetMaintenanceStoreRequest extends FormRequest
             'max_maintenance_cost'      => ['nullable', 'integer', 'min:0'],
             'actual_maintenance_cost'   => ['nullable', 'integer', 'min:0'],
             'description'               => ['required', 'string'],
-            'receipt'                   => ['nullable', 'file', 'mimes:pdf,jpeg,jpg,png,webp', 'max:5120'],
+            'receipt'                   => ['sometimes', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             'approval_status'           => ['nullable', 'string', 'in:pending,approved,rejected'],
         ];
     }

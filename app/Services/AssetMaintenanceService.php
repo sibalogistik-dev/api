@@ -19,6 +19,7 @@ class AssetMaintenanceService
         DB::beginTransaction();
         try {
             $uploads = $data;
+            $filePaths['receipt']    = 'uploads/asset_maintenance_receipts/default.webp';
             if (!empty($data['receipt'])) {
                 $filePaths['receipt'] = $this->storeFile($data['receipt'], 'uploads/asset_maintenance_receipts', 90);
                 $uploads['receipt'] = $filePaths['receipt'];
@@ -28,8 +29,12 @@ class AssetMaintenanceService
             return $assetMaintenance;
         } catch (Exception $e) {
             DB::rollBack();
-            foreach ($filePaths as $path) {
-                Storage::disk('public')->delete($path);
+            if ($filePaths !== '') {
+                foreach ($filePaths as $path) {
+                    if ($path) {
+                        Storage::disk('public')->delete($path);
+                    }
+                }
             }
             throw new Exception('Failed to save asset maintenance data: ' . $e->getMessage());
         }
@@ -42,8 +47,8 @@ class AssetMaintenanceService
         try {
             $uploads = $data;
             if (!empty($data['receipt'])) {
-                $filePaths['receipt'] = $this->storeFile($data['receipt'], 'uploads/asset_maintenance_receipts', 90);
-                $uploads['receipt'] = $filePaths['receipt'];
+                $filePaths['receipt']   = $this->storeFile($data['receipt'], 'uploads/asset_maintenance_receipts', 90);
+                $uploads['receipt']     = $filePaths['receipt'];
             }
             $assetMaintenance->update($uploads);
             DB::commit();
