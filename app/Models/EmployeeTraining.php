@@ -54,4 +54,9 @@ class EmployeeTraining extends Model
     {
         return $this->belongsTo(Karyawan::class, 'employee_id');
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(EmployeeTrainingSchedule::class, 'employee_training_id');
+    }
 }
