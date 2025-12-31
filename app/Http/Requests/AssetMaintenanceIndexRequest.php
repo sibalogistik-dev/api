@@ -20,6 +20,8 @@ class AssetMaintenanceIndexRequest extends FormRequest
             'creator_id'        => ['nullable', 'string'],
             'asset_id'          => ['nullable', 'string'],
             'maintenance_date'  => ['nullable', 'date_format:Y-m-d'],
+            'start_date'        => ['nullable', 'date_format:Y-m-d'],
+            'end_date'          => ['nullable', 'date_format:Y-m-d'],
         ];
     }
 }
