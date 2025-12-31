@@ -15,10 +15,14 @@ class AutoAbsentWithoutReason extends Command
 
     public function handle(): int
     {
-        $today = Carbon::today()->toDateString();
-        $now   = Carbon::now()->toTimeString();
+        if (Carbon::now()->isSunday()) {
+            $this->info('Hari ini hari Minggu, proses auto-absensi dilewati.');
+            return Command::SUCCESS;
+        }
 
-        DB::transaction(function () use ($today, $now) {
+        $today = Carbon::today()->toDateString();
+
+        DB::transaction(function () use ($today) {
             $employees = Karyawan::query()
                 ->where(function ($q) use ($today) {
                     $q->whereNull('end_date')

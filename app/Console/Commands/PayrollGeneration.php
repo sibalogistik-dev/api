@@ -163,7 +163,6 @@ class PayrollGeneration extends Command
     {
         $base_salary    = [
             'daily'             => $employee->salaryDetails->daily_base_salary,
-            'monthly'           => $employee->salaryDetails->monthly_base_salary,
             'allowance'         => $employee->salaryDetails->allowance,
             'meal_allowance'    => $employee->salaryDetails->meal_allowance,
             'bonus'             => $employee->salaryDetails->bonus,
