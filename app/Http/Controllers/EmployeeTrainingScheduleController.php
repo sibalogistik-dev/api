@@ -106,12 +106,20 @@ class EmployeeTrainingScheduleController extends Controller
         }
     }
 
-    public function destroy(EmployeeTrainingSchedule $employeeTrainingSchedule)
+    public function destroy($employeeTrainingSchedule)
     {
         try {
-            //code...
+            $ets = EmployeeTrainingSchedule::find($employeeTrainingSchedule);
+            if (!$ets) {
+                throw new Exception('Employee\'s training schedule data not found');
+            }
+            $delete = $ets->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete employee\'s training schedule data');
+            }
+            return ApiResponseHelper::success('Employee\'s training schedule data has been deleted successfully');
         } catch (Exception $e) {
-            //throw $th;
+            return ApiResponseHelper::error('Employee\'s training schedule data failed to delete', $e->getMessage());
         }
     }
 }
