@@ -43,6 +43,14 @@ class EmployeeTrainingSchedule extends Model
             }
         });
 
+        $query->when($filters['employee_id'] ?? null, function ($query, $mentorId) {
+            if ($mentorId !== 'all') {
+                $query->whereHas('employeeTraining', function ($q) use ($mentorId) {
+                    $q->where('employee_id', $mentorId);
+                });
+            }
+        });
+
         $query->when($filters['employee_training_id'] ?? null, function ($query, $employeeTrainingId) {
             if ($employeeTrainingId !== 'all') {
                 $query->where('employee_training_id', $employeeTrainingId);

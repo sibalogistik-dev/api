@@ -12,6 +12,7 @@ class EmployeeTraining extends Model
     protected $fillable = [
         'employee_id',
         'training_type_id',
+        'training_name',
         'start_date',
         'notes',
         'status',
@@ -22,7 +23,9 @@ class EmployeeTraining extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where('notes', 'like', '%' . $keyword . '%')
+            $query
+                ->where('notes', 'like', '%' . $keyword . '%')
+                ->orWhere('training_name', 'like', '%' . $keyword . '%')
                 ->orWhereHas('employee', function ($query) use ($keyword) {
                     $query->where('name', 'like', '%' . $keyword . '%');
                 });

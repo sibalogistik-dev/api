@@ -45,7 +45,7 @@ class EmployeeTrainingController extends Controller
             }
             return ApiResponseHelper::success('Employee training data', $transformedEt);
         } catch (Exception $e) {
-            return ApiResponseHelper::success('Failed to get employee training data', $e->getMessage());
+            return ApiResponseHelper::error('Failed to get employee training data', $e->getMessage());
         }
     }
 

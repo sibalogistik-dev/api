@@ -18,6 +18,7 @@ class EmployeeTrainingUpdateRequest extends FormRequest
         return [
             'employee_id'       => ['sometimes', 'integer', 'exists:karyawans,id'],
             'training_type_id'  => ['sometimes', 'integer', 'exists:employee_training_types,id'],
+            'training_name'     => ['sometimes', 'string', 'max:255'],
             'start_date'        => ['sometimes', 'date'],
             'notes'             => ['sometimes', 'string', 'max:255'],
             'status'            => ['sometimes', 'boolean']

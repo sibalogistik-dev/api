@@ -4,29 +4,33 @@ namespace App\Services;
 
 use App\Models\EmployeeTrainingSchedule;
 use Exception;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Intervention\Image\Laravel\Facades\Image;
 
 class EmployeeTrainingScheduleService
 {
     public function create(array $data)
     {
+        DB::beginTransaction();
         try {
-            //code...
+            $et = EmployeeTrainingSchedule::create($data);
+            DB::commit();
+            return $et;
         } catch (Exception $e) {
-            //code...
+            DB::rollBack();
+            throw new Exception('Failed to save employee\'s training schedule data: ' . $e->getMessage());
         }
     }
 
     public function update(EmployeeTrainingSchedule $employeeTrainingSchedule, array $data)
     {
+        DB::beginTransaction();
         try {
-            //code...
+            $employeeTrainingSchedule->update($data);
+            DB::commit();
+            return $employeeTrainingSchedule;
         } catch (Exception $e) {
-            //code...
+            DB::rollBack();
+            throw new Exception('Failed to update employee\'s training schedule data: ' . $e->getMessage());
         }
     }
 }

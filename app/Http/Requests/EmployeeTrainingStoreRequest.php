@@ -16,6 +16,7 @@ class EmployeeTrainingStoreRequest extends FormRequest
         return [
             'employee_id'       => ['required', 'integer', 'exists:karyawans,id'],
             'training_type_id'  => ['required', 'integer', 'exists:employee_training_types,id'],
+            'training_name'     => ['required', 'string', 'max:255'],
             'start_date'        => ['required', 'date'],
             'notes'             => ['required', 'string', 'max:255'],
             'status'            => ['required', 'boolean']
