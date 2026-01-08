@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,8 +37,14 @@ class EmployeeTrainingSchedule extends Model
         // $query->when($filters['schedule_date'] ?? null, function ($query, $scheduleTime) {
         //     $query->whereDate('schedule_time', $scheduleTime);
         // });
-        $query->when($filters['start_date']     ?? null, fn($q, $v) => $q->whereDate('schedule_time', '>=', $v));
-        $query->when($filters['end_date']       ?? null, fn($q, $v) => $q->whereDate('schedule_time', '<=', $v));
+        $query->when($filters['start_date'] ?? null, function ($q, $v) {
+            $time = Carbon::parse($v)->startOfDay();
+            $q->whereDate('schedule_time', '>=', $time);
+        });
+        $query->when($filters['end_date'] ?? null, function ($q, $v) {
+            $time = Carbon::parse($v)->endOfDay();
+            $q->whereDate('schedule_time', '<=', $time);
+        });
 
         $query->when($filters['mentor_id'] ?? null, function ($query, $mentorId) {
             if ($mentorId !== 'all') {
