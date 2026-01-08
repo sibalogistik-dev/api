@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\EmployeeTrainingScheduleIndexRequest;
+use App\Http\Requests\EmployeeTrainingScheduleStoreRequest;
+use App\Http\Requests\EmployeeTrainingScheduleUpdateRequest;
 use App\Models\EmployeeTrainingSchedule;
 use App\Services\EmployeeTrainingScheduleService;
 use Exception;
@@ -29,16 +31,16 @@ class EmployeeTrainingScheduleController extends Controller
             $transformedEt      = $transformedItems->map(function ($item) {
                 return [
                     'id'                    => $item->id,
-                    'employee_id'           => $item->employee_training?->employee_id,
-                    'employee_name'         => $item->employeeTraining?->employee?->name,
-                    'training_type_id'      => $item->employee_training?->training_type_id,
+                    'employee_id'           => $item->employeeTraining?->employee_id,
+                    'trainee_name'          => $item->employeeTraining?->employee?->name,
+                    'mentor_id'             => $item->mentor_id,
+                    'mentor_name'           => $item->mentor?->name,
+                    'training_type_id'      => $item->employeeTraining?->training_type_id,
                     'training_type_name'    => $item->employeeTraining?->trainingType?->name,
                     'schedule_time'         => $item->schedule_time,
                     'title'                 => $item->title,
                     'activity_description'  => $item->activity_description,
                     'activity_result'       => $item->activity_result,
-                    'mentor_id'             => $item->mentor_id,
-                    'mentor_name'           => $item->mentor?->name,
                     'mentor_notes'          => $item->mentor_notes,
                     'mentor_assessment'     => $item->mentor_assessment,
                 ];
@@ -53,7 +55,7 @@ class EmployeeTrainingScheduleController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(EmployeeTrainingScheduleStoreRequest $request)
     {
         try {
             $employeeTrainingSchedule = $this->employeeTrainingScheduleService->create($request->validated());
@@ -72,17 +74,16 @@ class EmployeeTrainingScheduleController extends Controller
             }
             $data = [
                 'id'                    => $trainingSchedule->id,
-                'employee_id'           => $trainingSchedule->employee_training?->employee_id,
-                'employee_name'         => $trainingSchedule->employeeTraining?->employee?->name,
-                'training_type_id'      => $trainingSchedule->employee_training?->training_type_id,
+                'employee_id'           => $trainingSchedule->employeeTraining?->employee_id,
+                'trainee_name'          => $trainingSchedule->employeeTraining?->employee?->name,
+                'mentor_id'             => $trainingSchedule->mentor_id,
+                'mentor_name'           => $trainingSchedule->mentor?->name,
+                'training_type_id'      => $trainingSchedule->employeeTraining?->training_type_id,
                 'training_type_name'    => $trainingSchedule->employeeTraining?->trainingType?->name,
-                'training_name'         => $trainingSchedule->employeeTraining?->training_name,
                 'schedule_time'         => $trainingSchedule->schedule_time,
                 'title'                 => $trainingSchedule->title,
                 'activity_description'  => $trainingSchedule->activity_description,
                 'activity_result'       => $trainingSchedule->activity_result,
-                'mentor_id'             => $trainingSchedule->mentor_id,
-                'mentor_name'           => $trainingSchedule->mentor?->name,
                 'mentor_notes'          => $trainingSchedule->mentor_notes,
                 'mentor_assessment'     => $trainingSchedule->mentor_assessment,
             ];
@@ -92,7 +93,7 @@ class EmployeeTrainingScheduleController extends Controller
         }
     }
 
-    public function update(Request $request, $employeeTrainingSchedule)
+    public function update(EmployeeTrainingScheduleUpdateRequest $request, $employeeTrainingSchedule)
     {
         try {
             $ets = EmployeeTrainingSchedule::find($employeeTrainingSchedule);

@@ -33,9 +33,11 @@ class EmployeeTrainingSchedule extends Model
                 ->orWhere('mentor_assessment', 'like', '%' . $keyword . '%');
         });
 
-        $query->when($filters['schedule_date'] ?? null, function ($query, $scheduleTime) {
-            $query->whereDate('schedule_time', $scheduleTime);
-        });
+        // $query->when($filters['schedule_date'] ?? null, function ($query, $scheduleTime) {
+        //     $query->whereDate('schedule_time', $scheduleTime);
+        // });
+        $query->when($filters['start_date']     ?? null, fn($q, $v) => $q->whereDate('schedule_time', '>=', $v));
+        $query->when($filters['end_date']       ?? null, fn($q, $v) => $q->whereDate('schedule_time', '<=', $v));
 
         $query->when($filters['mentor_id'] ?? null, function ($query, $mentorId) {
             if ($mentorId !== 'all') {
