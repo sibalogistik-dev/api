@@ -74,6 +74,7 @@ class EmployeeTrainingScheduleController extends Controller
             }
             $data = [
                 'id'                    => $trainingSchedule->id,
+                'employee_training_id'  => $trainingSchedule->employee_training_id,
                 'employee_id'           => $trainingSchedule->employeeTraining?->employee_id,
                 'trainee_name'          => $trainingSchedule->employeeTraining?->employee?->name,
                 'mentor_id'             => $trainingSchedule->mentor_id,
