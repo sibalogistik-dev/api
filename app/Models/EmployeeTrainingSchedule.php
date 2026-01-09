@@ -34,9 +34,6 @@ class EmployeeTrainingSchedule extends Model
                 ->orWhere('mentor_assessment', 'like', '%' . $keyword . '%');
         });
 
-        // $query->when($filters['schedule_date'] ?? null, function ($query, $scheduleTime) {
-        //     $query->whereDate('schedule_time', $scheduleTime);
-        // });
         $query->when($filters['start_date'] ?? null, function ($q, $v) {
             $time = Carbon::parse($v)->startOfDay();
             $q->whereDate('schedule_time', '>=', $time);

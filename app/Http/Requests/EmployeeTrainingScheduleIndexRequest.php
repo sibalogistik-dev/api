@@ -18,7 +18,8 @@ class EmployeeTrainingScheduleIndexRequest extends FormRequest
             'q'                     => ['nullable', 'string'],
             'paginate'              => ['nullable', 'boolean'],
             'perPage'               => ['nullable', 'integer', 'min:1'],
-            'schedule_date'         => ['nullable', 'date'],
+            'start_date'            => ['nullable', 'date'],
+            'end_date'              => ['nullable', 'date'],
             'mentor_id'             => [
                 'nullable',
                 Rule::when(
