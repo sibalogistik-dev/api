@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\EmployeeTrainingDocumentRequest;
 use App\Http\Requests\EmployeeTrainingIndexRequest;
+use App\Http\Requests\EmployeeTrainingReportRequest;
 use App\Http\Requests\EmployeeTrainingStoreRequest;
 use App\Http\Requests\EmployeeTrainingUpdateRequest;
 use App\Models\EmployeeTraining;
 use App\Services\EmployeeTrainingService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -110,6 +113,29 @@ class EmployeeTrainingController extends Controller
             return ApiResponseHelper::success('Employee training data has been deleted successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Employee training data failed to delete', $e->getMessage());
+        }
+    }
+
+    public function report(EmployeeTrainingReportRequest $request)
+    {
+        try {
+            $validated      = $request->validated();
+            $report         = $this->employeeTrainingService->report($validated);
+            $start          = $validated['start_date'];
+            $end            = $validated['end_date'];
+            $pdf            = Pdf::loadView('employee-training.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            return $pdf->stream('Laporan Pelatihan Karyawan.pdf');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when generating employee training report', $e->getMessage());
+        }
+    }
+
+    public function document(EmployeeTrainingDocumentRequest $request)
+    {
+        try {
+            //code...
+        } catch (Exception $e) {
+            //code...
         }
     }
 }

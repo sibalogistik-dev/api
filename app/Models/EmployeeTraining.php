@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -45,6 +46,16 @@ class EmployeeTraining extends Model
 
         $query->when(array_key_exists('status', $filters) && $filters['status'] !== 'all', function ($query) use ($filters) {
             $query->where('status', $filters['status']);
+        });
+
+        $query->when($filters['start_date'] ?? null, function ($q, $v) {
+            $time = Carbon::parse($v)->startOfDay();
+            $q->whereDate('start_date', '>=', $time);
+        });
+
+        $query->when($filters['end_date'] ?? null, function ($q, $v) {
+            $time = Carbon::parse($v)->endOfDay();
+            $q->whereDate('start_date', '<=', $time);
         });
     }
 

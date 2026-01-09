@@ -33,4 +33,23 @@ class EmployeeTrainingService
             throw new Exception('Failed to update employee training data: ' . $e->getMessage());
         }
     }
+
+    public function report(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $response = EmployeeTraining::query()
+                ->filter($data)
+                ->get();
+            DB::commit();
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate employee training report: ' . $e->getMessage());
+        } 
+    }
+
+    public function document(array $data)
+    {
+        // 
+    }
 }

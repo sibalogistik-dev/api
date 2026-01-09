@@ -38,6 +38,7 @@ class EmployeeTrainingSchedule extends Model
             $time = Carbon::parse($v)->startOfDay();
             $q->whereDate('schedule_time', '>=', $time);
         });
+
         $query->when($filters['end_date'] ?? null, function ($q, $v) {
             $time = Carbon::parse($v)->endOfDay();
             $q->whereDate('schedule_time', '<=', $time);
