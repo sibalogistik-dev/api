@@ -37,6 +37,7 @@ class EmployeeTrainingController extends Controller
                     'employee_name'         => $item->employee?->name,
                     'training_type_id'      => $item->training_type_id,
                     'training_type_name'    => $item->trainingType?->name,
+                    'training_name'         => $item->training_name,
                     'start_date'            => $item->start_date,
                     'notes'                 => $item->notes,
                     'status'                => $item->status,
@@ -75,6 +76,7 @@ class EmployeeTrainingController extends Controller
                 'employee_name'         => $training->employee?->name,
                 'training_type_id'      => $training->training_type_id,
                 'training_type_name'    => $training->trainingType?->name,
+                'training_name'         => $training->training_name,
                 'start_date'            => $training->start_date,
                 'notes'                 => $training->notes,
                 'status'                => $training->status,
@@ -119,11 +121,11 @@ class EmployeeTrainingController extends Controller
     public function report(EmployeeTrainingReportRequest $request)
     {
         try {
-            $validated      = $request->validated();
-            $report         = $this->employeeTrainingService->report($validated);
-            $start          = $validated['start_date'];
-            $end            = $validated['end_date'];
-            $pdf            = Pdf::loadView('employee-training.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
+            $validated  = $request->validated();
+            $report     = $this->employeeTrainingService->report($validated);
+            $start      = $validated['start_date'];
+            $end        = $validated['end_date'];
+            $pdf        = Pdf::loadView('employee-training.report', compact('report', 'start', 'end'))->setPaper('a4', 'landscape');
             return $pdf->stream('Laporan Pelatihan Karyawan.pdf');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when generating employee training report', $e->getMessage());
@@ -133,9 +135,13 @@ class EmployeeTrainingController extends Controller
     public function document(EmployeeTrainingDocumentRequest $request)
     {
         try {
-            //code...
+            $validated  = $request->validated();
+            $document   = $this->employeeTrainingService->document($validated);
+            $pdf        = Pdf::loadView('employee-training.document', compact('document'))->setPaper('a4');
+            return $pdf->stream('Detail Training Karyawan.pdf');
+            return ApiResponseHelper::success('Employee training document data', $document);
         } catch (Exception $e) {
-            //code...
+            return ApiResponseHelper::error('Error when generating employee training document', $e->getMessage());
         }
     }
 }

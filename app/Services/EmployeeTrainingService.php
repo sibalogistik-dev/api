@@ -45,11 +45,23 @@ class EmployeeTrainingService
             return $response;
         } catch (Exception $e) {
             throw new Exception('Failed to generate employee training report: ' . $e->getMessage());
-        } 
+        }
     }
 
     public function document(array $data)
     {
-        // 
+        DB::beginTransaction();
+        try {
+            $response = EmployeeTraining::find($data['employee_training_id']);
+            if (!$response) {
+                throw new Exception('Employee training data not found');
+            }
+            $response->load('employee', 'trainingType', 'schedules.mentor');
+            $response->schedules()->orderBy('start_date', 'asc');
+            DB::commit();
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception('Failed to generate employee training document: ' . $e->getMessage());
+        }
     }
 }

@@ -156,7 +156,7 @@
         <div class="employee-details">
             <table>
                 <tr>
-                    <td>Kepada Yth.</td>
+                    <td>Nama</td>
                     <td>:</td>
                     <td><strong>{{ $document->employee->name }}</strong></td>
                 </tr>
@@ -201,11 +201,11 @@
         <table class="signature-block">
             <tr>
                 <td width="50%" class="signature-details">
-                    <p>
+                    {{-- <p>
                         Karyawan yang bersangkutan,<br><br>
                         <span class="signature-space"></span>
                         <strong>{{ $document->employee->name }}</strong>
-                    </p>
+                    </p> --}}
                 </td>
                 <td width="50%" class="signature-details">
                     <p>
