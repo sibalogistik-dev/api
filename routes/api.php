@@ -35,6 +35,7 @@ Route::middleware('api')->group(function () {
                 'employee-training-schedule'    => App\Http\Controllers\EmployeeTrainingScheduleController::class,
                 'employee-training-type'        => App\Http\Controllers\EmployeeTrainingTypeController::class,
                 'face-recognition'              => App\Http\Controllers\FaceRecognitionModelController::class,
+                'holiday'                       => App\Http\Controllers\HolidayController::class,
                 'job-description'               => App\Http\Controllers\JobDescriptionController::class,
                 'job-title'                     => App\Http\Controllers\JabatanController::class,
                 'overtime'                      => App\Http\Controllers\OvertimeController::class,
