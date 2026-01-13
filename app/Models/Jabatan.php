@@ -19,9 +19,7 @@ class Jabatan extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where('name', 'like', "%{$keyword}%");
-        });
+        $query->when($filters['q'] ?? null, fn($q, $v) => $q->where('name', 'like', "%{$v}%"));
     }
 
     public function employee()

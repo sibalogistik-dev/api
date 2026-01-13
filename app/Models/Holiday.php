@@ -18,11 +18,8 @@ class Holiday extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where('name', 'like', "%{$keyword}%");
-        });
-
-        $query->when($filters['start_date']     ?? null, fn($q, $v) => $q->whereDate('date', '>=', $v));
-        $query->when($filters['end_date']       ?? null, fn($q, $v) => $q->whereDate('date', '<=', $v));
+        $query->when($filters['q']          ?? null, fn($q, $v) => $q->where('name', 'like', "%{$v}%"));
+        $query->when($filters['start_date'] ?? null, fn($q, $v) => $q->whereDate('date', '>=', $v));
+        $query->when($filters['end_date']   ?? null, fn($q, $v) => $q->whereDate('date', '<=', $v));
     }
 }
