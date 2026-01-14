@@ -72,6 +72,6 @@ class EmployeeTrainingSchedule extends Model
 
     public function mentor()
     {
-        return $this->belongsTo(Karyawan::class, 'mentor_id');
+        return $this->belongsTo(Karyawan::class, 'mentor_id')->withTrashed();
     }
 }

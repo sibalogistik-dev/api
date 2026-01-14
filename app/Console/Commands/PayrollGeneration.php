@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Absensi;
-use App\Models\Holiday;
 use App\Models\Karyawan;
 use App\Models\Overtime;
 use App\Models\Payroll;

@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EmployeeTrainingDocumentRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             'employee_training_id' => ['required', 'integer', 'exists:employee_trainings,id'],

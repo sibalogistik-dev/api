@@ -31,6 +31,7 @@ Route::middleware('api')->group(function () {
                 'company'                       => App\Http\Controllers\PerusahaanController::class,
                 'daily-report'                  => App\Http\Controllers\EmployeeDailyReportController::class,
                 'employee'                      => App\Http\Controllers\KaryawanController::class,
+                'employee-evaluation'           => App\Http\Controllers\EmployeeEvaluationController::class,
                 'employee-training'             => App\Http\Controllers\EmployeeTrainingController::class,
                 'employee-training-schedule'    => App\Http\Controllers\EmployeeTrainingScheduleController::class,
                 'employee-training-type'        => App\Http\Controllers\EmployeeTrainingTypeController::class,
@@ -45,6 +46,7 @@ Route::middleware('api')->group(function () {
                 'resign'                        => App\Http\Controllers\ResignController::class,
                 'warning-letter'                => App\Http\Controllers\WarningLetterController::class,
             ]);
+
             // documents route
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,             'report'])->name('attendance.report');
             Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,         'report'])->name('branch-asset.report');

@@ -86,12 +86,12 @@ class Karyawan extends Model
 
     public function manager()
     {
-        return $this->belongsTo(Karyawan::class, 'manager_id');
+        return $this->belongsTo(Karyawan::class, 'manager_id')->withTrashed();
     }
 
     public function subordinates()
     {
-        return $this->hasMany(Karyawan::class, 'manager_id');
+        return $this->hasMany(Karyawan::class, 'manager_id')->withTrashed();
     }
 
     public function isManagerOf(Karyawan $targetKaryawan)

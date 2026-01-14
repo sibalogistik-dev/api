@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
-        Schema::create('reprimand_letters', function (Blueprint $table) {
+        Schema::create('employee_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id');
-            $table->unsignedBigInteger('issued_by');
-            $table->date('letter_date');
-            $table->text('reason');
-            $table->text('notes')->nullable();
+            $table->bigInteger('employee_id')->unsigned();
+            $table->bigInteger('evaluator_id')->unsigned();
+            $table->date('evaluation_date');
+            $table->text('description');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -23,6 +21,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('reprimand_letters');
+        Schema::dropIfExists('employee_evaluations');
     }
 };

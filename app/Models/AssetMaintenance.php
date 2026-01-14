@@ -62,6 +62,6 @@ class AssetMaintenance extends Model
 
     public function creator()
     {
-        return $this->belongsTo(Karyawan::class, 'creator_id');
+        return $this->belongsTo(Karyawan::class, 'creator_id')->withTrashed();
     }
 }
