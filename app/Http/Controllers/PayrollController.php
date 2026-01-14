@@ -39,8 +39,8 @@ class PayrollController extends Controller
     public function store(PayrollStoreRequest $request)
     {
         try {
-            $payroll    = $this->payrollService->create($request->validated());
-            return ApiResponseHelper::success('Payroll data has been added successfully', $payroll);
+            $this->payrollService->create($request->validated());
+            return ApiResponseHelper::success('Payroll data has been added successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Error when saving payroll data', $e->getMessage());
         }

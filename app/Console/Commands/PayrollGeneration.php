@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Absensi;
+use App\Models\Holiday;
 use App\Models\Karyawan;
 use App\Models\Overtime;
 use App\Models\Payroll;
@@ -12,12 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class PayrollGeneration extends Command
 {
-    protected $signature = 'app:payroll-generation {month? : Format YYYY-MM (default: current month)}';
+    protected $signature = 'app:payroll-generation {month? : Format YYYY-MM (default: current month)} {employee_id? : Optional employee ID to generate payroll for a specific employee}';
     protected $description = 'Generate payroll for all employees';
 
-    public function handle()
+    public function handle($month = null, $employee_id = null)
     {
-        $month          = $this->argument('month') ?? now()->format('Y-m');
+        $month          = $month ?? $this->argument('month') ?? now()->format('Y-m');
+        $employee_id    = $employee_id ?? $this->argument('employee_id') ?? null;
         $periodStart    = Carbon::parse("$month-28")->subMonth()->startOfDay();
         $periodEnd      = Carbon::parse("$month-27")->endOfDay();
         $monthsDays     = $this->countDaysInPeriod($month, true);
@@ -30,8 +32,13 @@ class PayrollGeneration extends Command
         $this->info("Generating $periodName (" . $periodStart->locale('id')->translatedFormat('d F Y') . " → " . $periodEnd->locale('id')->translatedFormat('d F Y') . ")");
         $this->info("Total days in period (excluding Sundays): $monthsDays");
 
-        DB::transaction(function () use ($period, $periodName, $monthsDays) {
-            $employees  = Karyawan::all();
+        DB::transaction(function () use ($period, $periodName, $monthsDays, $employee_id) {
+
+            if ($employee_id !== null) {
+                $employees  = Karyawan::where('id', $employee_id)->get();
+            } else {
+                $employees  = Karyawan::all();
+            }
 
             foreach ($employees as $employee) {
                 $attendances    = Absensi::where('employee_id', $employee->id)
