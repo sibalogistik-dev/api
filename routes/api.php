@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->group(function () {
@@ -77,6 +78,11 @@ Route::middleware('api')->group(function () {
             Route::get('dashboard/count-employee',              [App\Http\Controllers\EmployeeDetailsController::class, 'employeeCount'])->name('dashboard.employeeCount');
             Route::get('dashboard/count-attendance',            [App\Http\Controllers\AbsensiController::class,         'attendanceCount'])->name('dashboard.attendanceCount');
             Route::get('dashboard/attendance-unsubmitted',      [App\Http\Controllers\AbsensiController::class,         'attendanceUnsubmitted'])->name('dashboard.attendanceUnsubmitted');
+
+            // notification routes
+            Route::get('/notifications',                        [NotificationController::class, 'index'])->name('notifications.index');
+            Route::get('/notifications/unread',                 [NotificationController::class, 'unread'])->name('notifications.unread');
+            Route::post('/notifications/{id}/read',             [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');

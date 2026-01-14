@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\EmployeeTraining;
+use App\Models\Karyawan;
+use App\Models\User;
+use App\Notifications\NewTrainingNotification;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +17,14 @@ class EmployeeTrainingService
         try {
             $et = EmployeeTraining::create($data);
             DB::commit();
+            $user = Karyawan::find($data['employee_id'])?->user;
+            $this->notifyNewTraining(
+                $user,
+                'info',
+                'Training Baru Masuk',
+                'Anda memiliki training baru yang perlu diikuti.',
+                '/training/' . $et->id
+            );
             return $et;
         } catch (Exception $e) {
             DB::rollBack();
@@ -63,5 +74,20 @@ class EmployeeTrainingService
         } catch (Exception $e) {
             throw new Exception('Failed to generate employee training document: ' . $e->getMessage());
         }
+    }
+
+    public function notifyNewTraining(
+        User $user,
+        string $status,
+        string $title,
+        string $message,
+        ?string $url = null
+    ): void {
+        $user->notify(new NewTrainingNotification([
+            'title'   => $title,
+            'message' => $message,
+            'status'  => $status,
+            'url'     => $url,
+        ]));
     }
 }
