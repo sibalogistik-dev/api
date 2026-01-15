@@ -23,7 +23,7 @@ class EmployeeTrainingService
                 'info',
                 'Training Baru Masuk',
                 'Anda memiliki training baru yang perlu diikuti.',
-                '/training/' . $et->id
+                '/training?training_id=' . $et->id
             );
             return $et;
         } catch (Exception $e) {

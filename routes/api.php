@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
+use App\Services\FirebaseService;
 
 Route::middleware('api')->group(function () {
     Route::post('/login',   [App\Http\Controllers\AuthController::class, 'login']);
@@ -63,7 +64,7 @@ Route::middleware('api')->group(function () {
             Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,       'report'])->name('warning-letter.report');
 
             // restore route
-            Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,        'restore'])->name('employee.restore');
+            Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,    'restore'])->name('employee.restore');
 
             // support route
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
@@ -72,8 +73,8 @@ Route::middleware('api')->group(function () {
             Route::get('employee/{employee}/attendances',       [App\Http\Controllers\AbsensiController::class,         'employeeAttendance'])->name('employee.attendances');
             Route::get('company/{company}/branches',            [App\Http\Controllers\PerusahaanController::class,      'companyBranches'])->name('company.branches');
 
-            Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class,         'hrdAttendanceAdd'])->name('attendance.storeByHRD');
-            Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class,         'generatePayrollPersonal'])->name('payroll.generatePersonal');
+            Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class, 'hrdAttendanceAdd'])->name('attendance.storeByHRD');
+            Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class, 'generatePayrollPersonal'])->name('payroll.generatePersonal');
 
             Route::get('dashboard/count-employee',              [App\Http\Controllers\EmployeeDetailsController::class, 'employeeCount'])->name('dashboard.employeeCount');
             Route::get('dashboard/count-attendance',            [App\Http\Controllers\AbsensiController::class,         'attendanceCount'])->name('dashboard.attendanceCount');
@@ -82,6 +83,7 @@ Route::middleware('api')->group(function () {
             // notification routes
             Route::get('/notifications',                        [NotificationController::class, 'index'])->name('notifications.index');
             Route::get('/notifications/unread',                 [NotificationController::class, 'unread'])->name('notifications.unread');
+            Route::get('/notifications/unread/count',           [NotificationController::class, 'unreadCount'])->name('notifications.unread.count');
             Route::post('/notifications/{id}/read',             [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         });
 
@@ -105,4 +107,20 @@ Route::middleware('api')->group(function () {
 
 Route::get('time', function () {
     return date('Y-m-d H:i:s');
+});
+
+Route::get('/fcm-test', function (FirebaseService $firebase) {
+    $topic  = Faker\Factory::create()->word();
+    $title  = 'Test ' . rand(1, 1000);
+    return [
+        $topic,
+        $title,
+        $firebase->sendPush([
+            'topic' => $topic,
+            'notification' => [
+                'title' => $title,
+                'body' => 'FCM from Laravel'
+            ]
+        ])
+    ];
 });
