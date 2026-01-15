@@ -112,15 +112,11 @@ Route::get('time', function () {
 Route::get('/fcm-test', function (FirebaseService $firebase) {
     $topic  = Faker\Factory::create()->word();
     $title  = 'Test ' . rand(1, 1000);
-    return [
-        $topic,
-        $title,
-        $firebase->sendPush([
-            'topic' => $topic,
-            'notification' => [
-                'title' => $title,
-                'body' => 'FCM from Laravel'
-            ]
-        ])
-    ];
+    return $firebase->sendPush([
+        'topic' => $topic,
+        'notification' => [
+            'title' => $title,
+            'body' => 'FCM from Laravel'
+        ]
+    ]);
 });
