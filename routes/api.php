@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
-use App\Services\FirebaseService;
 
 Route::middleware('api')->group(function () {
     Route::post('/login',   [App\Http\Controllers\AuthController::class, 'login']);
@@ -81,10 +79,10 @@ Route::middleware('api')->group(function () {
             Route::get('dashboard/attendance-unsubmitted',      [App\Http\Controllers\AbsensiController::class,         'attendanceUnsubmitted'])->name('dashboard.attendanceUnsubmitted');
 
             // notification routes
-            Route::get('/notifications',                        [NotificationController::class, 'index'])->name('notifications.index');
-            Route::get('/notifications/unread',                 [NotificationController::class, 'unread'])->name('notifications.unread');
-            Route::get('/notifications/unread/count',           [NotificationController::class, 'unreadCount'])->name('notifications.unread.count');
-            Route::post('/notifications/{id}/read',             [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+            Route::get('/notifications',                        [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+            Route::get('/notifications/unread',                 [App\Http\Controllers\NotificationController::class, 'unread'])->name('notifications.unread');
+            Route::get('/notifications/unread/count',           [App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread.count');
+            Route::post('/notifications/{id}/read',             [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');
@@ -109,14 +107,4 @@ Route::get('time', function () {
     return date('Y-m-d H:i:s');
 });
 
-Route::get('/fcm-test', function (FirebaseService $firebase) {
-    $topic  = Faker\Factory::create()->word();
-    $title  = 'Test ' . rand(1, 1000);
-    return $firebase->sendPush([
-        'topic' => $topic,
-        'notification' => [
-            'title' => $title,
-            'body' => 'FCM from Laravel'
-        ]
-    ]);
-});
+Route::get('/fcm-test', [App\Http\Controllers\FCMController::class, 'test']);
