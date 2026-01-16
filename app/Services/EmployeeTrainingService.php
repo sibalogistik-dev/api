@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\EmployeeTraining;
+use App\Models\FcmToken;
 use App\Models\Karyawan;
 use App\Models\User;
 use App\Notifications\NewTrainingNotification;
@@ -82,12 +83,13 @@ class EmployeeTrainingService
         string $title,
         string $message,
         ?string $url = null
-    ): void {
-        $user->notify(new NewTrainingNotification([
+    ) {
+        $notif = new NewTrainingNotification([
             'title'   => $title,
             'message' => $message,
             'status'  => $status,
             'url'     => $url,
-        ]));
+        ]);
+        $user->notify($notif);
     }
 }

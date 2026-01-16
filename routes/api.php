@@ -106,5 +106,3 @@ Route::middleware('api')->group(function () {
 Route::get('time', function () {
     return date('Y-m-d H:i:s');
 });
-
-Route::get('/fcm-test', [App\Http\Controllers\FCMController::class, 'test']);
