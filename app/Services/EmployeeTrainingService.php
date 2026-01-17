@@ -22,9 +22,9 @@ class EmployeeTrainingService
             $this->notifyNewTraining(
                 $user,
                 'info',
-                'Training Baru Masuk',
                 'Anda memiliki training baru yang perlu diikuti.',
-                '/training?training_id=' . $et->id
+                $data['training_name'],
+                '/notification/read'
             );
             return $et;
         } catch (Exception $e) {
