@@ -62,7 +62,7 @@ Route::middleware('api')->group(function () {
             Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,       'report'])->name('warning-letter.report');
 
             // restore route
-            Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,    'restore'])->name('employee.restore');
+            Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,        'restore'])->name('employee.restore');
 
             // support route
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
@@ -71,18 +71,25 @@ Route::middleware('api')->group(function () {
             Route::get('employee/{employee}/attendances',       [App\Http\Controllers\AbsensiController::class,         'employeeAttendance'])->name('employee.attendances');
             Route::get('company/{company}/branches',            [App\Http\Controllers\PerusahaanController::class,      'companyBranches'])->name('company.branches');
 
-            Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class, 'hrdAttendanceAdd'])->name('attendance.storeByHRD');
-            Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class, 'generatePayrollPersonal'])->name('payroll.generatePersonal');
+            Route::post('attendance/store-by-hrd',              [App\Http\Controllers\AbsensiController::class,         'hrdAttendanceAdd'])->name('attendance.storeByHRD');
+            Route::post('payroll/{employee}/generate',          [App\Http\Controllers\PayrollController::class,         'generatePayrollPersonal'])->name('payroll.generatePersonal');
 
             Route::get('dashboard/count-employee',              [App\Http\Controllers\EmployeeDetailsController::class, 'employeeCount'])->name('dashboard.employeeCount');
             Route::get('dashboard/count-attendance',            [App\Http\Controllers\AbsensiController::class,         'attendanceCount'])->name('dashboard.attendanceCount');
             Route::get('dashboard/attendance-unsubmitted',      [App\Http\Controllers\AbsensiController::class,         'attendanceUnsubmitted'])->name('dashboard.attendanceUnsubmitted');
 
-            // notification routes
-            Route::get('/notifications',                        [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-            Route::get('/notifications/unread',                 [App\Http\Controllers\NotificationController::class, 'unread'])->name('notifications.unread');
-            Route::get('/notifications/unread/count',           [App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread.count');
-            Route::post('/notifications/{id}/read',             [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+            // hrd notification routes
+            Route::get('/notifications/hrd',                    [App\Http\Controllers\NotificationController::class,    'hrdIndex'])->name('notifications.hrd.index');
+            Route::get('/notifications/hrd/unread',             [App\Http\Controllers\NotificationController::class,    'hrdUnread'])->name('notifications.hrd.unread');
+            Route::get('/notifications/hrd/unread/count',       [App\Http\Controllers\NotificationController::class,    'hrdUnreadCount'])->name('notifications.hrd.unread.count');
+
+            // employee notification routes
+            Route::get('/notifications/employee',               [App\Http\Controllers\NotificationController::class,    'employeeIndex'])->name('notifications.employee.index');
+            Route::get('/notifications/employee/unread',        [App\Http\Controllers\NotificationController::class,    'employeeUnread'])->name('notifications.employee.unread');
+            Route::get('/notifications/employee/unread/count',  [App\Http\Controllers\NotificationController::class,    'employeeUnreadCount'])->name('notifications.employee.unread.count');
+
+
+            Route::post('/notifications/{id}/read',             [App\Http\Controllers\NotificationController::class,    'markAsRead'])->name('notifications.markAsRead');
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');

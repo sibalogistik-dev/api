@@ -3,10 +3,9 @@
 namespace App\Services;
 
 use App\Models\EmployeeTraining;
-use App\Models\FcmToken;
 use App\Models\Karyawan;
 use App\Models\User;
-use App\Notifications\NewTrainingNotification;
+use App\Notifications\Employee\NewTraining;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +23,7 @@ class EmployeeTrainingService
                 'info',
                 'Anda memiliki training baru yang perlu diikuti.',
                 $data['training_name'],
-                '/notification/read'
+                '/notifikasi/buka'
             );
             return $et;
         } catch (Exception $e) {
@@ -84,12 +83,11 @@ class EmployeeTrainingService
         string $message,
         ?string $url = null
     ) {
-        $notif = new NewTrainingNotification([
+        $user->notify(new NewTraining([
             'title'   => $title,
             'message' => $message,
             'status'  => $status,
             'url'     => $url,
-        ]);
-        $user->notify($notif);
+        ]));
     }
 }
