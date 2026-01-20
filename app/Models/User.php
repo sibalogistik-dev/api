@@ -34,4 +34,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Karyawan::class)->withTrashed();
     }
+
+    public function fcmTokens()
+    {
+        return $this->hasMany(FcmToken::class);
+    }
 }
