@@ -14,6 +14,7 @@ class EmployeeTrainingService
     public function create(array $data)
     {
         DB::beginTransaction();
+        $firebaseNotificationService = new FcmService();
         try {
             $et = EmployeeTraining::create($data);
             DB::commit();
@@ -24,6 +25,12 @@ class EmployeeTrainingService
                 'Anda memiliki training baru yang perlu diikuti.',
                 $data['training_name'],
                 '/notifikasi/buka'
+            );
+            $firebaseNotificationService->sendNotification(
+                $user->id,
+                'hrd',
+                'Training Baru',
+                'Anda memiliki training baru: ' . $data['training_name']
             );
             return $et;
         } catch (Exception $e) {

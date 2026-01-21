@@ -15,7 +15,7 @@ class NewTraining extends BaseNotification
 
     protected function getModuleName(): string
     {
-        return 'employee';
+        return 'hrd';
     }
 
     protected function getTitle(): string

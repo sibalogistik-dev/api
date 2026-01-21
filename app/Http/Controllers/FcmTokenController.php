@@ -38,11 +38,13 @@ class FcmTokenController extends Controller
         ]);
 
         FcmToken::updateOrCreate(
-            ['fcm_token' => $request->fcm_token],
+            [
+                'fcm_token' => $request->fcm_token,
+            ],
             [
                 'user_id'     => $request->user()->id,
                 'device_type' => $request->device_type,
-                'app_name'    => $request->app_name
+                'app_name'    => $request->app_name,
             ]
         );
 

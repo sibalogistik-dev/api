@@ -11,4 +11,10 @@ abstract class Controller
         'app.access.logistik',
         'app.access.marketing',
     ];
+
+    public function sendFirebaseNotification($userId, $appName, $title, $body)
+    {
+        $fcmTokenController = new FcmTokenController();
+        return $fcmTokenController->sendPushToSpecificApp($userId, $appName, $title, $body);
+    }
 }
