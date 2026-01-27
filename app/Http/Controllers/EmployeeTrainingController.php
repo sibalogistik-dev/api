@@ -27,7 +27,7 @@ class EmployeeTrainingController extends Controller
     {
         try {
             $validated          = $request->validated();
-            $etQ                = EmployeeTraining::query()->filter($validated);
+            $etQ                = EmployeeTraining::query()->orderBy('start_date', 'desc')->filter($validated);
             $et                 = isset($validated['paginate']) && $validated['paginate'] ? $etQ->paginate($validated['perPage'] ?? 10) : $etQ->get();
             $transformedItems   = $et instanceof LengthAwarePaginator ? $et->getCollection() : $et;
             $transformedEt      = $transformedItems->map(function ($item) {

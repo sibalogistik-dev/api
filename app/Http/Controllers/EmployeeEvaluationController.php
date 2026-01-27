@@ -33,6 +33,7 @@ class EmployeeEvaluationController extends Controller
                     'id'                    => $item->id,
                     'employee_id'           => $item->employee_id,
                     'employee_name'         => $item->employee?->name,
+                    'branch_name'           => $item->employee?->branch?->name,
                     'evaluator_id'          => $item->evaluator_id,
                     'evaluator_name'        => $item->evaluator?->name,
                     'evaluation_date'       => $item->evaluation_date,
@@ -58,7 +59,7 @@ class EmployeeEvaluationController extends Controller
         }
     }
 
-    public function show(EmployeeEvaluation $employeeEvaluation)
+    public function show($employeeEvaluation)
     {
         try {
             $employeeEvaluation = EmployeeEvaluation::find($employeeEvaluation);
@@ -69,6 +70,7 @@ class EmployeeEvaluationController extends Controller
                 'id'                    => $employeeEvaluation->id,
                 'employee_id'           => $employeeEvaluation->employee_id,
                 'employee_name'         => $employeeEvaluation->employee?->name,
+                'branch_name'           => $employeeEvaluation->employee?->branch?->name,
                 'evaluator_id'          => $employeeEvaluation->evaluator_id,
                 'evaluator_name'        => $employeeEvaluation->evaluator?->name,
                 'evaluation_date'       => $employeeEvaluation->evaluation_date,
@@ -80,7 +82,7 @@ class EmployeeEvaluationController extends Controller
         }
     }
 
-    public function update(EmployeeEvaluationUpdateRequest $request, EmployeeEvaluation $employeeEvaluation)
+    public function update(EmployeeEvaluationUpdateRequest $request, $employeeEvaluation)
     {
         try {
             $employeeEvaluation = EmployeeEvaluation::find($employeeEvaluation);
