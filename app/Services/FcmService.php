@@ -9,7 +9,7 @@ use Kreait\Firebase\Messaging\Notification;
 
 class FcmService
 {
-    public function sendNotification($userId, $appName, $title, $body, $data = [])
+    public function sendNotification($userId, $appName, $title, $body, $imageUrl = null, $data = [])
     {
         $tokens = FcmToken::where('user_id', $userId)
             ->where('app_name', $appName)
@@ -23,7 +23,7 @@ class FcmService
         $messaging = Firebase::messaging();
 
         $message = CloudMessage::new()
-            ->withNotification(Notification::create($title, $body))
+            ->withNotification(Notification::create($title, $body, $imageUrl))
             ->withData($data);
 
         $report = $messaging->sendMulticast($message, $tokens);

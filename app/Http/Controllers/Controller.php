@@ -12,9 +12,9 @@ abstract class Controller
         'app.access.marketing',
     ];
 
-    public function sendFirebaseNotification($userId, $appName, $title, $body)
+    public function sendFirebaseNotification($userId, $appName, $title, $body, $imageUrl = null)
     {
         $fcmTokenController = new FcmTokenController();
-        return $fcmTokenController->sendPushToSpecificApp($userId, $appName, $title, $body);
+        return $fcmTokenController->sendPushToSpecificApp($userId, $appName, $title, $body, $imageUrl);
     }
 }

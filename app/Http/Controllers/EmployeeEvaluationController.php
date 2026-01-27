@@ -96,7 +96,7 @@ class EmployeeEvaluationController extends Controller
         }
     }
 
-    public function destroy(EmployeeEvaluation $employeeEvaluation)
+    public function destroy($employeeEvaluation)
     {
         try {
             $employeeEvaluation = EmployeeEvaluation::find($employeeEvaluation);

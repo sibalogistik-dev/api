@@ -11,7 +11,7 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class FcmTokenController extends Controller
 {
-    public function sendPushToSpecificApp($userId, $appName, $title, $body)
+    public function sendPushToSpecificApp($userId, $appName, $title, $body, $imageUrl = null)
     {
         $tokens = FcmToken::where('user_id', $userId)
             ->where('app_name', $appName)
@@ -22,7 +22,7 @@ class FcmTokenController extends Controller
 
         $messaging = Firebase::messaging();
         $message = CloudMessage::new()
-            ->withNotification(Notification::create($title, $body));
+            ->withNotification(Notification::create($title, $body, $imageUrl));
 
         $report = $messaging->sendMulticast($message, $tokens);
 
