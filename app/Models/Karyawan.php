@@ -132,4 +132,11 @@ class Karyawan extends Model
     {
         return $this->hasMany(FaceRecognitionModel::class, 'employee_id');
     }
+
+    public function announcements()
+    {
+        return $this->belongsToMany(Announcement::class, 'announcement_recipients', 'employee_id', 'announcement_id')
+            ->using(AnnouncementRecipient::class)
+            ->withTimestamps();
+    }
 }

@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('announcements', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->longText('content');
-            $table->string('image_url');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('announcements', function (Blueprint $table) {
+            $table->string('image_url')->nullable()->change();
         });
     }
 
@@ -26,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('announcements');
+        Schema::table('announcements', function (Blueprint $table) {
+            // Hapus kolom jika migration di-rollback
+            $table->dropColumn('image_url');
+        });
     }
 };

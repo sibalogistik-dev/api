@@ -28,7 +28,7 @@ class EmployeeTrainingService
             );
             $firebaseNotificationService->sendNotification(
                 $user->id,
-                'hrd',
+                'employee',
                 'Training Baru',
                 'Anda memiliki training baru: ' . $data['training_name']
             );
