@@ -9,7 +9,7 @@ class Announcement extends Model
 {
     use SoftDeletes;
 
-    protected $hidden = ['updated_at', 'created_at', 'deleted_at'];
+    protected $hidden = ['updated_at', 'deleted_at'];
 
     protected $fillable = [
         'title',
@@ -40,6 +40,7 @@ class Announcement extends Model
     {
         return $this->belongsToMany(Karyawan::class, 'announcement_recipients', 'announcement_id', 'employee_id')
             ->using(AnnouncementRecipient::class)
+            ->withPivot('is_read')
             ->withTimestamps();
     }
 }

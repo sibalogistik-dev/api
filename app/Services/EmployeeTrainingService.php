@@ -24,7 +24,7 @@ class EmployeeTrainingService
                 'info',
                 'Anda memiliki training baru yang perlu diikuti.',
                 $data['training_name'],
-                '/notifikasi/buka'
+                '/notifikasi'
             );
             $firebaseNotificationService->sendNotification(
                 $user->id,

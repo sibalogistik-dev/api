@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class AnnouncementRecipient extends Model
+class AnnouncementRecipient extends Pivot
 {
     protected $hidden = ['updated_at', 'created_at'];
 

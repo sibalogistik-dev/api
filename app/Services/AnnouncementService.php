@@ -43,7 +43,7 @@ class AnnouncementService
                             'info',
                             'Ada pengumuman baru buat kamu!',
                             $data['title'],
-                            '/notifikasi/buka'
+                            '/notifikasi'
                         );
                         $firebaseNotificationService = new FcmService();
                         $firebaseNotificationService->sendNotification(

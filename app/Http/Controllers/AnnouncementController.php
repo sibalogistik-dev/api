@@ -10,6 +10,7 @@ use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
@@ -24,10 +25,25 @@ class AnnouncementController extends Controller
     public function index(AnnouncementIndexRequest $request)
     {
         try {
-            $validated      = $request->validated();
-            $announcementQ  = Announcement::query()->filter($validated);
-            $announcement   = isset($validated['paginate']) && $validated['paginate'] ? $announcementQ->paginate($validated['perPage'] ?? 10) : $announcementQ->get();
-            return ApiResponseHelper::success('Announcement data', $announcement);
+            $validated              = $request->validated();
+            $announcementQ          = Announcement::query()->filter($validated);
+            $announcement           = isset($validated['paginate']) && $validated['paginate'] ? $announcementQ->paginate($validated['perPage'] ?? 10) : $announcementQ->get();
+            $transformedItems       = $announcement instanceof LengthAwarePaginator ? $announcement->getCollection() : $announcement;
+            $transformedAnnounce    = $transformedItems->map(function ($item) {
+                return [
+                    'id'                => $item->id,
+                    'title'             => $item->title,
+                    'content'           => $item->content,
+                    'total_recipients'  => count($item->recipients),
+                    'total_read'        => count($item->recipients()->where('is_read', true)->get()),
+                    'created_at'        => $item->created_at
+                ];
+            });
+
+            if ($announcement instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Employee training data', $announcement->setCollection($transformedAnnounce));
+            }
+            return ApiResponseHelper::success('Employee training data', $transformedAnnounce);
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to get announcement data', $e->getMessage());
         }
@@ -45,7 +61,28 @@ class AnnouncementController extends Controller
 
     public function show($announcement)
     {
-        //
+        try {
+            $announce = Announcement::find($announcement);
+            if (!$announce) {
+                throw new Exception('Announcement data not found');
+            }
+            $data = [
+                'id'            => $announce->id,
+                'title'         => $announce->title,
+                'content'       => $announce->content,
+                'recipients'    => $announce->recipients->map(function ($karyawan) {
+                    return [
+                        'employee_id' => $karyawan->id,
+                        'name'        => $karyawan->name,
+                        'is_read'     => $karyawan->pivot->is_read,
+                    ];
+                }),
+                'created_at'    => $announce->created_at
+            ];
+            return ApiResponseHelper::success("Announcement's details", $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Failed to get Announcement's data", $e->getMessage());
+        }
     }
 
     public function update(AnnouncementUpdateRequest $request, $announcement)
