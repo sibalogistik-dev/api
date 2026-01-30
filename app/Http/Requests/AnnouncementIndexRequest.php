@@ -17,6 +17,8 @@ class AnnouncementIndexRequest extends FormRequest
             'q'                 => ['nullable', 'string'],
             'paginate'          => ['nullable', 'boolean'],
             'perPage'           => ['nullable', 'integer', 'min:1'],
+            'start_date'        => ['nullable', 'date'],
+            'end_date'          => ['nullable', 'date'],
             'employee_id'       => ['nullable', 'integer']
         ];
     }

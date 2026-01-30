@@ -26,7 +26,7 @@ class AnnouncementController extends Controller
     {
         try {
             $validated              = $request->validated();
-            $announcementQ          = Announcement::query()->filter($validated);
+            $announcementQ          = Announcement::query()->filter($validated)->orderBy('created_at', 'desc');
             $announcement           = isset($validated['paginate']) && $validated['paginate'] ? $announcementQ->paginate($validated['perPage'] ?? 10) : $announcementQ->get();
             $transformedItems       = $announcement instanceof LengthAwarePaginator ? $announcement->getCollection() : $announcement;
             $transformedAnnounce    = $transformedItems->map(function ($item) {
@@ -87,7 +87,16 @@ class AnnouncementController extends Controller
 
     public function update(AnnouncementUpdateRequest $request, $announcement)
     {
-        //
+        try {
+            $announce = Announcement::find($announcement);
+            if (!$announce) {
+                throw new Exception('Announcement data not found');
+            }
+            $this->announcementService->update($announce, $request->validated());
+            return ApiResponseHelper::success('Annoncement data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating announcement data', $e->getMessage());
+        }
     }
 
     public function destroy($id)

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,6 +28,12 @@ class Announcement extends Model
                         $q->where('name', 'like', "%{$keyword}%");
                     });
             });
+        });
+
+        $query->when(isset($filters['start_date']) && isset($filters['end_date']), function ($query) use ($filters) {
+            $start_date = Carbon::parse($filters['start_date'])->startOfDay();
+            $end_date   = Carbon::parse($filters['end_date'])->endOfDay();
+            $query->whereBetween('created_at', [$start_date, $end_date]);
         });
 
         $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
