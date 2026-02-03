@@ -45,6 +45,8 @@ class AbsensiController extends Controller
                 'attendance_status_id'  => $item->attendance_status_id,
                 'status'                => $item->attendanceStatus->name,
                 'date'                  => $item->date,
+                'check_in_image'        => $item->check_in_image,
+                'check_out_image'       => $item->check_out_image,
                 'start_time'            => $item->start_time,
                 'end_time'              => $item->end_time,
             ];
