@@ -34,6 +34,7 @@ Route::middleware('api')->group(function () {
                 'daily-report'                  => App\Http\Controllers\EmployeeDailyReportController::class,
                 'employee'                      => App\Http\Controllers\KaryawanController::class,
                 'employee-evaluation'           => App\Http\Controllers\EmployeeEvaluationController::class,
+                'employee-rolling-schedule'     => App\Http\Controllers\EmployeeRollingScheduleController::class,
                 'employee-training'             => App\Http\Controllers\EmployeeTrainingController::class,
                 'employee-training-schedule'    => App\Http\Controllers\EmployeeTrainingScheduleController::class,
                 'employee-training-type'        => App\Http\Controllers\EmployeeTrainingTypeController::class,
@@ -79,19 +80,19 @@ Route::middleware('api')->group(function () {
             Route::get('dashboard/count-employee',              [App\Http\Controllers\EmployeeDetailsController::class, 'employeeCount'])->name('dashboard.employeeCount');
             Route::get('dashboard/count-attendance',            [App\Http\Controllers\AbsensiController::class,         'attendanceCount'])->name('dashboard.attendanceCount');
             Route::get('dashboard/attendance-unsubmitted',      [App\Http\Controllers\AbsensiController::class,         'attendanceUnsubmitted'])->name('dashboard.attendanceUnsubmitted');
+            Route::post('dashboard/attendance-reminder',        [App\Http\Controllers\NotificationController::class,    'attendanceReminder'])->name('notifications.attendanceReminder');
 
             // hrd notification routes
-            Route::get('/notifications/hrd',                    [App\Http\Controllers\NotificationController::class,    'hrdIndex'])->name('notifications.hrd.index');
-            Route::get('/notifications/hrd/unread',             [App\Http\Controllers\NotificationController::class,    'hrdUnread'])->name('notifications.hrd.unread');
-            Route::get('/notifications/hrd/unread/count',       [App\Http\Controllers\NotificationController::class,    'hrdUnreadCount'])->name('notifications.hrd.unread.count');
+            Route::get('notifications/hrd',                     [App\Http\Controllers\NotificationController::class,    'hrdIndex'])->name('notifications.hrd.index');
+            Route::get('notifications/hrd/unread',              [App\Http\Controllers\NotificationController::class,    'hrdUnread'])->name('notifications.hrd.unread');
+            Route::get('notifications/hrd/unread/count',        [App\Http\Controllers\NotificationController::class,    'hrdUnreadCount'])->name('notifications.hrd.unread.count');
 
             // employee notification routes
-            Route::get('/notifications/employee',               [App\Http\Controllers\NotificationController::class,    'employeeIndex'])->name('notifications.employee.index');
-            Route::get('/notifications/employee/unread',        [App\Http\Controllers\NotificationController::class,    'employeeUnread'])->name('notifications.employee.unread');
-            Route::get('/notifications/employee/unread/count',  [App\Http\Controllers\NotificationController::class,    'employeeUnreadCount'])->name('notifications.employee.unread.count');
+            Route::get('notifications/employee',                [App\Http\Controllers\NotificationController::class,    'employeeIndex'])->name('notifications.employee.index');
+            Route::get('notifications/employee/unread',         [App\Http\Controllers\NotificationController::class,    'employeeUnread'])->name('notifications.employee.unread');
+            Route::get('notifications/employee/unread/count',   [App\Http\Controllers\NotificationController::class,    'employeeUnreadCount'])->name('notifications.employee.unread.count');
 
-
-            Route::post('/notifications/{id}/read',             [App\Http\Controllers\NotificationController::class,    'markAsRead'])->name('notifications.markAsRead');
+            Route::post('notifications/{id}/read',              [App\Http\Controllers\NotificationController::class,    'markAsRead'])->name('notifications.markAsRead');
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');
