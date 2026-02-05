@@ -9,8 +9,8 @@ use App\Http\Requests\AnnouncementUpdateRequest;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
@@ -20,6 +20,11 @@ class AnnouncementController extends Controller
     public function __construct(AnnouncementService $announcementService)
     {
         $this->announcementService = $announcementService;
+        $this->middleware('permission:hrd.announcement|hrd.announcement.index')->only('index');
+        $this->middleware('permission:hrd.announcement|hrd.announcement.show')->only('show');
+        $this->middleware('permission:hrd.announcement|hrd.announcement.store')->only('store');
+        $this->middleware('permission:hrd.announcement|hrd.announcement.update')->only('update');
+        $this->middleware('permission:hrd.announcement|hrd.announcement.destroy')->only('destroy');
     }
 
     public function index(AnnouncementIndexRequest $request)

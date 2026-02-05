@@ -11,6 +11,7 @@ use App\Services\AssetMaintenanceService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controller;
 
 class AssetMaintenanceController extends Controller
 {
@@ -19,6 +20,11 @@ class AssetMaintenanceController extends Controller
     public function __construct(AssetMaintenanceService $assetMaintenanceService)
     {
         $this->assetMaintenanceService = $assetMaintenanceService;
+        $this->middleware('permission:hrd.asset_maintenance.index', ['only' => ['index']]);
+        $this->middleware('permission:hrd.asset_maintenance.show', ['only' => ['show']]);
+        $this->middleware('permission:hrd.asset_maintenance.store', ['only' => ['store']]);
+        $this->middleware('permission:hrd.asset_maintenance.update', ['only' => ['update']]);
+        $this->middleware('permission:hrd.asset_maintenance.destroy', ['only' => ['destroy']]);
     }
 
     public function index(AssetMaintenanceIndexRequest $request)

@@ -164,6 +164,13 @@ class PermissionSeeder extends Seeder
             'hrd.payroll.report'    => 'HRD Payroll Page Access | Report',
             'hrd.payroll.slip'      => 'HRD Payroll Page Access | Slip',
 
+            'hrd.permission'           => 'HRD Permission Page Access',
+            'hrd.permission.index'     => 'HRD Permission Page Access | Index',
+            'hrd.permission.show'      => 'HRD Permission Page Access | Show',
+            'hrd.permission.store'     => 'HRD Permission Page Access | Create',
+            'hrd.permission.update'    => 'HRD Permission Page Access | Update',
+            'hrd.permission.destroy'   => 'HRD Permission Page Access | Delete',
+
             'hrd.remote-attendance'         => 'HRD Remote Attendance Page Access',
             'hrd.remote-attendance.index'   => 'HRD Remote Attendance Page Access | Index',
             'hrd.remote-attendance.show'    => 'HRD Remote Attendance Page Access | Show',
