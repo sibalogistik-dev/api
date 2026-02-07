@@ -8,8 +8,8 @@ Route::middleware('api')->group(function () {
 
     Route::middleware('auth:sanctum')
         ->group(function () {
-            Route::get('user',              [App\Http\Controllers\AuthController::class, 'user']);
-            Route::post('save-fcm-token',   [App\Http\Controllers\FcmTokenController::class, 'store']);
+            Route::get('user',              [App\Http\Controllers\AuthController::class,        'user']);
+            Route::post('save-fcm-token',   [App\Http\Controllers\FcmTokenController::class,    'store']);
 
             Route::apiResources([
                 // master data
