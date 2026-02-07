@@ -6,23 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class EmployeeRollingScheduleIndexRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'q'             => ['nullable', 'string'],
+            'employee_id'   => ['nullable', 'string'],
+            'start_date'    => ['nullable', 'date', 'required_with:end_date'],
+            'end_date'      => ['nullable', 'date', 'required_with:start_date', 'after_or_equal:start_date'],
+            'paginate'      => ['nullable', 'boolean'],
+            'perPage'       => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

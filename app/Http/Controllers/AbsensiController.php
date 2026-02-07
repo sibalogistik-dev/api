@@ -28,6 +28,7 @@ class AbsensiController extends Controller
     {
         $this->attendanceService    = $attendanceService;
         $this->attendanceServiceHRD = $attendanceServiceHRD;
+        
     }
 
     public function index(AttendanceIndexRequest $request)
