@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            // Modile Access
+            // Module Access
             'hrd'           => 'HRD App Access',
             'employee'      => 'Employee App Access',
             'finance'       => 'Finance App Access',
@@ -146,6 +146,13 @@ class PermissionSeeder extends Seeder
             'hrd.job-title.store'   => 'HRD Job Title Page Access | Create',
             'hrd.job-title.update'  => 'HRD Job Title Page Access | Update',
             'hrd.job-title.destroy' => 'HRD Job Title Page Access | Delete',
+
+            'hrd.midday-attendance'         => 'HRD Absensi Siang Page Access',
+            'hrd.midday-attendance.index'   => 'HRD Absensi Siang Page Access | Index',
+            'hrd.midday-attendance.show'    => 'HRD Absensi Siang Page Access | Show',
+            'hrd.midday-attendance.store'   => 'HRD Absensi Siang Page Access | Create',
+            'hrd.midday-attendance.update'  => 'HRD Absensi Siang Page Access | Update',
+            'hrd.midday-attendance.destroy' => 'HRD Absensi Siang Page Access | Delete',
 
             'hrd.overtime'          => 'HRD Overtime Page Access',
             'hrd.overtime.index'    => 'HRD Overtime Page Access | Index',

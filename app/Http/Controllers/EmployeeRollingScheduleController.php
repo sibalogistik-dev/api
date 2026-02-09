@@ -62,7 +62,12 @@ class EmployeeRollingScheduleController extends Controller
 
     public function store(EmployeeRollingScheduleStoreRequest $request)
     {
-        //
+        try {
+            $employeeRollingSchedule = $this->employeeRollingScheduleService->create($request->validated());
+            return ApiResponseHelper::success('Employee rolling schedule data has been added successfully', $employeeRollingSchedule);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to add employee rolling schedule data', $e->getMessage());
+        }
     }
 
     public function show($employeeRollingSchedule)
