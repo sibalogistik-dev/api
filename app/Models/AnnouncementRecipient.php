@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AnnouncementRecipient extends Pivot
 {
+    protected $table = 'announcement_recipients';
     protected $hidden = ['updated_at', 'created_at'];
 
     protected $fillable = [

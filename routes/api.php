@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->group(function () {
@@ -111,6 +114,27 @@ Route::middleware('api')->group(function () {
 
     Route::get('/get/village',                  [App\Http\Controllers\IndonesiaController::class, 'getAllVillage']);
     Route::get('/get/village/{code}',           [App\Http\Controllers\IndonesiaController::class, 'getVillage']);
+});
+
+Route::post('system/maintenance', function (Request $request) {
+    $request->validate(['secret' => 'required|string', 'action' => 'required|in:up,down', 'bypass_secret' => 'nullable|string']);
+    if ($request->secret !== env('MAINTENANCE_SECRET_KEY')) {
+        return response()->json(['status' => 'error', 'message' => 'Unauthorized: Invalid secret key.'], 403);
+    }
+    try {
+        if ($request->action === 'down') {
+            $bypassSecret = $request->bypass_secret ?? 'dev_bypass';
+            Artisan::call('down', ['--secret' => $bypassSecret, '--render' => 'errors::503']);
+            Log::warning('Application put into maintenance mode via API.');
+            return response()->json(['status' => 'success', 'message' => 'Application is now in maintenance mode.', 'bypass_url' => url("/$bypassSecret")]);
+        } else {
+            Artisan::call('up');
+            Log::info('Application brought out of maintenance mode via API.');
+            return response()->json(['status' => 'success', 'message' => 'Application is now live.']);
+        }
+    } catch (Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Failed to execute command: ' . $e->getMessage()], 500);
+    }
 });
 
 Route::get('time', function () {

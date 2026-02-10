@@ -57,7 +57,7 @@ class PermissionSeeder extends Seeder
             'hrd.branch-asset.store'    => 'HRD Branch Asset Page Access | Create',
             'hrd.branch-asset.update'   => 'HRD Branch Asset Page Access | Update',
             'hrd.branch-asset.destroy'  => 'HRD Branch Asset Page Access | Delete',
-            'hrd.branch-asset.report'    => 'HRD Branch Asset Page Access | Report',
+            'hrd.branch-asset.report'   => 'HRD Branch Asset Page Access | Report',
 
             'hrd.company'           => 'HRD Company Page Access',
             'hrd.company.index'     => 'HRD Company Page Access | Index',
@@ -72,7 +72,7 @@ class PermissionSeeder extends Seeder
             'hrd.daily-report.store'    => 'HRD Daily Report Page Access | Create',
             'hrd.daily-report.update'   => 'HRD Daily Report Page Access | Update',
             'hrd.daily-report.destroy'  => 'HRD Daily Report Page Access | Delete',
-            'hrd.daily-report.report'    => 'HRD Daily Report Page Access | Report',
+            'hrd.daily-report.report'   => 'HRD Daily Report Page Access | Report',
 
             'hrd.employee'          => 'HRD Employee Page Access',
             'hrd.employee.index'    => 'HRD Employee Page Access | Index',
