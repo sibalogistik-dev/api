@@ -18,7 +18,7 @@ class EmployeeRollingScheduleStoreRequest extends FormRequest
             'from_branch_id'    => ['required', 'integer', 'exists:cabangs,id'],
             'to_branch_id'      => ['required', 'integer', 'exists:cabangs,id'],
             'start_date'        => ['required', 'date', 'required_with:end_date'],
-            'end_date'          => ['required', 'date', 'required_with:start_date', 'after_or_equal:start_date'],
+            'end_date'          => ['required', 'date', 'required_with:start_date', 'after_or_equal:start_date']
         ];
     }
 }

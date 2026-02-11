@@ -50,6 +50,7 @@ Route::middleware('api')->group(function () {
                 'remote-attendance'             => App\Http\Controllers\RemoteAttendanceController::class,
                 'reprimand-letter'              => App\Http\Controllers\ReprimandLetterController::class,
                 'resign'                        => App\Http\Controllers\ResignController::class,
+                'user-permission'               => App\Http\Controllers\UserPermissionController::class,
                 'warning-letter'                => App\Http\Controllers\WarningLetterController::class,
             ]);
 
@@ -123,7 +124,7 @@ Route::post('system/maintenance', function (Request $request) {
     }
     try {
         if ($request->action === 'down') {
-            $bypassSecret = $request->bypass_secret ?? 'dev_bypass';
+            $bypassSecret = $request->bypass_secret ?? 'dev_maintenance_bypass';
             Artisan::call('down', ['--secret' => $bypassSecret, '--render' => 'errors::503']);
             Log::warning('Application put into maintenance mode via API.');
             return response()->json(['status' => 'success', 'message' => 'Application is now in maintenance mode.', 'bypass_url' => url("/$bypassSecret")]);

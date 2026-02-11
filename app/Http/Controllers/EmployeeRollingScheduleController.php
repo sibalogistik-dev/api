@@ -72,16 +72,57 @@ class EmployeeRollingScheduleController extends Controller
 
     public function show($employeeRollingSchedule)
     {
-        //
+        try {
+            $rollingSchedule = EmployeeRollingSchedule::find($employeeRollingSchedule);
+            if (!$rollingSchedule) {
+                throw new Exception('Employee rolling schedule data not found');
+            }
+            $data = [
+                'id'                    => $rollingSchedule->id,
+                'employee_id'           => $rollingSchedule->employee_id,
+                'employee_name'         => $rollingSchedule->employee?->name,
+                'from_branch_id'        => $rollingSchedule->from_branch_id,
+                'from_branch_company'   => $rollingSchedule->fromBranch?->company?->name,
+                'from_branch_city'      => $rollingSchedule->fromBranch?->village?->district->city?->name,
+                'from_branch_name'      => $rollingSchedule->fromBranch?->name,
+                'to_branch_id'          => $rollingSchedule->to_branch_id,
+                'to_branch_company'     => $rollingSchedule->toBranch?->company?->name,
+                'to_branch_city'        => $rollingSchedule->toBranch?->village?->district->city?->name,
+                'to_branch_name'        => $rollingSchedule->toBranch?->name,
+                'start_date'            => $rollingSchedule->start_date,
+                'end_date'              => $rollingSchedule->end_date,
+            ];
+            return ApiResponseHelper::success("Employee rolling schedule detail", $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error("Failed to get employee rolling schedule data", $e->getMessage());
+        }
     }
 
     public function update(EmployeeRollingScheduleUpdateRequest $request, $employeeRollingSchedule)
     {
-        //
+        try {
+            $employeeRollSched = EmployeeRollingSchedule::find($employeeRollingSchedule);
+            if (!$employeeRollSched) {
+                throw new Exception('Employee rolling schedule data not found');
+            }
+            $this->employeeRollingScheduleService->update($employeeRollSched, $request->validated());
+            return ApiResponseHelper::success('Employee rolling schedule data has been updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to update employee rolling schedule data', $e->getMessage());
+        }
     }
 
     public function destroy($employeeRollingSchedule)
     {
-        //
+        try {
+            $employeeRollSched = EmployeeRollingSchedule::find($employeeRollingSchedule);
+            if (!$employeeRollSched) {
+                throw new Exception('Employee rolling schedule data not found');
+            }
+            $employeeRollSched->delete();
+            return ApiResponseHelper::success('Employee rolling schedule data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to delete employee rolling schedule data', $e->getMessage());
+        }
     }
 }

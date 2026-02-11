@@ -90,7 +90,7 @@ class EmployeeEvaluationController extends Controller
                 throw new Exception('Employee evaluation data not found');
             }
             $this->employeeEvaluationService->update($employeeEvaluation, $request->validated());
-            return ApiResponseHelper::success('Employee evaluation data has been updated successfully', $employeeEvaluation);
+            return ApiResponseHelper::success('Employee evaluation data has been updated successfully');
         } catch (Exception $e) {
             return ApiResponseHelper::error('Failed to update employee evaluation data', $e->getMessage());
         }
