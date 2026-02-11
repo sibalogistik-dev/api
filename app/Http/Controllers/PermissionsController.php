@@ -24,7 +24,7 @@ class PermissionsController extends Controller
     {
         try {
             $validated  = $request->validated();
-            $permQ      = Permission::query()->filter($validated)->orderBy('name');
+            $permQ      = Permission::query()->filter($validated);
             $perm       = isset($validated['paginate']) && $validated['paginate'] ? $permQ->paginate($validated['perPage'] ?? 10) : $permQ->get();
             $transformedItems   = $perm instanceof LengthAwarePaginator ? $perm->getCollection() : $perm;
             $transformedperm  = $transformedItems->map(function ($item) {

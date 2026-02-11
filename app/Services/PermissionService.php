@@ -12,9 +12,7 @@ class PermissionService
     {
         DB::beginTransaction();
         try {
-            if (!isset($data['guard_name'])) {
-                $data['guard_name'] = 'web';
-            }
+            $data['guard_name'] = 'web';
             $permission = Permission::create($data);
             DB::commit();
             return $permission;
