@@ -28,7 +28,7 @@ class NewAnnouncement extends BaseNotification
         return $this->details['message'];
     }
 
-    protected function getNotificationData(): array
+    protected function getNotificationData()
     {
         return [
             'url'     => $this->details['url'] ?? null

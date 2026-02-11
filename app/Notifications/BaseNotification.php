@@ -15,7 +15,7 @@ abstract class BaseNotification extends Notification
 
     abstract protected function getMessage(): string;
 
-    abstract protected function getNotificationData(): array;
+    abstract protected function getNotificationData();
 
     public function via($notifiable)
     {
