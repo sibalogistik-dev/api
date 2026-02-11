@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 class UserPermissionController extends Controller
 {
+    protected $userPermissionService;
+
     public function index()
     {
         //

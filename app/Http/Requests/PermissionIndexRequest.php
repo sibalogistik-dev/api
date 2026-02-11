@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserPermissionStoreRequest extends FormRequest
+class PermissionIndexRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,8 +14,9 @@ class UserPermissionStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'       => ['required', 'integer', 'exists:users,id'],
-            'permission_id' => ['required','integer','exists:permissions,id']
+            'q'         => ['nullable', 'string'],
+            'paginate'  => ['nullable', 'boolean'],
+            'perPage'   => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

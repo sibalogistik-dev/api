@@ -28,7 +28,7 @@ class EmployeeService
                 'email_verified_at' => now(),
                 'user_type'         => 'employee',
             ]);
-            $user->givePermissionTo('app.access.karyawan');
+            $user->givePermissionTo('employee');
             $karyawanData = [
                 'user_id'             => $user->id,
                 'name'                => $data['name'],

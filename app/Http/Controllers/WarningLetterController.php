@@ -82,7 +82,7 @@ class WarningLetterController extends Controller
 
             return ApiResponseHelper::success('Warning letter data', $data);
         } catch (Exception $e) {
-            return ApiResponseHelper::error('Failed to get warning letter data', $e->getMessage());
+            return ApiResponseHelper::error('Failed to add warning letter data', $e->getMessage());
         }
     }
 
