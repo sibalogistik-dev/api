@@ -82,15 +82,27 @@
             margin: 0 0 10px 0;
         }
 
-        .indented-list {
+        /* --- PERUBAHAN CSS DI SINI --- */
+        /* Class khusus untuk menampung output HTML dari Quill Editor */
+        .quill-content {
             margin-left: 30px;
-            padding-left: 0;
-            list-style-type: none;
+            /* Pengganti .indented-list lama */
+            margin-bottom: 10px;
         }
 
-        .indented-list li {
+        /* Reset style elemen HTML di dalam quill agar rapi di PDF */
+        .quill-content p {
             margin-bottom: 5px;
         }
+
+        .quill-content ul,
+        .quill-content ol {
+            margin-top: 0;
+            margin-bottom: 5px;
+            padding-left: 20px;
+        }
+
+        /* ----------------------------- */
 
         .signature-block {
             margin-top: 40px;
@@ -135,6 +147,7 @@
         <table class="header-content">
             <tr>
                 <td class="header-logo">
+                    {{-- Pastikan path image sudah benar sesuai config filesystems --}}
                     <img src="{{ public_path('images/logo/' . $document->employee->branch->company->codename . '.png') }}"
                         alt="Logo" style="width:75px; height: auto;">
                 </td>
@@ -178,17 +191,17 @@
                 pelanggaran disiplin kerja berupa:
             </p>
 
-            <ul class="indented-list">
-                <li>&bull; <strong>{{ $document->reason }}</strong></li>
-            </ul>
+            <div class="quill-content">
+                {!! $document->reason !!}
+            </div>
 
             <p>
                 Adapun catatan dan instruksi yang harus diperhatikan adalah sebagai berikut:
             </p>
 
-            <ul class="indented-list">
-                <li>&bull; {{ $document->notes }}</li>
-            </ul>
+            <div class="quill-content">
+                {!! $document->notes !!}
+            </div>
 
             <p>
                 Surat peringatan ini berlaku sejak tanggal
@@ -201,11 +214,7 @@
         <table class="signature-block">
             <tr>
                 <td width="50%" class="signature-details">
-                    {{-- <p>
-                        Karyawan yang bersangkutan,<br><br>
-                        <span class="signature-space"></span>
-                        <strong>{{ $document->employee->name }}</strong>
-                    </p> --}}
+
                 </td>
                 <td width="50%" class="signature-details">
                     <p>
