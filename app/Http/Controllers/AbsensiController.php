@@ -18,6 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controller;
 
 class AbsensiController extends Controller
 {
@@ -28,7 +29,12 @@ class AbsensiController extends Controller
     {
         $this->attendanceService    = $attendanceService;
         $this->attendanceServiceHRD = $attendanceServiceHRD;
-        
+        $this->middleware('permission:hrd.attendance|hrd.attendance.index')->only('index');
+        $this->middleware('permission:hrd.attendance|hrd.attendance.show')->only('show');
+        $this->middleware('permission:hrd.attendance|hrd.attendance.store')->only('store');
+        $this->middleware('permission:hrd.attendance|hrd.attendance.update')->only('update');
+        $this->middleware('permission:hrd.attendance|hrd.attendance.destroy')->only('destroy');
+        $this->middleware('permission:hrd.attendance|hrd.attendance.report')->only('report');
     }
 
     public function index(AttendanceIndexRequest $request)

@@ -9,7 +9,6 @@ use App\Http\Requests\EmployeeTrainingTypeUpdateRequest;
 use App\Models\EmployeeTrainingType;
 use App\Services\EmployeeTrainingTypeService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmployeeTrainingTypeController extends Controller
