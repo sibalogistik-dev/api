@@ -33,6 +33,7 @@ class RoleSeeder extends Seeder
             'hrd.holiday',
             'hrd.job-description',
             'hrd.job-title',
+            'hrd.midday-attendance',
             'hrd.overtime',
             'hrd.payroll',
             'hrd.permission',

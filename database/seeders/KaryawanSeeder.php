@@ -69,7 +69,7 @@ class KaryawanSeeder extends Seeder
             ],
         ];
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $name               = $faker->firstName() . ' ' . $faker->lastName();
             $birthDate          = $faker->dateTimeBetween('-40 years', '-20 years')->format('Y-m-d');
             $gender             = $faker->randomElement(['laki-laki', 'perempuan']);
