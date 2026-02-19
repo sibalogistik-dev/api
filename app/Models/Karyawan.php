@@ -118,6 +118,11 @@ class Karyawan extends Model
         return $this->hasMany(Absensi::class, 'employee_id');
     }
 
+    public function middayAttendance()
+    {
+        return $this->hasMany(MiddayAttendance::class, 'employee_id');
+    }
+
     public function remoteAttendances()
     {
         return $this->hasMany(RemoteAttendance::class, 'employee_id');

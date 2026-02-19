@@ -64,8 +64,8 @@ class AbsensiController extends Controller
                 return ApiResponseHelper::success('Attendance list', $absensi->setCollection($transformedAbsensi));
             }
             return ApiResponseHelper::success('Attendance list', $transformedAbsensi);
-        } catch (\Throwable $th) {
-            return ApiResponseHelper::error('Failed to get attendance data');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get attendance data', $e->getMessage());
         }
     }
 

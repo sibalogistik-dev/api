@@ -38,12 +38,10 @@ class Absensi extends Model
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['q'] ?? null, function ($query, $keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query->where('description', 'like', "%{$keyword}%")
-                    ->orWhereHas('employee', function ($query) use ($keyword) {
-                        $query->where('name', 'like', "%{$keyword}%");
-                    });
-            });
+            $query->where('description', 'like', "%{$keyword}%")
+                ->orWhereHas('employee', function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                });
         });
 
         $query->when($filters['employee_id'] ?? null, function ($query, $employeeId) {
