@@ -16,6 +16,7 @@ class MiddayAttendance extends Model
         'date_time',
         'longitude',
         'latitude',
+        'image',
         'description'
     ];
 }

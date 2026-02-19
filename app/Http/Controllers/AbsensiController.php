@@ -39,30 +39,34 @@ class AbsensiController extends Controller
 
     public function index(AttendanceIndexRequest $request)
     {
-        $validated          = $request->validated();
-        $absensiQ           = Absensi::query()->filter($validated)->orderBy('date', 'desc');
-        $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQ->paginate($validated['perPage'] ?? 10) : $absensiQ->get();
-        $transformedItems   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
-        $transformedAbsensi = $transformedItems->map(function ($item) {
-            return [
-                'id'                    => $item->id,
-                'employee_id'           => $item->employee_id,
-                'employee_name'         => $item->employee->name,
-                'branch_name'           => $item->employee->branch->name,
-                'attendance_status_id'  => $item->attendance_status_id,
-                'status'                => $item->attendanceStatus->name,
-                'date'                  => $item->date,
-                'check_in_image'        => $item->check_in_image,
-                'check_out_image'       => $item->check_out_image,
-                'start_time'            => $item->start_time,
-                'end_time'              => $item->end_time,
-            ];
-        });
+        try {
+            $validated          = $request->validated();
+            $absensiQ           = Absensi::query()->filter($validated)->orderBy('date', 'desc');
+            $absensi            = isset($validated['paginate']) && $validated['paginate'] ? $absensiQ->paginate($validated['perPage'] ?? 10) : $absensiQ->get();
+            $transformedItems   = $absensi instanceof LengthAwarePaginator ? $absensi->getCollection() : $absensi;
+            $transformedAbsensi = $transformedItems->map(function ($item) {
+                return [
+                    'id'                    => $item->id,
+                    'employee_id'           => $item->employee_id,
+                    'employee_name'         => $item->employee->name,
+                    'branch_name'           => $item->employee->branch->name,
+                    'attendance_status_id'  => $item->attendance_status_id,
+                    'status'                => $item->attendanceStatus->name,
+                    'date'                  => $item->date,
+                    'check_in_image'        => $item->check_in_image,
+                    'check_out_image'       => $item->check_out_image,
+                    'start_time'            => $item->start_time,
+                    'end_time'              => $item->end_time,
+                ];
+            });
 
-        if ($absensi instanceof LengthAwarePaginator) {
-            return ApiResponseHelper::success('Attendance list', $absensi->setCollection($transformedAbsensi));
+            if ($absensi instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('Attendance list', $absensi->setCollection($transformedAbsensi));
+            }
+            return ApiResponseHelper::success('Attendance list', $transformedAbsensi);
+        } catch (\Throwable $th) {
+            return ApiResponseHelper::error('Failed to get attendance data');
         }
-        return ApiResponseHelper::success('Attendance list', $transformedAbsensi);
     }
 
     public function store(AttendanceStoreRequest $request)

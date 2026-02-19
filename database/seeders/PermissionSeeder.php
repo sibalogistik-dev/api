@@ -153,6 +153,7 @@ class PermissionSeeder extends Seeder
             'hrd.midday-attendance.store'   => 'HRD Absensi Siang Page Access | Create',
             'hrd.midday-attendance.update'  => 'HRD Absensi Siang Page Access | Update',
             'hrd.midday-attendance.destroy' => 'HRD Absensi Siang Page Access | Delete',
+            'hrd.midday-attendance.report'  => 'HRD Absensi Siang Page Access | Report',
 
             'hrd.overtime'          => 'HRD Overtime Page Access | Give all access from this section',
             'hrd.overtime.index'    => 'HRD Overtime Page Access | Index',

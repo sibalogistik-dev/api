@@ -45,6 +45,7 @@ Route::middleware('api')->group(function () {
                 'holiday'                       => App\Http\Controllers\HolidayController::class,
                 'job-description'               => App\Http\Controllers\JobDescriptionController::class,
                 'job-title'                     => App\Http\Controllers\JabatanController::class,
+                'midday-attendance'             => App\Http\Controllers\MiddayAttendanceController::class,
                 'overtime'                      => App\Http\Controllers\OvertimeController::class,
                 'payroll'                       => App\Http\Controllers\PayrollController::class,
                 'permission'                    => App\Http\Controllers\PermissionsController::class,
@@ -57,6 +58,7 @@ Route::middleware('api')->group(function () {
 
             // documents route
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,             'report'])->name('attendance.report');
+            Route::post('midday-attendance/report',             [App\Http\Controllers\MiddayAttendanceController::class,    'report'])->name('midday-attendance.report');
             Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,         'report'])->name('branch-asset.report');
             Route::post('daily-report/report',                  [App\Http\Controllers\EmployeeDailyReportController::class, 'report'])->name('daily-report.report');
             Route::post('employee-training/report',             [App\Http\Controllers\EmployeeTrainingController::class,    'report'])->name('employee-training.report');
