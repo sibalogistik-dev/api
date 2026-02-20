@@ -1,2 +1,6 @@
 *
+!uploads
+!uploads/*/
+uploads/*/*
+!uploads/*/default.webp
 !.gitignore
