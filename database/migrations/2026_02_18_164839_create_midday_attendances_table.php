@@ -14,7 +14,7 @@ return new class extends Migration
             $table->dateTime('date_time');
             $table->float('longitude', 10)->nullable()->default('0.00000000');
             $table->float('latitude', 10)->nullable()->default('0.00000000');
-            $table->string('image');
+            $table->string('image')->nullable()->default('uploads/midday_attendance/default.webp');
             $table->string('description');
             $table->timestamps();
             $table->softDeletes();

@@ -59,26 +59,47 @@ class MiddayAttendanceController extends Controller
 
     public function store(MiddayAttendanceStoreRequest $request)
     {
-        //
+        try {
+            $middayAttendance = $this->middayAttendanceService->create($request->validated());
+            return ApiResponseHelper::success('');
+        } catch (Exception $e) {
+            // 
+        }
     }
 
     public function show(MiddayAttendance $middayAttendance)
     {
-        //
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
+        }
     }
 
     public function update(MiddayAttendanceUpdateRequest $request, MiddayAttendance $middayAttendance)
     {
-        //
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
+        }
     }
 
     public function destroy(MiddayAttendance $middayAttendance)
     {
-        //
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
+        }
     }
 
     public function report($request)
     {
-        // 
+        try {
+            // 
+        } catch (Exception $e) {
+            // 
+        }
     }
 }
