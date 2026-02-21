@@ -61,9 +61,9 @@ class MiddayAttendanceController extends Controller
     {
         try {
             $middayAttendance = $this->middayAttendanceService->create($request->validated());
-            return ApiResponseHelper::success('');
+            return ApiResponseHelper::success('Midday attendance created successfully', $middayAttendance);
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Failed to create midday attendance', $e->getMessage());
         }
     }
 

@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Karyawan;
 use App\Models\MiddayAttendance;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +19,12 @@ class MiddayAttendanceService
         $filePaths = [];
         DB::beginTransaction();
         try {
+            $today      = Carbon::now()->toDateString();
+            $karyawan   = Karyawan::find($data['employee_id']);
+
+            if (!$karyawan) {
+                throw new Exception('Employee data not found');
+            }
         } catch (Exception $e) {
             DB::rollBack();
         }
