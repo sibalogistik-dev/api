@@ -16,9 +16,6 @@ class Base64Image implements ValidationRule
         $this->maxSize = $maxSize;
     }
 
-    /**
-     * @param \Closure(string): void $fail
-     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($value === null) return;
