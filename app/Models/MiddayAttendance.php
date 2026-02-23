@@ -17,7 +17,8 @@ class MiddayAttendance extends Model
         'longitude',
         'latitude',
         'image',
-        'description'
+        'description',
+        'late_arrival_time'
     ];
 
     public function scopeFilter($query, array $filters)

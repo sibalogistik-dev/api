@@ -54,13 +54,16 @@ class MiddayAttendanceService
                     throw new Exception('Distance is too far from office location. Your distance is ' . number_format($jarak, 0, ',', '.') . ' meters. C');
                 }
             }
+            $data['date_time']          = $dateTime;
+            $data['late_arrival_time']  = $this->countLate($data['date_time']);
 
             $middayAttendanceData = [
-                'employee_id'   => $data['employee_id'],
-                'date_time'     => $data['date_time'] ?? $dateTime,
-                'longitude'     => $data['longitude'] ?? 0.00000000,
-                'latitude'      => $data['latitude'] ?? 0.00000000,
-                'description'   => $data['description'] ?? null,
+                'employee_id'       => $data['employee_id'],
+                'date_time'         => $data['date_time'],
+                'longitude'         => $data['longitude'] ?? 0.00000000,
+                'latitude'          => $data['latitude'] ?? 0.00000000,
+                'description'       => $data['description'] ?? null,
+                'late_arrival_time' => $data['late_arrival_time']
             ];
 
             if (!empty($data['image'])) {
@@ -144,7 +147,7 @@ class MiddayAttendanceService
         return $distance;
     }
 
-    private function countLate($actual_time, $required_time = '13:00:00')
+    private function countLate($actual_time, $required_time = '13:00')
     {
         try {
             $actual     = Carbon::parse($actual_time);
