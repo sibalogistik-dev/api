@@ -16,11 +16,11 @@ class MiddayAttendanceStoreRequest extends FormRequest
     {
         return [
             'employee_id' => ['required', 'exists:karyawans,id'],
-            'date_time'   => ['required', 'date_format:Y-m-d H:i'],
+            'date_time'   => ['sometimes', 'date_format:Y-m-d H:i:s'],
             'image'       => ['nullable', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 2 * 1024 * 1024)],
             'longitude'   => ['sometimes', 'numeric', 'min:-180', 'max:180'],
             'latitude'    => ['sometimes', 'numeric', 'min:-90', 'max:90'],
-            'description' => ['sometimes', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
         ];
     }
 }

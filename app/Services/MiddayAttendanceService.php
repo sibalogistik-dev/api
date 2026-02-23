@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\Karyawan;
 use App\Models\MiddayAttendance;
+use App\Models\RemoteAttendance;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -19,33 +19,54 @@ class MiddayAttendanceService
         $filePaths = [];
         DB::beginTransaction();
         try {
-            $today      = Carbon::now()->toDateString();
+            $today      = Carbon::now();
+            $dateTime   = $today->toDateTimeString('second');
+            $date       = $today->toDateString();
+
             $karyawan   = Karyawan::find($data['employee_id']);
+            $kantor     = $karyawan->branch;
+
+            $lat = $data['latitude'] ?? 0.00000000;
+            $long = $data['longitude'] ?? 0.00000000;
 
             if (!$karyawan) {
-                throw new Exception('Employee data not found');
+                throw new Exception('Employee data not found. A');
             }
 
-            $isExist = MiddayAttendance::where('employee_id', $data['employee_id'])
-                ->whereDate('date_time', $today)
+            $isExist = MiddayAttendance::where('employee_id', $karyawan->id)
+                ->whereDate('date_time', $date)
                 ->exists();
 
             if ($isExist) {
-                throw new Exception('Employee has already checked in for midday attendance today');
+                throw new Exception('Employee has already checked in for midday attendance today. B');
+            }
+
+            $isRemoteActive = RemoteAttendance::where('employee_id', $karyawan->id)
+                ->where('start_date', '<=', $date)
+                ->where('end_date', '>=', $date)
+                ->exists();
+
+            if (!$isRemoteActive) {
+                $jarak  = $this->distanceCount($kantor->latitude, $kantor->longitude, $lat, $long);
+                $rad    = $kantor->attendance_radius;
+
+                if ($jarak > $rad) {
+                    throw new Exception('Distance is too far from office location. Your distance is ' . number_format($jarak, 0, ',', '.') . ' meters. C');
+                }
             }
 
             $middayAttendanceData = [
                 'employee_id'   => $data['employee_id'],
-                'date_time'     => $data['date_time'],
-                'longitude'     => $data['longitude'] ?? null,
-                'latitude'      => $data['latitude'] ?? null,
+                'date_time'     => $data['date_time'] ?? $dateTime,
+                'longitude'     => $data['longitude'] ?? 0.00000000,
+                'latitude'      => $data['latitude'] ?? 0.00000000,
                 'description'   => $data['description'] ?? null,
             ];
 
             if (!empty($data['image'])) {
                 $filePaths['image'] = $this->storeBase64Image(
                     $data['image'],
-                    'midday-attendance',
+                    'uploads/midday_attendance',
                     $karyawan->name
                 );
             } else {
@@ -63,15 +84,21 @@ class MiddayAttendanceService
                 }
             }
             DB::rollBack();
+            throw new Exception('Failed to save midday attendance data: ' . $e->getMessage());
         }
     }
 
     public function update(MiddayAttendance $middayAttendance, array $data)
     {
-        $filePaths = [];
         DB::beginTransaction();
+        $filePaths = [];
         try {
-            // 
+            $karyawan = Karyawan::find($middayAttendance->employee_id);
+
+            if (isset($data['date_time']) && $middayAttendance->date_time != $data['date_time']) {
+                $late                       = $this->countLate($data['date_time'], $karyawan->branch->start_time);
+                $data['late_arrival_time']  = $late;
+            }
         } catch (Exception $e) {
             // 
         }
@@ -115,5 +142,19 @@ class MiddayAttendanceService
         $hitung_radian  = 2 * atan2(sqrt($hitung_radian), sqrt(1 - $hitung_radian));
         $distance       = round($earthRadius * $hitung_radian, 0);
         return $distance;
+    }
+
+    private function countLate($actual_time, $required_time = '13:00:00')
+    {
+        try {
+            $actual     = Carbon::parse($actual_time);
+            $required   = Carbon::parse($required_time);
+            if ($actual->isAfter($required)) {
+                return abs((int) $actual->diffInMinutes($required));
+            }
+            return 0;
+        } catch (Exception $e) {
+            return 0;
+        }
     }
 }

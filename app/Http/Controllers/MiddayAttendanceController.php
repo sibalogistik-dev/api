@@ -67,30 +67,55 @@ class MiddayAttendanceController extends Controller
         }
     }
 
-    public function show(MiddayAttendance $middayAttendance)
+    public function show($middayAttendance)
     {
         try {
-            // 
+            $query = MiddayAttendance::find($middayAttendance);
+            if (!$query) {
+                return ApiResponseHelper::error('Midday attendance not found', null, 404);
+            }
+            $data = [
+                'id'            => $query->id,
+                'employee_id'   => $query->employee_id,
+                'employee_name' => $query->employee->name,
+                'branch_name'   => $query->employee->branch->name,
+                'date_time'     => $query->date_time,
+                'image'         => $query->image,
+                'longitude'     => $query->longitude,
+                'latitude'      => $query->latitude,
+                'description'   => $query->description,
+            ];
+            return ApiResponseHelper::success('Midday attendance retrieved successfully', $query);
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Failed to retrieve midday attendance', $e->getMessage());
         }
     }
 
-    public function update(MiddayAttendanceUpdateRequest $request, MiddayAttendance $middayAttendance)
+    public function update(MiddayAttendanceUpdateRequest $request, $middayAttendance)
     {
         try {
-            // 
+            $query  = MiddayAttendance::find($middayAttendance);
+            if (!$query) {
+                return ApiResponseHelper::error('Midday attendance not found', null, 404);
+            }
+            $middayAttendance   = $this->middayAttendanceService->update($query, $request->validated());
+            return ApiResponseHelper::success('Midday attendance updated successfully', $middayAttendance);
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Failed to update midday attendance', $e->getMessage());
         }
     }
 
-    public function destroy(MiddayAttendance $middayAttendance)
+    public function destroy($middayAttendance)
     {
         try {
-            // 
+            $query = MiddayAttendance::find($middayAttendance);
+            if (!$query) {
+                return ApiResponseHelper::error('Midday attendance not found', null, 404);
+            }
+            $query->delete();
+            return ApiResponseHelper::success('Midday attendance deleted successfully', null);
         } catch (Exception $e) {
-            // 
+            return ApiResponseHelper::error('Failed to delete midday attendance', $e->getMessage());
         }
     }
 

@@ -15,7 +15,6 @@ class MiddayAttendanceUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => ['sometimes', 'exists:karyawans,id'],
             'date_time'   => ['sometimes', 'date_format:Y-m-d H:i:s'],
             'image'       => ['sometimes', new Base64Image(['jpeg', 'jpg', 'png', 'webp'], 2 * 1024 * 1024)],
             'longitude'   => ['sometimes', 'numeric', 'min:-180', 'max:180'],

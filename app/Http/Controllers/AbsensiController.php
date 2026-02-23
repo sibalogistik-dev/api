@@ -114,7 +114,7 @@ class AbsensiController extends Controller
     public function update(AttendanceUpdateRequest $request, $attendance)
     {
         try {
-            $abs        = Absensi::find($attendance);
+            $abs    = Absensi::find($attendance);
             if (!$abs) {
                 throw new Exception('Attendance data not found');
             }
