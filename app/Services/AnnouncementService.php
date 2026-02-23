@@ -26,6 +26,8 @@ class AnnouncementService
             if (!empty($data['image_url'])) {
                 $filePaths['image_url'] = $this->storeFile($data['image_url'], 'uploads/announcement', 90);
                 $uploads['image_url']   = $filePaths['image_url'];
+            }else{
+                $uploads['image_url']   = 'uploads/announcement/default.webp';
             }
             $announcement   = Announcement::create($uploads);
 

@@ -25,7 +25,43 @@ class MiddayAttendanceService
             if (!$karyawan) {
                 throw new Exception('Employee data not found');
             }
+
+            $isExist = MiddayAttendance::where('employee_id', $data['employee_id'])
+                ->whereDate('date_time', $today)
+                ->exists();
+
+            if ($isExist) {
+                throw new Exception('Employee has already checked in for midday attendance today');
+            }
+
+            $middayAttendanceData = [
+                'employee_id'   => $data['employee_id'],
+                'date_time'     => $data['date_time'],
+                'longitude'     => $data['longitude'] ?? null,
+                'latitude'      => $data['latitude'] ?? null,
+                'description'   => $data['description'] ?? null,
+            ];
+
+            if (!empty($data['image'])) {
+                $filePaths['image'] = $this->storeBase64Image(
+                    $data['image'],
+                    'midday-attendance',
+                    $karyawan->name
+                );
+            } else {
+                $filePaths['image'] = 'uploads/midday_attendance/default.webp';
+            }
+            $middayAttendanceData['image'] = $filePaths['image'];
+
+            $middayAttendance = MiddayAttendance::create($middayAttendanceData);
+            DB::commit();
+            return $middayAttendance;
         } catch (Exception $e) {
+            foreach ($filePaths as $path) {
+                if ($path && $path !== 'uploads/midday_attendance/default.webp') {
+                    Storage::disk('public')->delete($path);
+                }
+            }
             DB::rollBack();
         }
     }

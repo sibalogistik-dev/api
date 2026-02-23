@@ -107,11 +107,11 @@ class AttendanceService
             return $attendance;
         } catch (Exception $e) {
             foreach ($filePaths as $path) {
-                if ($path) {
+                if ($path && $path !== 'uploads/check_in_image/default.webp' && $path !== 'uploads/sick_note/default.pdf') {
                     Storage::disk('public')->delete($path);
                 }
             }
-            throw $e;
+            DB::rollBack();
         }
     }
 
