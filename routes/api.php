@@ -48,13 +48,13 @@ Route::middleware('api')->group(function () {
                 'midday-attendance'             => App\Http\Controllers\MiddayAttendanceController::class,
                 'overtime'                      => App\Http\Controllers\OvertimeController::class,
                 'payroll'                       => App\Http\Controllers\PayrollController::class,
+                'permission'                    => App\Http\Controllers\PermissionsController::class,
                 'remote-attendance'             => App\Http\Controllers\RemoteAttendanceController::class,
                 'reprimand-letter'              => App\Http\Controllers\ReprimandLetterController::class,
                 'resign'                        => App\Http\Controllers\ResignController::class,
+                'users'                         => App\Http\Controllers\UserController::class,
                 'warning-letter'                => App\Http\Controllers\WarningLetterController::class,
-                
-                'permission'                    => App\Http\Controllers\PermissionsController::class,
-                'user'                          => App\Http\Controllers\UserController::class,
+
                 'user-permission'               => App\Http\Controllers\UserPermissionController::class,
             ]);
 

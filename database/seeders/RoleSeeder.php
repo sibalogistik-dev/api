@@ -40,6 +40,7 @@ class RoleSeeder extends Seeder
             'hrd.remote-attendance',
             'hrd.reprimand-letter',
             'hrd.resign',
+            'hrd.users',
             'hrd.user-permission',
             'hrd.warning-letter',
         ]);

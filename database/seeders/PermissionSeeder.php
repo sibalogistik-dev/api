@@ -202,6 +202,13 @@ class PermissionSeeder extends Seeder
             'hrd.resign.update'     => 'HRD Resign Page Access | Update',
             'hrd.resign.destroy'    => 'HRD Resign Page Access | Delete',
 
+            'hrd.users'         => 'HRD Users Page Access | Give all access from this section',
+            'hrd.users.index'   => 'HRD Users Page Access | Index',
+            'hrd.users.show'    => 'HRD Users Page Access | Show',
+            'hrd.users.store'   => 'HRD Users Page Access | Create',
+            'hrd.users.update'  => 'HRD Users Page Access | Update',
+            'hrd.users.destroy' => 'HRD Users Page Access | Delete',
+
             'hrd.user-permission'           => 'HRD User Permission Page Access | Give all access from this section',
             'hrd.user-permission.index'     => 'HRD User Permission Page Access | Index',
             'hrd.user-permission.show'      => 'HRD User Permission Page Access | Show',

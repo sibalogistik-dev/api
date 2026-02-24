@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserPermissionIndexRequest extends FormRequest
+class UserIndexRequest extends FormRequest
 {
     public function authorize()
     {

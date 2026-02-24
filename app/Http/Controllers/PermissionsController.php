@@ -9,8 +9,8 @@ use App\Http\Requests\PermissionUpdateRequest;
 use App\Models\Permission;
 use App\Services\PermissionService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controller;
 
 class PermissionsController extends Controller
 {
@@ -19,6 +19,11 @@ class PermissionsController extends Controller
     public function __construct(PermissionService $permissionService)
     {
         $this->permissionService = $permissionService;
+        $this->middleware('permission:hrd.permission|hrd.permission.index')->only('index');
+        $this->middleware('permission:hrd.permission|hrd.permission.store')->only('store');
+        $this->middleware('permission:hrd.permission|hrd.permission.show')->only('show');
+        $this->middleware('permission:hrd.permission|hrd.permission.update')->only('update');
+        $this->middleware('permission:hrd.permission|hrd.permission.destroy')->only('destroy');
     }
 
     public function index(PermissionIndexRequest $request)

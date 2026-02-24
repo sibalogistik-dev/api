@@ -30,6 +30,15 @@ class User extends Authenticatable
         'password'          => 'hashed',
     ];
 
+    public function scopeFilter($query, $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $keyword) {
+            $query->where('name', 'like', "%{$keyword}%")
+                ->orWhere('email', 'like', "%{$keyword}%")
+                ->orWhere('username', 'like', "%{$keyword}%");
+        });
+    }
+
     public function employee()
     {
         return $this->hasOne(Karyawan::class)->withTrashed();

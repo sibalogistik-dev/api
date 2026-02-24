@@ -9,7 +9,6 @@ use App\Http\Requests\MiddayAttendanceUpdateRequest;
 use App\Models\MiddayAttendance;
 use App\Services\MiddayAttendanceService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller;
 

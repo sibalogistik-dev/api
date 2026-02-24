@@ -14,7 +14,7 @@ class UserPermissionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'permission_id' => ['required', 'integer', 'exists:permissions,id']
         ];
     }
 }

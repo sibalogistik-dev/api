@@ -2,55 +2,134 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Helpers\ApiResponseHelper;
+use App\Http\Requests\UserIndexRequest;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Models\User;
+use App\Services\UserService;
+use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controller;
 
-class UserController extends Controller {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index() {
-        //
+class UserController extends Controller
+{
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+        $this->middleware('permission:hrd.users|hrd.users.index')->only('index');
+        $this->middleware('permission:hrd.users|hrd.users.store')->only('store');
+        $this->middleware('permission:hrd.users|hrd.users.show')->only('show');
+        $this->middleware('permission:hrd.users|hrd.users.update')->only('update');
+        $this->middleware('permission:hrd.users|hrd.users.destroy')->only('destroy');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {
-        //
+    public function index(UserIndexRequest $request)
+    {
+        try {
+            $validated          = $request->validated();
+            $userQ              = User::query()->filter($validated);
+            $user               = isset($validated['paginate']) && $validated['paginate'] ? $userQ->paginate($validated['perPage'] ?? 10) : $userQ->get();
+            $transformedItems   = $user instanceof LengthAwarePaginator ? $user->getCollection() : $user;
+            $transformedUser    = $transformedItems->map(function ($item) {
+                return [
+                    'id'                => $item->id,
+                    'name'              => $item->name,
+                    'email'             => $item->email,
+                    'username'          => $item->username,
+                    'user_type'         => $item->user_type,
+                    'total_roles'       => $item->roles->count(),
+                    'total_permission'  => $item->getAllPermissions()->count(),
+                ];
+            });
+
+            if ($user instanceof LengthAwarePaginator) {
+                return ApiResponseHelper::success('User list', $user->setCollection($transformedUser));
+            }
+            return ApiResponseHelper::success('User list', $transformedUser);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to retrieve user list', $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {
-        //
+    public function store(UserStoreRequest $request)
+    {
+        try {
+            $user = $this->userService->create($request->validated());
+            return ApiResponseHelper::success('User created successfully', $user);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when saving user data', $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {
-        //
+    public function show($users)
+    {
+        try {
+            $user = User::find($users);
+            if (!$user) {
+                return ApiResponseHelper::error('User not found');
+            }
+            $data = [
+                'id'            => $user->id,
+                'name'          => $user->name,
+                'email'         => $user->email,
+                'username'      => $user->username,
+                'user_type'     => $user->user_type,
+                'roles'         => $user->roles->map(function ($role) {
+                    return [
+                        'id'    => $role->id,
+                        'name'  => $role->name,
+                    ];
+                }),
+                'role_perms'    => $user->getPermissionsViaRoles()->map(function ($permission) {
+                    return [
+                        'id'    => $permission->id,
+                        'name'  => $permission->name,
+                    ];
+                }),
+                'perms'         => $user->getDirectPermissions()->map(function ($permission) {
+                    return [
+                        'id'    => $permission->id,
+                        'name'  => $permission->name,
+                    ];
+                }),
+            ];
+            return ApiResponseHelper::success('User retrieved successfully', $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when retrieving user data', $e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id) {
-        //
+    public function update(UserUpdateRequest $request, $users)
+    {
+        try {
+            $user = User::find($users);
+            if (!$user) {
+                return ApiResponseHelper::error('User not found');
+            }
+            $this->userService->update($user, $request->validated());
+            return ApiResponseHelper::success('User updated successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when updating user data', $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id) {
-        //
+    public function destroy($users)
+    {
+        try {
+            $user = User::find($users);
+            if (!$user) {
+                throw new Exception('User not found');
+            }
+            $delete = $user->delete();
+            if (!$delete) {
+                throw new Exception('Failed to delete user');
+            }
+            return ApiResponseHelper::success('User deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Error when deleting user data', $e->getMessage());
+        }
     }
 }
