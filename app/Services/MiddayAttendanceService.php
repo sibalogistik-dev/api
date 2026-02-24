@@ -30,7 +30,7 @@ class MiddayAttendanceService
             $long = $data['longitude'] ?? 0.00000000;
 
             if (!$karyawan) {
-                throw new Exception('Employee data not found. A');
+                throw new Exception('Employee data not found.');
             }
 
             $isExist = MiddayAttendance::where('employee_id', $karyawan->id)
@@ -38,7 +38,7 @@ class MiddayAttendanceService
                 ->exists();
 
             if ($isExist) {
-                throw new Exception('Employee has already checked in for midday attendance today. B');
+                throw new Exception('Employee has already checked in for midday attendance today.');
             }
 
             $isRemoteActive = RemoteAttendance::where('employee_id', $karyawan->id)
@@ -51,7 +51,7 @@ class MiddayAttendanceService
                 $rad    = $kantor->attendance_radius;
 
                 if ($jarak > $rad) {
-                    throw new Exception('Distance is too far from office location. Your distance is ' . number_format($jarak, 0, ',', '.') . ' meters. C');
+                    throw new Exception('Distance is too far from office location. Your distance is ' . number_format($jarak, 0, ',', '.') . ' meters.');
                 }
             }
             $data['date_time']          = $dateTime;
@@ -94,16 +94,18 @@ class MiddayAttendanceService
     public function update(MiddayAttendance $middayAttendance, array $data)
     {
         DB::beginTransaction();
-        $filePaths = [];
         try {
-            $karyawan = Karyawan::find($middayAttendance->employee_id);
-
             if (isset($data['date_time']) && $middayAttendance->date_time != $data['date_time']) {
-                $late                       = $this->countLate($data['date_time'], $karyawan->branch->start_time);
+                $late                       = $this->countLate($data['date_time']);
                 $data['late_arrival_time']  = $late;
             }
+
+            $middayAttendance->update($data);
+            DB::commit();
+            return $middayAttendance;
         } catch (Exception $e) {
-            // 
+            DB::rollBack();
+            throw new Exception('Failed to update midday attendance data: ' . $e->getMessage());
         }
     }
 
