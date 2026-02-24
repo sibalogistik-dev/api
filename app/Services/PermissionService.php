@@ -26,9 +26,12 @@ class PermissionService
     {
         DB::beginTransaction();
         try {
-            //
+            $permission->update($data);
+            DB::commit();
+            return $permission;
         } catch (Exception $e) {
-            // 
+            DB::rollBack();
+            throw new Exception('Failed to update permission data: ' . $e->getMessage());
         }
     }
 }

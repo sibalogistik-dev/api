@@ -119,7 +119,7 @@ class AbsensiController extends Controller
                 throw new Exception('Attendance data not found');
             }
             $absensi    = $this->attendanceService->update($abs, $request->validated());
-            return ApiResponseHelper::success("Attendance successfully recorded.", $absensi);
+            return ApiResponseHelper::success("Attendance successfully updated.", $absensi);
         } catch (Exception $e) {
             return ApiResponseHelper::error("Error when saving attendance data", $e->getMessage());
         }

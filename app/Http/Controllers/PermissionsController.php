@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\PermissionIndexRequest;
 use App\Http\Requests\PermissionStoreRequest;
+use App\Http\Requests\PermissionUpdateRequest;
 use App\Models\Permission;
 use App\Services\PermissionService;
 use Exception;
@@ -53,18 +54,49 @@ class PermissionsController extends Controller
         }
     }
 
-    public function show(string $id)
+    public function show($permission)
     {
-        //
+        try {
+            $perm = Permission::find($permission);
+            if (!$perm) {
+                return ApiResponseHelper::error('Permission not found', null, 404);
+            }
+            $data = [
+                'id'            => $perm->id,
+                'name'          => $perm->name,
+                'description'   => $perm->description,
+            ];
+            return ApiResponseHelper::success('Permission data', $data);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to get permission data', $e->getMessage());
+        }
     }
 
-    public function update(Request $request, string $id)
+    public function update(PermissionUpdateRequest $request, $permission)
     {
-        //
+        try {
+            $perm = Permission::find($permission);
+            if (!$perm) {
+                throw new Exception('Permission data not found');
+            }
+            $updated = $this->permissionService->update($perm, $request->validated());
+            return ApiResponseHelper::success('Permission successfully updated.', $updated);
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to update permission data', $e->getMessage());
+        }
     }
 
-    public function destroy(string $id)
+    public function destroy($permission)
     {
-        //
+        try {
+            $perm = Permission::find($permission);
+            if (!$perm) {
+                throw new Exception('Permission data not found');
+            }
+            $perm->delete();
+            return ApiResponseHelper::success('Permission data has been deleted successfully');
+        } catch (Exception $e) {
+            return ApiResponseHelper::error('Failed to delete permission data', $e->getMessage());
+        }
     }
 }

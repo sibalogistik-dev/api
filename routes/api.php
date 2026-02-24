@@ -45,6 +45,7 @@ Route::middleware('api')->group(function () {
                 'holiday'                       => App\Http\Controllers\HolidayController::class,
                 'job-description'               => App\Http\Controllers\JobDescriptionController::class,
                 'job-title'                     => App\Http\Controllers\JabatanController::class,
+                'midday-attendance'             => App\Http\Controllers\MiddayAttendanceController::class,
                 'overtime'                      => App\Http\Controllers\OvertimeController::class,
                 'payroll'                       => App\Http\Controllers\PayrollController::class,
                 'remote-attendance'             => App\Http\Controllers\RemoteAttendanceController::class,
@@ -52,7 +53,6 @@ Route::middleware('api')->group(function () {
                 'resign'                        => App\Http\Controllers\ResignController::class,
                 'warning-letter'                => App\Http\Controllers\WarningLetterController::class,
                 
-                'midday-attendance'             => App\Http\Controllers\MiddayAttendanceController::class,
                 'permission'                    => App\Http\Controllers\PermissionsController::class,
                 'user'                          => App\Http\Controllers\UserController::class,
                 'user-permission'               => App\Http\Controllers\UserPermissionController::class,
