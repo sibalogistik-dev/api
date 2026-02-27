@@ -77,6 +77,24 @@ class UserController extends Controller
                 'email'         => $user->email,
                 'username'      => $user->username,
                 'user_type'     => $user->user_type,
+                'roles'         => $user->roles->map(function ($role) {
+                    return [
+                        'id'    => $role->id,
+                        'name'  => $role->name,
+                    ];
+                }),
+                'role_perms'    => $user->getPermissionsViaRoles()->map(function ($permission) {
+                    return [
+                        'id'    => $permission->id,
+                        'name'  => $permission->name,
+                    ];
+                }),
+                'perms'         => $user->getDirectPermissions()->map(function ($permission) {
+                    return [
+                        'id'    => $permission->id,
+                        'name'  => $permission->name,
+                    ];
+                }),
             ];
             return ApiResponseHelper::success('User retrieved successfully', $data);
         } catch (Exception $e) {
