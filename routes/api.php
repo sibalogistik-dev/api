@@ -15,19 +15,16 @@ Route::middleware('api')->group(function () {
             Route::post('save-fcm-token',   [App\Http\Controllers\FcmTokenController::class,    'store']);
 
             Route::apiResources([
-                // master data
                 'attendance-status'             => App\Http\Controllers\StatusAbsensiController::class,
                 'education'                     => App\Http\Controllers\PendidikanController::class,
                 'marriage-status'               => App\Http\Controllers\MarriageStatusController::class,
                 'religion'                      => App\Http\Controllers\AgamaController::class,
 
-                // Indonesia Regional
                 'village'                       => App\Http\Controllers\KelurahanController::class,
                 'district'                      => App\Http\Controllers\KecamatanController::class,
                 'city'                          => App\Http\Controllers\KotaKabController::class,
                 'province'                      => App\Http\Controllers\ProvinsiController::class,
 
-                // sensitive data
                 'announcement'                  => App\Http\Controllers\AnnouncementController::class,
                 'asset-maintenance'             => App\Http\Controllers\AssetMaintenanceController::class,
                 'attendance'                    => App\Http\Controllers\AbsensiController::class,
@@ -54,11 +51,8 @@ Route::middleware('api')->group(function () {
                 'resign'                        => App\Http\Controllers\ResignController::class,
                 'users'                         => App\Http\Controllers\UserController::class,
                 'warning-letter'                => App\Http\Controllers\WarningLetterController::class,
-
-                'user-permission'               => App\Http\Controllers\UserPermissionController::class,
             ]);
 
-            // documents route
             Route::post('attendance/report',                    [App\Http\Controllers\AbsensiController::class,             'report'])->name('attendance.report');
             Route::post('midday-attendance/report',             [App\Http\Controllers\MiddayAttendanceController::class,    'report'])->name('midday-attendance.report');
             Route::post('branch-asset/report',                  [App\Http\Controllers\BranchAssetController::class,         'report'])->name('branch-asset.report');
@@ -73,10 +67,8 @@ Route::middleware('api')->group(function () {
             Route::post('warning-letter/document',              [App\Http\Controllers\WarningLetterController::class,       'document'])->name('warning-letter.report');
             Route::post('warning-letter/report',                [App\Http\Controllers\WarningLetterController::class,       'report'])->name('warning-letter.report');
 
-            // restore route
             Route::post('employee/{employee}/restore',          [App\Http\Controllers\KaryawanController::class,        'restore'])->name('employee.restore');
 
-            // support route
             Route::get('employee/{employee}/details',           [App\Http\Controllers\EmployeeDetailsController::class, 'employeeDetails'])->name('employee.details');
             Route::get('employee/{employee}/salary',            [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalary'])->name('employee.salary');
             Route::get('employee/{employee}/salary-histories',  [App\Http\Controllers\SalaryDetailsController::class,   'employeeSalaryHistory'])->name('employee.salaryHistory');
@@ -91,12 +83,10 @@ Route::middleware('api')->group(function () {
             Route::get('dashboard/attendance-unsubmitted',      [App\Http\Controllers\AbsensiController::class,         'attendanceUnsubmitted'])->name('dashboard.attendanceUnsubmitted');
             Route::post('dashboard/attendance-reminder',        [App\Http\Controllers\NotificationController::class,    'attendanceReminder'])->name('notifications.attendanceReminder');
 
-            // hrd notification routes
             Route::get('notifications/hrd',                     [App\Http\Controllers\NotificationController::class,    'hrdIndex'])->name('notifications.hrd.index');
             Route::get('notifications/hrd/unread',              [App\Http\Controllers\NotificationController::class,    'hrdUnread'])->name('notifications.hrd.unread');
             Route::get('notifications/hrd/unread/count',        [App\Http\Controllers\NotificationController::class,    'hrdUnreadCount'])->name('notifications.hrd.unread.count');
 
-            // employee notification routes
             Route::get('notifications/employee',                [App\Http\Controllers\NotificationController::class,    'employeeIndex'])->name('notifications.employee.index');
             Route::get('notifications/employee/unread',         [App\Http\Controllers\NotificationController::class,    'employeeUnread'])->name('notifications.employee.unread');
             Route::get('notifications/employee/unread/count',   [App\Http\Controllers\NotificationController::class,    'employeeUnreadCount'])->name('notifications.employee.unread.count');
@@ -105,7 +95,7 @@ Route::middleware('api')->group(function () {
         });
 
     Route::get('storage-file',                  [App\Http\Controllers\StorageController::class, 'getStorageFile'])->name('storage.file');
-    // getter public routes
+
     Route::get('/get/province',                 [App\Http\Controllers\IndonesiaController::class, 'getAllProvince']);
     Route::get('/get/province/{code}',          [App\Http\Controllers\IndonesiaController::class, 'getProvince']);
     Route::get('/get/province/{code}/city',     [App\Http\Controllers\IndonesiaController::class, 'getProvinceCity']);
